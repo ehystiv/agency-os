@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="AppInfo" format=3]
+
+[ext_resource type="Script" path="res://core/app_info.gd" id="1_info"]
+[ext_resource type="Texture2D" path="res://ui/icons/event_log.svg" id="2_icon"]
+[ext_resource type="PackedScene" path="res://apps/event_viewer/event_viewer.tscn" id="3_scene"]
+
+[resource]
+script = ExtResource("1_info")
+id = &"event_viewer"
+label = "Registro eventi"
+window_title = "Visualizzatore eventi · AgencyOS"
+icon = ExtResource("2_icon")
+scene = ExtResource("3_scene")
+default_position = Vector2i(-1, 50)
+default_size = Vector2i(680, 0)
+on_desktop = true
+open_at_first_start = false
+menu_strip = PackedStringArray()

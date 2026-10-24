@@ -1,15 +1,15 @@
 class_name OpenAIJob
 extends RefCounted
-## Una singola chiamata HTTP verso un endpoint compatibile OpenAI, senza thread:
-## il provider chiama poll() a ogni frame finché restituisce true.
-## Gestisce sia lo streaming SSE sia le risposte JSON intere, nel formato OpenAI
-## oppure in quello dell'API Messages di Anthropic (dialect = ANTHROPIC).
+## A single HTTP call to an OpenAI-compatible endpoint, without threads:
+## the provider calls poll() every frame until it returns true.
+## Handles both SSE streaming and whole JSON replies, in the OpenAI format
+## or in that of Anthropic's Messages API (dialect = ANTHROPIC).
 
 enum Phase { CONNECTING, REQUESTING, READING, DONE }
 enum Dialect { OPENAI, ANTHROPIC }
 
 const CONNECT_TIMEOUT_MS := 5000
-## Un modello locale può metterci molto a caricarsi in memoria la prima volta.
+## A local model can take a long time to load into memory the first time.
 const FIRST_TOKEN_TIMEOUT_MS := 90000
 const IDLE_TIMEOUT_MS := 30000
 
@@ -39,8 +39,8 @@ var _stream_done := false
 var _on_json: Callable
 
 
-## on_json, se valida, riceve la risposta JSON intera (non streaming) e decide il testo:
-## serve per chiamate come l'elenco dei modelli.
+## on_json, if valid, receives the whole JSON reply (not streaming) and decides the text:
+## used for calls like the model list.
 func _init(target: BrainRequest, base_url: String, endpoint: String, method: HTTPClient.Method,
 		headers: PackedStringArray, body: Dictionary, model: String, on_json: Callable = Callable()) -> void:
 	request = target
@@ -60,7 +60,7 @@ func _init(target: BrainRequest, base_url: String, endpoint: String, method: HTT
 		_fail(_unreachable_message())
 
 
-## Restituisce true quando il lavoro è finito (bene o male).
+## Returns true when the work is over (well or badly).
 func poll() -> bool:
 	if _phase == Phase.DONE:
 		return true
@@ -86,8 +86,8 @@ func poll() -> bool:
 				if now - _last_data_ms > FIRST_TOKEN_TIMEOUT_MS:
 					_fail("Il modello non ha risposto entro %d secondi. Forse si sta ancora caricando: riprova tra poco." % (FIRST_TOKEN_TIMEOUT_MS / 1000))
 			elif status in [HTTPClient.STATUS_CONNECTION_ERROR, HTTPClient.STATUS_CANT_CONNECT, HTTPClient.STATUS_DISCONNECTED]:
-				# Su alcuni sistemi la connessione risulta aperta anche se nessuno ascolta:
-				# il rifiuto arriva solo all'invio della richiesta.
+				# On some systems the connection looks open even if nobody is listening:
+				# the refusal only comes when the request is sent.
 				_fail(_unreachable_message())
 			else:
 				_fail("La connessione con il server del modello si è interrotta.")
@@ -133,7 +133,7 @@ func _read(now: int) -> void:
 			else:
 				_fail("Il modello non ha risposto entro %d secondi. Forse si sta ancora caricando: riprova tra poco." % (limit / 1000))
 		return
-	# Corpo finito.
+	# Body finished.
 	if code != 200:
 		request.http_status = code
 		_fail(_http_error_message(code, _raw_body.get_string_from_utf8()))
@@ -259,6 +259,6 @@ func _parse_url(url: String) -> void:
 	else:
 		_host = host_port
 		_port = 443 if _tls else 80
-	# Godot risolve "localhost" in IPv6, ma LM Studio e altri server ascoltano solo su IPv4.
+	# Godot resolves "localhost" to IPv6, but LM Studio and other servers listen only on IPv4.
 	if _host == "localhost":
 		_host = "127.0.0.1"

@@ -1,20 +1,20 @@
 class_name AppWindow
 extends PanelContainer
-## Cornice '98 per un'app: barra del titolo trascinabile, riduci e chiudi.
-## Non conosce le altre finestre: chiede tutto al WindowManager con i segnali.
+## '98 frame for an app: draggable title bar, minimize and close.
+## It doesn't know the other windows: asks the WindowManager for everything through signals.
 
 signal focus_requested(window: AppWindow)
 signal minimize_requested(window: AppWindow)
 signal close_requested(window: AppWindow)
-## Doppio clic sulla barra: torna alla posizione predefinita.
+## Double click on the title bar: back to the default position.
 signal reset_requested(window: AppWindow)
-## Fine di un trascinamento.
+## End of a drag.
 signal moved(window: AppWindow)
 signal notification_requested(title: String, text: String, action: Dictionary)
 signal app_requested(id: StringName, args: Dictionary)
 signal command_requested(command: StringName)
 
-## Quanta finestra deve restare dentro la scrivania in orizzontale.
+## How much of the window must stay inside the desktop horizontally.
 const KEEP_VISIBLE := 140.0
 
 var app: AppInfo
@@ -41,13 +41,13 @@ func _ready() -> void:
 	%MinButton.pressed.connect(func() -> void: minimize_requested.emit(self))
 	%CloseButton.pressed.connect(func() -> void: close_requested.emit(self))
 	_title_bar.gui_input.connect(_on_title_bar_input)
-	# Le finestre non si ridimensionano a mano: seguono sempre il loro contenuto,
-	# anche quando si restringe (es. testo a capo che trova finalmente la sua larghezza).
+	# Windows aren't resized by hand: they always follow their content,
+	# even when it shrinks (e.g. wrapped text finally finding its width).
 	minimum_size_changed.connect(reset_size)
 	active = active
 
 
-## Da chiamare dopo che la finestra è entrata nell'albero.
+## Call after the window has entered the tree.
 func setup(info: AppInfo, app_content: AppContent) -> void:
 	app = info
 	content = app_content
@@ -65,7 +65,7 @@ func setup(info: AppInfo, app_content: AppContent) -> void:
 	reset_size()
 
 
-## Tiene la barra del titolo raggiungibile dentro la scrivania.
+## Keeps the title bar reachable inside the desktop.
 func clamp_position(pos: Vector2) -> Vector2:
 	var area := get_parent_control().size
 	return Vector2(
@@ -75,7 +75,7 @@ func clamp_position(pos: Vector2) -> Vector2:
 
 
 func _input(event: InputEvent) -> void:
-	# Un clic ovunque dentro la finestra la porta in primo piano, senza consumare l'evento.
+	# A click anywhere inside the window brings it to the front, without consuming the event.
 	var click := event as InputEventMouseButton
 	if click == null or not click.pressed or not is_visible_in_tree():
 		return

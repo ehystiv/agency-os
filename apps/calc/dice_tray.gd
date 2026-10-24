@@ -1,7 +1,7 @@
 class_name DiceTray
 extends Node3D
-## Vassoio dei dadi: pavimento con reticolo, pareti invisibili, sei d4 a fisica vera.
-## roll() li lancia e restituisce i valori letti dalla simulazione quando sono fermi.
+## Dice tray: floor with a lattice, invisible walls, six d4 with real physics.
+## roll() throws them and returns the values read from the simulation once they are still.
 
 signal rolling_changed(rolling: bool)
 
@@ -9,13 +9,13 @@ const DICE := 6
 const FLOOR_COLOR := Color("0e1a26")
 const GRID_CENTER := Color("1d3a4a")
 const GRID_LINE := Color("13242f")
-## Area interna delle pareti (x, z), dentro l'inquadratura.
+## Inner area of the walls (x, z), inside the shot.
 const TRAY_MIN := Vector2(-1.6, -0.9)
 const TRAY_MAX := Vector2(1.6, 1.05)
 const CAMERA_POSITION := Vector3(0, 3.1, 2.3)
 const CAMERA_TARGET := Vector3(0, 0, 0.1)
 const WALL_HEIGHT := 3.0
-## Fermi = quasi immobili per questo tempo.
+## Still = almost motionless for this long.
 const REST_SPEED := 0.06
 const REST_SPIN := 0.15
 const REST_SECONDS := 0.3
@@ -59,7 +59,7 @@ func _ready() -> void:
 	_line_up()
 
 
-## Lancia i sei dadi e aspetta che si fermino; restituisce i valori, nell'ordine dei dadi.
+## Throws the six dice and waits for them to stop; returns the values, in dice order.
 func roll() -> Array[int]:
 	rolling = true
 	rolling_changed.emit(true)
@@ -69,12 +69,12 @@ func roll() -> Array[int]:
 		die.sleeping = false
 		die.global_transform = Transform3D(_random_basis(), Vector3(randf_range(-1.2, 1.2), randf_range(1.2, 1.9), randf_range(-0.6, 0.8)))
 		die.linear_velocity = Vector3(-die.position.x * 0.8 + randf_range(-0.8, 0.8), randf_range(-2.0, -0.5), randf_range(-0.9, 0.5))
-		var spin := randf_range(3.0, 6.0) if bool(Save.get_ui("animazioni_ridotte", false)) else randf_range(8.0, 15.0)
+		var spin := randf_range(3.0, 6.0) if bool(Save.get_ui("reduced_motion", false)) else randf_range(8.0, 15.0)
 		die.angular_velocity = Vector3(randf_range(-1, 1), randf_range(-1, 1), randf_range(-1, 1)).normalized() * spin
 	await _wait_until_rest()
 	var nudges := 0
 	while nudges < MAX_NUDGES and _dice.any(func(d: D4) -> bool: return not d.is_flat()):
-		# Un dado appoggiato di sbieco si ritira con una piccola spinta, come al tavolo.
+		# A die leaning askew is rerolled with a small push, like at the table.
 		for die in _dice:
 			if not die.is_flat():
 				die.sleeping = false
@@ -90,7 +90,7 @@ func roll() -> Array[int]:
 	return values
 
 
-## Evidenzia i dadi che mostrano target; -1 toglie l'evidenziazione.
+## Highlights the dice showing target; -1 removes the highlight.
 func highlight(target: int) -> void:
 	for die in _dice:
 		die.highlight(null if target < 0 else die.top_value() == target)
@@ -109,7 +109,7 @@ func _wait_until_rest() -> void:
 			return
 
 
-## Prima del primo tiro i dadi sono in fila, appoggiati su una faccia.
+## Before the first roll the dice are in a row, resting on a face.
 func _line_up() -> void:
 	var flat := Basis(Quaternion(Vector3(1, 1, 1).normalized(), Vector3.UP))
 	for i in _dice.size():
@@ -140,7 +140,7 @@ func _build_floor() -> void:
 	floor_material.roughness = 1.0
 	plane.material_override = floor_material
 	add_child(plane)
-	# Reticolo 14×14 m in 28 divisioni, come GridHelper del prototipo.
+	# 14×14 m lattice in 28 divisions, like the prototype's GridHelper.
 	var points := PackedVector3Array()
 	var colors := PackedColorArray()
 	for i in 29:
@@ -163,7 +163,7 @@ func _build_floor() -> void:
 	add_child(grid)
 
 
-## Quattro pareti invisibili attorno all'area inquadrata.
+## Four invisible walls around the framed area.
 func _build_walls() -> void:
 	var center := (TRAY_MIN + TRAY_MAX) / 2.0
 	var half := (TRAY_MAX - TRAY_MIN) / 2.0

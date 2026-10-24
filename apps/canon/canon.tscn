@@ -1,0 +1,63 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://apps/canon/canon.gd" id="1_script"]
+
+[node name="Canon" type="MarginContainer"]
+size_flags_vertical = 3
+script = ExtResource("1_script")
+
+[node name="Layout" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="Pane" type="PanelContainer" parent="Layout"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_type_variation = &"CanonPane"
+
+[node name="Scroll" type="ScrollContainer" parent="Layout/Pane"]
+custom_minimum_size = Vector2(0, 460)
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="Content" type="MarginContainer" parent="Layout/Pane/Scroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/margin_right = 10
+
+[node name="Box" type="VBoxContainer" parent="Layout/Pane/Scroll/Content"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Title" type="Label" parent="Layout/Pane/Scroll/Content/Box"]
+layout_mode = 2
+theme_type_variation = &"CanonTitle"
+text = "Canone dell'Entità"
+
+[node name="Intro" type="Label" parent="Layout/Pane/Scroll/Content/Box"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"CanonIntro"
+text = "…"
+autowrap_mode = 3
+
+[node name="Gap" type="Control" parent="Layout/Pane/Scroll/Content/Box"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+
+[node name="Sections" type="VBoxContainer" parent="Layout/Pane/Scroll/Content/Box"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="StatusRow" type="MarginContainer" parent="Layout"]
+layout_mode = 2
+theme_override_constants/margin_left = 6
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 6
+theme_override_constants/margin_bottom = 1
+
+[node name="Status" type="Label" parent="Layout/StatusRow"]
+layout_mode = 2
+theme_type_variation = &"StatusLabel"
+text = "Riassunto di lore dal manuale, scritto per l'Entità"

@@ -1,6 +1,6 @@
 extends AppContent
-## AMail: i memo dell'Agenzia, dal più recente. I non letti sono in grassetto;
-## aprire un memo lo segna come letto (e il contatore sulla scrivania scende).
+## AMail: the Agency's memos, newest first. Unread ones are bold;
+## opening a memo marks it as read (and the counter on the desktop goes down).
 
 const SELECTED_TEXT := Color.WHITE
 const BOLD := preload("res://ui/fonts/IBMPlexMono-Medium.ttf")
@@ -26,7 +26,7 @@ func _ready() -> void:
 	_refresh()
 
 
-## args: {"memo": id} apre quel memo.
+## args: {"memo": id} opens that memo.
 func on_opened(args: Dictionary = {}) -> void:
 	if args.has("memo"):
 		_open(str(args.memo))
@@ -51,7 +51,7 @@ func _refresh() -> void:
 
 func _make_row(memo: Dictionary) -> Button:
 	var selected: bool = memo.id == _selected_id
-	var unread: bool = not memo.letta
+	var unread: bool = not memo.read
 	var row := Button.new()
 	row.theme_type_variation = &"ListRow"
 	row.toggle_mode = true
@@ -67,15 +67,15 @@ func _make_row(memo: Dictionary) -> Button:
 	var top := HBoxContainer.new()
 	top.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	box.add_child(top)
-	var sender := _row_label(str(memo.mittente), selected, unread)
+	var sender := _row_label(str(memo.sender), selected, unread)
 	sender.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	sender.clip_text = true
 	sender.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	top.add_child(sender)
-	var date := _row_label(ItalianDate.numeric(str(memo.creato)), selected, false)
+	var date := _row_label(ItalianDate.numeric(str(memo.created)), selected, false)
 	date.modulate.a = 0.75
 	top.add_child(date)
-	var subject := _row_label(str(memo.oggetto), selected, unread)
+	var subject := _row_label(str(memo.subject), selected, unread)
 	subject.clip_text = true
 	subject.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	box.add_child(subject)
@@ -97,7 +97,7 @@ func _row_label(text: String, selected: bool, bold: bool) -> Label:
 func _open(id: String) -> void:
 	_selected_id = id
 	var memo := Campaign.correspondence.find_mail(id)
-	if not memo.is_empty() and not memo.letta:
+	if not memo.is_empty() and not memo.read:
 		Campaign.correspondence.mark_read(memo)
 	else:
 		_refresh()
@@ -109,13 +109,13 @@ func _show(memo: Dictionary, has_messages: bool) -> void:
 	_hint.text = "Seleziona un messaggio da leggere." if has_messages else ""
 	if memo.is_empty():
 		return
-	_from.text = "%s <%s>" % [memo.mittente, _address(str(memo.mittente))]
-	_date.text = "%s %s" % [ItalianDate.numeric(str(memo.creato)), ItalianDate.time(str(memo.creato))]
-	_subject.text = str(memo.oggetto)
-	_body.text = str(memo.corpo)
+	_from.text = "%s <%s>" % [memo.sender, _address(str(memo.sender))]
+	_date.text = "%s %s" % [ItalianDate.numeric(str(memo.created)), ItalianDate.time(str(memo.created))]
+	_subject.text = str(memo.subject)
+	_body.text = str(memo.body)
 
 
-## "Ufficio Controlli Qualità" -> "ufficio.controlli.qualit@filiale.agency", come nel prototipo.
+## "Ufficio Controlli Qualità" -> "ufficio.controlli.qualit@filiale.agency", as in the prototype.
 static func _address(sender: String) -> String:
 	var regex := RegEx.create_from_string("[^a-z]+")
 	return regex.sub(sender.to_lower(), ".", true).trim_prefix(".").trim_suffix(".") + "@filiale.agency"

@@ -1,0 +1,202 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://apps/notebook/notebook.gd" id="1_script"]
+[ext_resource type="Script" path="res://apps/notebook/paper_lines.gd" id="2_paper"]
+
+[node name="Notebook" type="MarginContainer"]
+size_flags_vertical = 3
+script = ExtResource("1_script")
+
+[node name="Layout" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Main" type="HBoxContainer" parent="Layout"]
+custom_minimum_size = Vector2(0, 400)
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 3
+
+[node name="ListPanel" type="PanelContainer" parent="Layout/Main"]
+custom_minimum_size = Vector2(190, 0)
+layout_mode = 2
+theme_type_variation = &"SunkenPanel"
+
+[node name="Scroll" type="ScrollContainer" parent="Layout/Main/ListPanel"]
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="List" type="VBoxContainer" parent="Layout/Main/ListPanel/Scroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 0
+
+[node name="EmptyList" type="Label" parent="Layout/Main/ListPanel/Scroll/List"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"HintLabel"
+text = "Nessuna pagina."
+
+[node name="Rows" type="VBoxContainer" parent="Layout/Main/ListPanel/Scroll/List"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="Page" type="Control" parent="Layout/Main"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Editor" type="VBoxContainer" parent="Layout/Main/Page"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 3
+
+[node name="Title" type="LineEdit" parent="Layout/Main/Page/Editor"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"TitleEdit"
+max_length = 100
+placeholder_text = "Titolo della pagina"
+
+[node name="SessionRow" type="HBoxContainer" parent="Layout/Main/Page/Editor"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Label" type="Label" parent="Layout/Main/Page/Editor/SessionRow"]
+layout_mode = 2
+theme_type_variation = &"StatusLabel"
+text = "Sessione"
+
+[node name="Session" type="OptionButton" parent="Layout/Main/Page/Editor/SessionRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+focus_mode = 0
+
+[node name="Paper" type="PanelContainer" parent="Layout/Main/Page/Editor"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_type_variation = &"PaperFrame"
+
+[node name="Sheet" type="Control" parent="Layout/Main/Page/Editor/Paper"]
+layout_mode = 2
+
+[node name="Lines" type="Control" parent="Layout/Main/Page/Editor/Paper/Sheet" node_paths=PackedStringArray("text_edit")]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("2_paper")
+text_edit = NodePath("../Text")
+
+[node name="Text" type="TextEdit" parent="Layout/Main/Page/Editor/Paper/Sheet"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"PaperEdit"
+placeholder_text = "Cosa è successo, cosa ha detto l'Entità, cosa devo preparare…"
+wrap_mode = 1
+
+[node name="Empty" type="CenterContainer" parent="Layout/Main/Page"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Box" type="VBoxContainer" parent="Layout/Main/Page/Empty"]
+custom_minimum_size = Vector2(280, 0)
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Text" type="Label" parent="Layout/Main/Page/Empty/Box"]
+layout_mode = 2
+theme_type_variation = &"StatusLabel"
+text = "Il taccuino è vuoto. Ogni pagina si esporta come nota Markdown pronta per Obsidian."
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="NewPageEmpty" type="Button" parent="Layout/Main/Page/Empty/Box"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 4
+focus_mode = 0
+theme_type_variation = &"PrimaryButton"
+text = "Nuova pagina"
+
+[node name="Buttons" type="HBoxContainer" parent="Layout"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="NewPage" type="Button" parent="Layout/Buttons"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+text = "Nuova pagina"
+
+[node name="Export" type="Button" parent="Layout/Buttons"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+theme_type_variation = &"PrimaryButton"
+text = "Esporta .md"
+
+[node name="ExportAll" type="Button" parent="Layout/Buttons"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+tooltip_text = "Tutti i colloqui e tutte le pagine della campagna"
+text = "Esporta tutto"
+
+[node name="Status" type="Label" parent="Layout/Buttons"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"SavedLabel"
+horizontal_alignment = 2
+
+[node name="Delete" type="LinkButton" parent="Layout/Buttons"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 4
+focus_mode = 0
+theme_type_variation = &"LinkDanger"
+text = "Sposta nel cestino"
+
+[node name="VaultRow" type="HBoxContainer" parent="Layout"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Vault" type="Label" parent="Layout/VaultRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"StatusLabel"
+text = "Vault: "
+clip_text = true
+text_overrun_behavior = 3
+
+[node name="ChangeVault" type="LinkButton" parent="Layout/VaultRow"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+text = "Cambia…"
+
+[node name="SaveTimer" type="Timer" parent="."]
+unique_name_in_owner = true
+one_shot = true

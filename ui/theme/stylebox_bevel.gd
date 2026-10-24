@@ -1,8 +1,8 @@
 @tool
 class_name StyleBoxBevel
 extends StyleBox
-## Bordo in rilievo stile '98: contorno nero, luce in alto a sinistra, ombra in basso a destra.
-## In SUNKEN luce e ombra si scambiano. Facoltativa un'ombra piena spostata, senza sfocatura.
+## '98-style bevelled border: black outline, light at the top left, shadow at the bottom right.
+## SUNKEN swaps light and shadow. Optional solid offset drop shadow, without blur.
 
 enum Kind { RAISED, SUNKEN }
 

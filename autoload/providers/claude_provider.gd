@@ -1,7 +1,7 @@
 class_name ClaudeProvider
 extends OpenAICompatibleProvider
-## Claude tramite l'API Messages di Anthropic. Traduce i messaggi in stile OpenAI:
-## il prompt di sistema va a parte, la temperatura sta tra 0 e 1, max_tokens è obbligatorio.
+## Claude through Anthropic's Messages API. Translates OpenAI-style messages:
+## the system prompt goes apart, temperature is between 0 and 1, max_tokens is required.
 
 const API_URL := "https://api.anthropic.com/v1"
 const API_VERSION := "2023-06-01"
@@ -16,7 +16,7 @@ func chat(messages: Array[Dictionary], options: Dictionary = {}) -> BrainRequest
 			system.append(str(message.content))
 		else:
 			turns.append({"role": message.role, "content": str(message.content)})
-	# La risposta precompilata non può finire con uno spazio.
+	# A prefilled reply can't end with whitespace.
 	if not turns.is_empty() and turns.back().role == "assistant":
 		turns.back().content = str(turns.back().content).strip_edges(false, true)
 	var max_tokens := int(options.get("max_tokens", 0))
@@ -29,7 +29,7 @@ func chat(messages: Array[Dictionary], options: Dictionary = {}) -> BrainRequest
 	}
 	if not system.is_empty():
 		body["system"] = "\n\n".join(system)
-	# response_format è di OpenAI: qui lo ignoro e i JSON si cercano nel testo.
+	# response_format is OpenAI's: ignored here, JSON is looked for in the text.
 	return _start("/messages", HTTPClient.METHOD_POST, body)
 
 

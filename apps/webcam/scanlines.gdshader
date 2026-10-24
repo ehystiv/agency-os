@@ -1,5 +1,5 @@
 shader_type canvas_item;
-// Righe di scansione della telecamera: una riga scura ogni tre pixel.
+// Camera scanlines: one dark line every three pixels.
 
 uniform float spacing = 3.0;
 uniform float darkness = 0.3;

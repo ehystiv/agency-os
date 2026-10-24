@@ -63,23 +63,23 @@ focus_mode = 0
 theme_type_variation = &"PrimaryButton"
 text = "TIRA 6d4"
 
-[node name="CaosRow" type="HBoxContainer" parent="Layout"]
+[node name="ChaosRow" type="HBoxContainer" parent="Layout"]
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="Label" type="Label" parent="Layout/CaosRow"]
+[node name="Label" type="Label" parent="Layout/ChaosRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_type_variation = &"FieldLabel"
 text = "Riserva Caos"
 uppercase = true
 
-[node name="CaosPanel" type="PanelContainer" parent="Layout/CaosRow"]
+[node name="ChaosPanel" type="PanelContainer" parent="Layout/ChaosRow"]
 custom_minimum_size = Vector2(70, 0)
 layout_mode = 2
 theme_type_variation = &"LcdPanel"
 
-[node name="Caos" type="Label" parent="Layout/CaosRow/CaosPanel"]
+[node name="Chaos" type="Label" parent="Layout/ChaosRow/ChaosPanel"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"LcdSmall"

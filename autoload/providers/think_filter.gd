@@ -1,7 +1,7 @@
 class_name ThinkFilter
 extends RefCounted
-## Toglie dal testo i blocchi <think>…</think> dei modelli "che ragionano".
-## Durante lo streaming nasconde anche un tag di apertura arrivato solo a metà.
+## Removes the <think>…</think> blocks of "thinking" models from the text.
+## While streaming it also hides an opening tag that has only half arrived.
 
 const OPEN := "<think>"
 const CLOSE := "</think>"
@@ -18,10 +18,10 @@ static func visible(raw: String, final: bool) -> String:
 		result += raw.substr(pos, start - pos)
 		var end := raw.find(CLOSE, start + OPEN.length())
 		if end < 0:
-			# Blocco ancora aperto: il resto è ragionamento.
+			# Block still open: the rest is reasoning.
 			return result if not final else result.strip_edges()
 		pos = end + CLOSE.length()
-	# Alcuni modelli chiudono il ragionamento senza averlo aperto nel testo.
+	# Some models close the reasoning without having opened it in the text.
 	var orphan_close := result.find(CLOSE)
 	if orphan_close >= 0:
 		result = result.substr(orphan_close + CLOSE.length())

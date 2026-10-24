@@ -1,17 +1,17 @@
 extends AppContent
-## Agenda: calendario del mese, sessioni programmate con ora, titolo e checklist
-## di preparazione, colloqui avvenuti in quel giorno.
+## Agenda: month calendar, scheduled sessions with time, title and preparation
+## checklist, interviews held on that day.
 
 const DAY_LETTERS: PackedStringArray = ["L", "M", "M", "G", "V", "S", "D"]
 const SESSION_MARK := preload("res://ui/icons/tri_small.svg")
-const COLLOQUIO_MARK := Color("2fb8cc")
+const INTERVIEW_MARK := Color("2fb8cc")
 const TIME_REGEX := "^([01]?\\d|2[0-3]):[0-5]\\d$"
 
 var _selected_day := ""
 var _year := 0
 var _month := 0
 var _cancel_armed := false
-## Vero mentre il pannello del giorno si ricostruisce: i campi che perdono il focus non salvano.
+## True while the day panel is rebuilt: fields losing focus don't save.
 var _rebuilding := false
 
 @onready var _title: Label = %MonthTitle
@@ -25,14 +25,14 @@ func _ready() -> void:
 	%Next.pressed.connect(_shift_month.bind(1))
 	%Today.pressed.connect(func() -> void: _select(ItalianDate.today()))
 	Campaign.agenda_changed.connect(_refresh)
-	Campaign.colloqui_changed.connect(_refresh)
+	Campaign.interviews_changed.connect(_refresh)
 	_select(ItalianDate.today())
 
 
-## args: {"giorno": "AAAA-MM-GG"} apre l'agenda su quel giorno.
+## args: {"day": "YYYY-MM-DD"} opens the agenda on that day.
 func on_opened(args: Dictionary = {}) -> void:
-	if args.has("giorno"):
-		_select(str(args.giorno))
+	if args.has("day"):
+		_select(str(args.day))
 	else:
 		_refresh()
 
@@ -61,10 +61,10 @@ func _refresh() -> void:
 	_build_grid()
 	_build_side()
 	var next := Campaign.next_session()
-	_status.text = "Prossima sessione: %s %s %s" % [ItalianDate.weekday_short(next.data), ItalianDate.numeric(next.data), next.get("ora", "")] if not next.is_empty() else "Nessuna sessione programmata"
+	_status.text = "Prossima sessione: %s %s %s" % [ItalianDate.weekday_short(next.date), ItalianDate.numeric(next.date), next.get("time", "")] if not next.is_empty() else "Nessuna sessione programmata"
 
 
-# --- Calendario ------------------------------------------------------------
+# --- Calendar --------------------------------------------------------------
 
 func _build_grid() -> void:
 	for child in _grid.get_children():
@@ -77,21 +77,21 @@ func _build_grid() -> void:
 		head.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		_grid.add_child(head)
 	var first := "%04d-%02d-01" % [_year, _month]
-	# Le settimane cominciano di lunedì.
+	# Weeks start on Monday.
 	var offset := (ItalianDate.weekday_index(first) + 6) % 7
 	for i in offset:
 		_grid.add_child(Control.new())
 	var today := ItalianDate.today()
-	var colloquio_days := {}
-	for c in Campaign.colloqui:
-		colloquio_days[ItalianDate.day(c.aperto)] = true
+	var interview_days := {}
+	for interview in Campaign.interviews:
+		interview_days[ItalianDate.day(interview.opened_at)] = true
 	var day := first
 	while int(day.substr(5, 2)) == _month:
-		_grid.add_child(_make_day(day, day == today, not Campaign.session_on(day).is_empty(), colloquio_days.has(day)))
+		_grid.add_child(_make_day(day, day == today, not Campaign.session_on(day).is_empty(), interview_days.has(day)))
 		day = ItalianDate.add_days(day, 1)
 
 
-func _make_day(day: String, is_today: bool, has_session: bool, has_colloquio: bool) -> Button:
+func _make_day(day: String, is_today: bool, has_session: bool, has_interview: bool) -> Button:
 	var button := Button.new()
 	button.theme_type_variation = &"CalDayToday" if is_today else &"CalDay"
 	button.toggle_mode = true
@@ -99,7 +99,7 @@ func _make_day(day: String, is_today: bool, has_session: bool, has_colloquio: bo
 	button.focus_mode = Control.FOCUS_NONE
 	button.custom_minimum_size = Vector2(38, 30)
 	button.text = str(int(day.right(2)))
-	button.tooltip_text = ItalianDate.long_day(day) + (" · sessione programmata" if has_session else "") + (" · colloquio" if has_colloquio else "")
+	button.tooltip_text = ItalianDate.long_day(day) + (" · sessione programmata" if has_session else "") + (" · colloquio" if has_interview else "")
 	button.pressed.connect(_select.bind(day))
 	if has_session:
 		var mark := TextureRect.new()
@@ -109,11 +109,11 @@ func _make_day(day: String, is_today: bool, has_session: bool, has_colloquio: bo
 		mark.size = Vector2(8, 7)
 		mark.position = Vector2(3, 3)
 		button.add_child(mark)
-	if has_colloquio:
+	if has_interview:
 		var dot := ColorRect.new()
-		dot.color = COLLOQUIO_MARK
+		dot.color = INTERVIEW_MARK
 		dot.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		# Ancorato in basso al centro della casella, qualunque sia la sua larghezza.
+		# Anchored at the bottom center of the cell, whatever its width.
 		dot.anchor_left = 0.5
 		dot.anchor_right = 0.5
 		dot.anchor_top = 1.0
@@ -126,7 +126,7 @@ func _make_day(day: String, is_today: bool, has_session: bool, has_colloquio: bo
 	return button
 
 
-# --- Giorno selezionato ----------------------------------------------------
+# --- Selected day ----------------------------------------------------------
 
 func _build_side() -> void:
 	_rebuilding = true
@@ -138,15 +138,15 @@ func _build_side() -> void:
 	heading.theme_type_variation = &"MailSubject"
 	heading.text = ItalianDate.long_day(_selected_day)
 	_side.add_child(heading)
-	var colloqui := Campaign.colloqui.filter(func(c: Colloquio) -> bool: return ItalianDate.day(c.aperto) == _selected_day)
-	if not colloqui.is_empty():
+	var held := Campaign.interviews.filter(func(i: Interview) -> bool: return ItalianDate.day(i.opened_at) == _selected_day)
+	if not held.is_empty():
 		var row := HBoxContainer.new()
 		row.add_child(_label("Colloqui:", &"", false))
-		for c: Colloquio in colloqui:
+		for interview: Interview in held:
 			var link := LinkButton.new()
-			link.text = "#%03d" % c.numero
+			link.text = "#%03d" % interview.number
 			link.focus_mode = Control.FOCUS_NONE
-			link.pressed.connect(func() -> void: app_requested.emit(&"linea", {"colloquio": c.numero}))
+			link.pressed.connect(func() -> void: app_requested.emit(&"line", {"interview": interview.number}))
 			row.add_child(link)
 		_side.add_child(row)
 	var session := Campaign.session_on(_selected_day)
@@ -162,7 +162,7 @@ func _build_side() -> void:
 		return
 	_side.add_child(_label("Ora", &"HintLabel"))
 	var time := LineEdit.new()
-	time.text = str(session.get("ora", ""))
+	time.text = str(session.get("time", ""))
 	time.placeholder_text = "21:00"
 	time.max_length = 5
 	time.custom_minimum_size = Vector2(70, 0)
@@ -172,7 +172,7 @@ func _build_side() -> void:
 	_side.add_child(time)
 	_side.add_child(_label("Titolo o Incarico", &"HintLabel"))
 	var title := LineEdit.new()
-	title.text = str(session.get("titolo", ""))
+	title.text = str(session.get("title", ""))
 	title.placeholder_text = "Recupero Anomalia al faro"
 	title.max_length = 80
 	title.text_submitted.connect(func(_t: String) -> void: _commit_title(session, title))
@@ -192,7 +192,7 @@ func _build_side() -> void:
 	var add_item := func() -> void:
 		if new_item.text.strip_edges() == "":
 			return
-		session.checklist.append({"t": new_item.text.strip_edges(), "ok": false})
+		session.checklist.append({"text": new_item.text.strip_edges(), "done": false})
 		Campaign.save_agenda()
 	add.pressed.connect(add_item)
 	new_item.text_submitted.connect(func(_t: String) -> void: add_item.call())
@@ -217,17 +217,17 @@ func _build_side() -> void:
 func _make_check(session: Dictionary, item: Dictionary) -> HBoxContainer:
 	var row := HBoxContainer.new()
 	var check := CheckBox.new()
-	check.text = str(item.t)
-	check.button_pressed = item.ok
+	check.text = str(item.text)
+	check.button_pressed = item.done
 	check.focus_mode = Control.FOCUS_NONE
 	check.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	check.toggled.connect(func(on: bool) -> void:
-		item.ok = on
+		item.done = on
 		Campaign.save_agenda())
 	row.add_child(check)
 	var remove := LinkButton.new()
 	remove.text = "×"
-	remove.tooltip_text = "Rimuovi " + str(item.t)
+	remove.tooltip_text = "Rimuovi " + str(item.text)
 	remove.focus_mode = Control.FOCUS_NONE
 	remove.pressed.connect(func() -> void:
 		session.checklist.erase(item)
@@ -241,12 +241,12 @@ func _commit_time(session: Dictionary, field: LineEdit) -> void:
 		return
 	var value := field.text.strip_edges()
 	if value != "" and RegEx.create_from_string(TIME_REGEX).search(value) == null:
-		field.text = str(session.get("ora", ""))
+		field.text = str(session.get("time", ""))
 		return
 	if value.length() == 4:
 		value = "0" + value
-	if value != str(session.get("ora", "")):
-		session.ora = value
+	if value != str(session.get("time", "")):
+		session.time = value
 		Campaign.save_agenda()
 
 
@@ -254,12 +254,12 @@ func _commit_title(session: Dictionary, field: LineEdit) -> void:
 	if _rebuilding:
 		return
 	var value := field.text.strip_edges()
-	if value != str(session.get("titolo", "")):
-		session.titolo = value
+	if value != str(session.get("title", "")):
+		session.title = value
 		Campaign.save_agenda()
 
 
-## wrap = false per le etichette dentro una riga, che altrimenti non avrebbero larghezza.
+## wrap = false for labels inside a row, which otherwise would have no width.
 func _label(text: String, variation: StringName = &"", wrap: bool = true) -> Label:
 	var label := Label.new()
 	label.text = text

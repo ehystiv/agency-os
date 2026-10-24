@@ -1,205 +1,205 @@
 {
-	"_nota": "Effetti della linea. descrizione: cosa prova l'Entità (va nel prompt del classificatore). momento: inizio = colpisce la finestra, fine = colpisce il messaggio. webcam: [agitazione, rosso, ritirata] da 0 a 1. movimento: effetto da sostituire quando le animazioni sono ridotte.",
-	"glitch": {
-		"tremito": {
-			"descrizione": "la linea trema: rabbia, frustrazione, impazienza",
-			"momento": "inizio",
+	"_note": "Line effects. description: what the Entity feels (goes into the classifier prompt, in Italian). timing: start = hits the window, end = hits the message. webcam: [agitation, red tint, retreat] from 0 to 1. motion: effect replaced when reduced motion is on.",
+	"glitches": {
+		"tremor": {
+			"description": "la linea trema: rabbia, frustrazione, impazienza",
+			"timing": "start",
 			"webcam": [
 				1,
 				1,
 				0
 			],
-			"movimento": true
+			"motion": true
 		},
 		"rgb": {
-			"descrizione": "i colori si sdoppiano: eccitazione, euforia nervosa",
-			"momento": "fine",
+			"description": "i colori si sdoppiano: eccitazione, euforia nervosa",
+			"timing": "end",
 			"webcam": [
 				0.7,
 				0,
 				0
 			],
-			"movimento": false
+			"motion": false
 		},
-		"inchiostro": {
-			"descrizione": "macchie d'inchiostro si allargano sullo schermo: quando ti avvicini troppo, affetto inquietante",
-			"momento": "inizio",
+		"ink": {
+			"description": "macchie d'inchiostro si allargano sullo schermo: quando ti avvicini troppo, affetto inquietante",
+			"timing": "start",
 			"webcam": [
 				0.6,
 				0,
 				0
 			],
-			"movimento": false
+			"motion": false
 		},
-		"occhi": {
-			"descrizione": "piccoli occhi si aprono nel buio: quando osservi, spii, parli degli Agenti o di ciò che vedi dalle crepe",
-			"momento": "inizio",
+		"eyes": {
+			"description": "piccoli occhi si aprono nel buio: quando osservi, spii, parli degli Agenti o di ciò che vedi dalle crepe",
+			"timing": "start",
 			"webcam": [
 				0.35,
 				0,
 				0
 			],
-			"movimento": false
+			"motion": false
 		},
 		"scanline": {
-			"descrizione": "strappi orizzontali nel segnale: disturbo, distrazione, qualcosa che ti preme",
-			"momento": "inizio",
+			"description": "strappi orizzontali nel segnale: disturbo, distrazione, qualcosa che ti preme",
+			"timing": "start",
 			"webcam": [
 				0.5,
 				0,
 				0
 			],
-			"movimento": true
+			"motion": true
 		},
-		"inversione": {
-			"descrizione": "i colori si invertono di colpo: shock, sorpresa, una rivelazione",
-			"momento": "inizio",
+		"inversion": {
+			"description": "i colori si invertono di colpo: shock, sorpresa, una rivelazione",
+			"timing": "start",
 			"webcam": [
 				0.8,
 				0,
 				0
 			],
-			"movimento": true
+			"motion": true
 		},
 		"blackout": {
-			"descrizione": "lo schermo si spegne e resta solo la tua voce: paura, solitudine, un momento serio",
-			"momento": "fine",
+			"description": "lo schermo si spegne e resta solo la tua voce: paura, solitudine, un momento serio",
+			"timing": "end",
 			"webcam": [
 				0.2,
 				0,
 				1
 			],
-			"movimento": false
+			"motion": false
 		},
-		"triangolo": {
-			"descrizione": "un triangolo rosso esplode sullo schermo: odio per l'Agenzia, quando la nomini con rabbia",
-			"momento": "inizio",
+		"triangle": {
+			"description": "un triangolo rosso esplode sullo schermo: odio per l'Agenzia, quando la nomini con rabbia",
+			"timing": "start",
 			"webcam": [
 				0.9,
 				1,
 				0
 			],
-			"movimento": true
+			"motion": true
 		},
-		"urlo": {
-			"descrizione": "le tue parole diventano un urlo: rabbia esplosiva",
-			"momento": "fine",
+		"scream": {
+			"description": "le tue parole diventano un urlo: rabbia esplosiva",
+			"timing": "end",
 			"webcam": [
 				1,
 				1,
 				0
 			],
-			"movimento": false
+			"motion": false
 		},
-		"corruzione": {
-			"descrizione": "le lettere si corrompono: quando dici qualcosa di proibito o quasi riveli troppo",
-			"momento": "fine",
+		"corruption": {
+			"description": "le lettere si corrompono: quando dici qualcosa di proibito o quasi riveli troppo",
+			"timing": "end",
 			"webcam": [
 				0.6,
 				0.3,
 				0
 			],
-			"movimento": true
+			"motion": true
 		},
-		"eco": {
-			"descrizione": "le tue parole si ripetono in eco: ossessione, insistenza",
-			"momento": "fine",
+		"echo": {
+			"description": "le tue parole si ripetono in eco: ossessione, insistenza",
+			"timing": "end",
 			"webcam": [
 				0.5,
 				0,
 				0
 			],
-			"movimento": true
+			"motion": true
 		},
-		"gocciolamento": {
-			"descrizione": "le lettere colano verso il basso: tristezza, stanchezza, malinconia",
-			"momento": "fine",
+		"drip": {
+			"description": "le lettere colano verso il basso: tristezza, stanchezza, malinconia",
+			"timing": "end",
 			"webcam": [
 				0.05,
 				0,
 				0.5
 			],
-			"movimento": true
+			"motion": true
 		},
-		"errore": {
-			"descrizione": "compare una finta finestra di errore di AgencyOS: per provocare o prendere in giro il triangolo",
-			"momento": "inizio",
+		"error": {
+			"description": "compare una finta finestra di errore di AgencyOS: per provocare o prendere in giro il triangolo",
+			"timing": "start",
 			"webcam": [
 				0.6,
 				0.3,
 				0
 			],
-			"movimento": false
+			"motion": false
 		},
-		"sabotaggio": {
-			"descrizione": "manometti la barra di sistema e l'orologio: dispetto, dimostrazione di potere",
-			"momento": "inizio",
+		"sabotage": {
+			"description": "manometti la barra di sistema e l'orologio: dispetto, dimostrazione di potere",
+			"timing": "start",
 			"webcam": [
 				0.6,
 				0.4,
 				0
 			],
-			"movimento": false
+			"motion": false
 		},
-		"titolo": {
-			"descrizione": "riscrivi il titolo della finestra: supplica, richiesta d'aiuto, messaggio nascosto",
-			"momento": "inizio",
+		"title": {
+			"description": "riscrivi il titolo della finestra: supplica, richiesta d'aiuto, messaggio nascosto",
+			"timing": "start",
 			"webcam": [
 				0.3,
 				0,
 				0.3
 			],
-			"movimento": false
+			"motion": false
 		},
-		"sussurro": {
-			"descrizione": "la tua voce diventa un sussurro: quando hai paura che il triangolo senta",
-			"momento": "fine",
+		"whisper": {
+			"description": "la tua voce diventa un sussurro: quando hai paura che il triangolo senta",
+			"timing": "end",
 			"webcam": [
 				0.1,
 				0,
 				0.8
 			],
-			"movimento": false
+			"motion": false
 		},
-		"reticolo": {
-			"descrizione": "il reticolo della gabbia pulsa dietro a tutto: quando parli della gabbia o del Caveau",
-			"momento": "inizio",
+		"lattice": {
+			"description": "il reticolo della gabbia pulsa dietro a tutto: quando parli della gabbia o del Caveau",
+			"timing": "start",
 			"webcam": [
 				0.4,
 				0,
 				0
 			],
-			"movimento": false
+			"motion": false
 		},
-		"fantasma": {
-			"descrizione": "compare per un attimo un messaggio falso con la voce del Manager: manipolazione, mettergli parole in bocca",
-			"momento": "fine",
+		"ghost": {
+			"description": "compare per un attimo un messaggio falso con la voce del Manager: manipolazione, mettergli parole in bocca",
+			"timing": "end",
 			"webcam": [
 				0.4,
 				0,
 				0
 			],
-			"movimento": false
+			"motion": false
 		},
-		"statico": {
-			"descrizione": "rumore statico copre lo schermo: quando AgencyOS è vicino, interferenza",
-			"momento": "inizio",
+		"static": {
+			"description": "rumore statico copre lo schermo: quando AgencyOS è vicino, interferenza",
+			"timing": "start",
 			"webcam": [
 				0.5,
 				0,
 				0.6
 			],
-			"movimento": true
+			"motion": true
 		},
-		"battito": {
-			"descrizione": "la finestra pulsa come un cuore: emozione forte, affetto sincero",
-			"momento": "inizio",
+		"heartbeat": {
+			"description": "la finestra pulsa come un cuore: emozione forte, affetto sincero",
+			"timing": "start",
 			"webcam": [
 				0.5,
 				0,
 				0
 			],
-			"movimento": true
+			"motion": true
 		}
 	}
 }

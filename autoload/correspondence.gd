@@ -1,36 +1,37 @@
 class_name Correspondence
 extends Node
-## Ciò che arriva al Manager fuori dalla linea: memo dell'Agenzia (AMail),
-## file lasciati dall'Entità sulla scrivania e bozze buttate nel cestino.
-## Si genera in sottofondo alla chiusura di una sessione, una richiesta alla volta,
-## e memo e file si consegnano all'apertura della sessione successiva.
+## What reaches the Manager outside the line: Agency memos (AMail),
+## files the Entity leaves on the desktop and drafts thrown in the trash.
+## Generated in the background when a session closes, one request at a time;
+## memos and files are delivered when the next session opens.
 
 signal mail_changed
 signal files_changed
-## kind: "memo" oppure "file"; item: il memo o il file appena consegnato.
+## kind: "memo" or "file"; item: the memo or file just delivered.
 signal delivered(kind: String, item: Dictionary)
-## Vero mentre l'Agenzia sta scrivendo un memo (AMail mostra "ricezione in corso").
+## True while the Agency is writing a memo (AMail shows "ricezione in corso").
 signal receiving_changed(active: bool)
 
-const MAIL_FILE := "posta.json"
-const FILES_FILE := "file.json"
-const SECRETS_PATH := "res://data/comandi_segreti.json"
+const MAIL_FILE := "mail.json"
+const FILES_FILE := "files.json"
+const SECRETS_PATH := "res://data/secret_commands.json"
 const PROMPT_MEMO := "res://data/prompt/memo.txt"
 const PROMPT_FILE := "res://data/prompt/file.txt"
-const PROMPT_DRAFT := "res://data/prompt/bozza.txt"
+const PROMPT_DRAFT := "res://data/prompt/draft.txt"
+## Shown on screen and read by the model, so in Italian.
 const SENDERS: Array[String] = ["Risorse Umane", "Ufficio Controlli Qualità", "Direzione di Filiale", "Ufficio Conformità", "Comitato Benessere Dipendenti", "Archivio Centrale", "AgencyOS (messaggio automatico)"]
-## Una bozza nel cestino dopo una sessione su due circa, dalla seconda in poi.
+## A draft in the trash after about one session in two, from the second on.
 const DRAFT_CHANCE := 0.45
 const DRAFT_FROM := 2
-## Limiti di lunghezza nel prompt dell'Entità (modelli locali, contesto piccolo).
+## Length limits in the Entity's prompt (local models, small context).
 const PROMPT_MEMOS := 3
 const PROMPT_MEMO_CHARS := 600
 const PROMPT_FILE_CHARS := 900
 const PROMPT_DRAFT_CHARS := 400
 
-## {id, sessione, creato, mittente, oggetto, corpo, letta, consegnata}
-var posta: Array[Dictionary] = []
-## {id, livello, nome, contenuto, originale, creato, letto, corretto, consegnato}
+## {id, session, created, sender, subject, body, read, delivered}
+var mail: Array[Dictionary] = []
+## {id, level, name, content, original, created, read, corrected, corrected_at?, delivered}
 var files: Array[Dictionary] = []
 var receiving := false
 
@@ -40,61 +41,61 @@ var _secrets: Array = []
 
 
 func load_data() -> void:
-	posta.clear()
+	mail.clear()
 	files.clear()
 	for item: Variant in Save.read_campaign(MAIL_FILE, []):
 		if item is Dictionary:
-			posta.append(item)
+			mail.append(item)
 	for item: Variant in Save.read_campaign(FILES_FILE, []):
 		if item is Dictionary:
 			files.append(item)
 
 
-# --- Posta -----------------------------------------------------------------
+# --- Mail ------------------------------------------------------------------
 
-## Memo già consegnati, dal più recente.
+## Memos already delivered, newest first.
 func delivered_mail() -> Array[Dictionary]:
 	var result: Array[Dictionary] = []
-	for memo in posta:
-		if memo.get("consegnata", true):
+	for memo in mail:
+		if memo.get("delivered", true):
 			result.append(memo)
-	result.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return str(a.creato) > str(b.creato))
+	result.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return str(a.created) > str(b.created))
 	return result
 
 
 func unread_count() -> int:
-	return delivered_mail().filter(func(m: Dictionary) -> bool: return not m.letta).size()
+	return delivered_mail().filter(func(m: Dictionary) -> bool: return not m.read).size()
 
 
 func find_mail(id: String) -> Dictionary:
-	for memo in posta:
+	for memo in mail:
 		if memo.id == id:
 			return memo
 	return {}
 
 
-## Il memo recapitato all'inizio della sessione indicata, se c'è.
-func mail_for_session(numero: int) -> Dictionary:
-	for memo in posta:
-		if int(memo.sessione) == numero and memo.get("consegnata", true):
+## The memo delivered at the start of the given session, if any.
+func mail_for_session(number: int) -> Dictionary:
+	for memo in mail:
+		if int(memo.session) == number and memo.get("delivered", true):
 			return memo
 	return {}
 
 
 func mark_read(memo: Dictionary) -> void:
-	if memo.letta:
+	if memo.read:
 		return
-	memo.letta = true
-	Save.write_campaign(MAIL_FILE, posta)
+	memo.read = true
+	Save.write_campaign(MAIL_FILE, mail)
 	mail_changed.emit()
 
 
-# --- File sulla scrivania --------------------------------------------------
+# --- Desktop files ---------------------------------------------------------
 
 func delivered_files() -> Array[Dictionary]:
 	var result: Array[Dictionary] = []
 	for file in files:
-		if file.get("consegnato", true):
+		if file.get("delivered", true):
 			result.append(file)
 	return result
 
@@ -106,166 +107,167 @@ func find_file(id: String) -> Dictionary:
 	return {}
 
 
-## Cerca per nome esatto, poi per inizio del nome (come TYPE nel prompt dei comandi).
+## Looks for the exact name, then for the start of the name (like TYPE in the command prompt).
 func find_file_by_name(name_or_prefix: String) -> Dictionary:
 	var wanted := name_or_prefix.to_lower()
 	if wanted == "":
 		return {}
 	for file in delivered_files():
-		if str(file.nome).to_lower() == wanted:
+		if str(file.name).to_lower() == wanted:
 			return file
 	for file in delivered_files():
-		if str(file.nome).to_lower().begins_with(wanted):
+		if str(file.name).to_lower().begins_with(wanted):
 			return file
 	return {}
 
 
 func mark_file_read(file: Dictionary) -> void:
-	if file.letto:
+	if file.read:
 		return
-	file.letto = true
+	file.read = true
 	_save_files()
 
 
-## La correzione del Manager diventa la verità per l'Entità.
+## The Manager's correction becomes the truth for the Entity.
 func correct_file(file: Dictionary, text: String) -> void:
-	if text == file.contenuto:
+	if text == file.content:
 		return
-	if str(file.get("originale", "")) == "":
-		file.originale = file.contenuto
-	file.contenuto = text
-	file.corretto = text != file.originale
-	file.corretto_il = Time.get_datetime_string_from_system()
+	if str(file.get("original", "")) == "":
+		file.original = file.content
+	file.content = text
+	file.corrected = text != file.original
+	file.corrected_at = Time.get_datetime_string_from_system()
 	_save_files()
 
 
 func restore_file(file: Dictionary) -> void:
-	if str(file.get("originale", "")) == "":
+	if str(file.get("original", "")) == "":
 		return
-	file.contenuto = file.originale
-	file.corretto = false
+	file.content = file.original
+	file.corrected = false
 	_save_files()
 
 
-# --- Comandi segreti -------------------------------------------------------
+# --- Secret commands -------------------------------------------------------
 
-## [{comando, livello, righe: [[tipo, testo], …]}] dal file dati.
+## [{command, level, lines: [[kind, text], …]}] from the data file.
 func secret_commands() -> Array:
 	if _secrets.is_empty():
 		var data: Variant = Save.read_json(SECRETS_PATH, {})
 		if data is Dictionary:
-			_secrets = data.get("comandi", [])
+			_secrets = data.get("commands", [])
 	return _secrets
 
 
 func unlocked_commands(level: int) -> Array:
-	return secret_commands().filter(func(s: Dictionary) -> bool: return int(s.livello) <= level)
+	return secret_commands().filter(func(s: Dictionary) -> bool: return int(s.level) <= level)
 
 
-# --- Testi per il prompt dell'Entità ---------------------------------------
+# --- Texts for the Entity's prompt (in Italian: the model reads them) ------
 
 func prompt_memos() -> String:
 	var parts: PackedStringArray = []
 	var recent := delivered_mail().slice(0, PROMPT_MEMOS)
 	recent.reverse()
 	for memo in recent:
-		parts.append("Da: %s · Oggetto: %s\n%s" % [memo.mittente, memo.oggetto, str(memo.corpo).left(PROMPT_MEMO_CHARS)])
+		parts.append("Da: %s · Oggetto: %s\n%s" % [memo.sender, memo.subject, str(memo.body).left(PROMPT_MEMO_CHARS)])
 	return "\n\n".join(parts) if not parts.is_empty() else "(nessuno, per ora)"
 
 
 func prompt_files() -> String:
 	var parts: PackedStringArray = []
 	for file in delivered_files():
-		var head := "File \"%s\"%s:" % [file.nome, " (CORRETTO DAL MANAGER: questa versione è la verità)" if file.get("corretto", false) else ""]
-		parts.append(head + "\n" + str(file.contenuto).left(PROMPT_FILE_CHARS))
+		var head := "File \"%s\"%s:" % [file.name, " (CORRETTO DAL MANAGER: questa versione è la verità)" if file.get("corrected", false) else ""]
+		parts.append(head + "\n" + str(file.content).left(PROMPT_FILE_CHARS))
 	return "\n\n".join(parts) if not parts.is_empty() else "(nessuno, per ora)"
 
 
 func prompt_commands(level: int) -> String:
 	var names: PackedStringArray = []
 	for secret: Dictionary in unlocked_commands(level):
-		names.append(str(secret.comando))
+		names.append(str(secret.command))
 	return ", ".join(names) if not names.is_empty() else "(nessuno, per ora: non parlarne)"
 
 
 func prompt_drafts(trash: Array[Dictionary]) -> String:
 	var parts: PackedStringArray = []
 	for item in trash:
-		if item.get("tipo", "") == "bozza":
-			parts.append("\"%s\": %s" % [item.nome, str(item.get("testo", "")).left(PROMPT_DRAFT_CHARS)])
+		if item.get("type", "") == "draft":
+			parts.append("\"%s\": %s" % [item.name, str(item.get("text", "")).left(PROMPT_DRAFT_CHARS)])
 	return "\n".join(parts) if not parts.is_empty() else "(nessuno)"
 
 
-# --- Ganci delle sessioni --------------------------------------------------
+# --- Session hooks ---------------------------------------------------------
 
-## All'apertura: consegna ciò che era pronto; se manca il memo del turno, lo scrive ora.
-func on_session_opened(c: Colloquio, level: int) -> void:
-	for memo in posta:
-		if not memo.get("consegnata", true) and int(memo.sessione) <= c.numero:
-			memo.sessione = c.numero
-			memo.creato = Time.get_datetime_string_from_system()
-			memo.consegnata = true
-			Save.write_campaign(MAIL_FILE, posta)
+## On opening: delivers what was ready; if the shift's memo is missing, writes it now.
+func on_session_opened(interview: Interview, level: int) -> void:
+	for memo in mail:
+		if not memo.get("delivered", true) and int(memo.session) <= interview.number:
+			memo.session = interview.number
+			memo.created = Time.get_datetime_string_from_system()
+			memo.delivered = true
+			Save.write_campaign(MAIL_FILE, mail)
 			mail_changed.emit()
 			delivered.emit("memo", memo)
 	for file in files:
-		if not file.get("consegnato", true):
-			file.consegnato = true
-			file.creato = Time.get_datetime_string_from_system()
+		if not file.get("delivered", true):
+			file.delivered = true
+			file.created = Time.get_datetime_string_from_system()
 			_save_files()
 			delivered.emit("file", file)
-	var previous := Campaign.find(c.numero - 1)
-	if mail_for_session(c.numero).is_empty() and not _has_pending_mail():
-		_enqueue(_make_memo.bind(c.numero, previous.ricerche.size() if previous != null else 0, true))
+	var previous := Campaign.find(interview.number - 1)
+	if mail_for_session(interview.number).is_empty() and not _has_pending_mail():
+		_enqueue(_make_memo.bind(interview.number, previous.searches.size() if previous != null else 0, true))
 	if _file_for_level(level).is_empty():
 		_enqueue(_make_file.bind(level, true))
 
 
-## Alla chiusura: bozza (a volte), memo del prossimo turno e file se il livello è salito.
-func on_session_closed(c: Colloquio, level_before: int, level_after: int) -> void:
-	if c.numero >= DRAFT_FROM and randf() < DRAFT_CHANCE and c.spoken_count() > 0:
-		_enqueue(_make_draft.bind(c))
-	_enqueue(_make_memo.bind(c.numero + 1, c.ricerche.size(), false))
+## On closing: a draft (sometimes), the next shift's memo and a file if the level went up.
+func on_session_closed(interview: Interview, level_before: int, level_after: int) -> void:
+	if interview.number >= DRAFT_FROM and randf() < DRAFT_CHANCE and interview.spoken_count() > 0:
+		_enqueue(_make_draft.bind(interview))
+	_enqueue(_make_memo.bind(interview.number + 1, interview.searches.size(), false))
 	if level_after > level_before:
 		_enqueue(_make_file.bind(level_after, false))
 
 
-# --- Generazione -----------------------------------------------------------
+# --- Generation ------------------------------------------------------------
 
-func _make_memo(sessione: int, searches: int, deliver_now: bool) -> void:
-	if not mail_for_session(sessione).is_empty() or (not deliver_now and _has_pending_mail()):
+func _make_memo(session: int, searches: int, deliver_now: bool) -> void:
+	if not mail_for_session(session).is_empty() or (not deliver_now and _has_pending_mail()):
 		return
 	_set_receiving(true)
 	var sent: PackedStringArray = []
 	for memo in delivered_mail().slice(0, 8):
-		sent.append("- " + str(memo.oggetto))
+		sent.append("- " + str(memo.subject))
+	var notes := Campaign.notes.strip_edges()
 	var prompt := _read(PROMPT_MEMO).format({
-		"turno": "È il primo giorno del Manager in questa posizione: scrivi un memo di benvenuto e inserimento." if sessione == 1 else "È l'inizio del turno numero %d del Manager." % sessione,
-		"sospetto": "Durante il turno precedente AgencyOS ha avviato %d %s di attività anomala sul canale del Manager, senza trovare nulla: esprimi un sospetto cortese, senza accusare." % [searches, "ricerca" if searches == 1 else "ricerche"] if searches > 0 else "",
-		"note": "DATI DEL FASCICOLO DEL MANAGER (usali se servono, senza elencarli):\n" + Campaign.note.strip_edges().left(2000) if Campaign.note.strip_edges() != "" else "",
-		"inviati": "MEMO GIÀ INVIATI (non ripeterne il tema):\n" + "\n".join(sent) if not sent.is_empty() else "",
-		"mittenti": ", ".join(SENDERS),
+		"shift": "È il primo giorno del Manager in questa posizione: scrivi un memo di benvenuto e inserimento." if session == 1 else "È l'inizio del turno numero %d del Manager." % session,
+		"suspicion": "Durante il turno precedente AgencyOS ha avviato %d %s di attività anomala sul canale del Manager, senza trovare nulla: esprimi un sospetto cortese, senza accusare." % [searches, "ricerca" if searches == 1 else "ricerche"] if searches > 0 else "",
+		"notes": "DATI DEL FASCICOLO DEL MANAGER (usali se servono, senza elencarli):\n" + notes.left(2000) if notes != "" else "",
+		"sent": "MEMO GIÀ INVIATI (non ripeterne il tema):\n" + "\n".join(sent) if not sent.is_empty() else "",
+		"senders": ", ".join(SENDERS),
 	})
 	var out := await LlmJson.ask(prompt, {
-		"mittente": {"type": "string", "enum": SENDERS},
-		"oggetto": {"type": "string"},
-		"corpo": {"type": "string"},
+		"sender": {"type": "string", "enum": SENDERS},
+		"subject": {"type": "string"},
+		"body": {"type": "string"},
 	})
 	_set_receiving(false)
-	if str(out.get("oggetto", "")).strip_edges() == "" or str(out.get("corpo", "")).strip_edges() == "":
+	if str(out.get("subject", "")).strip_edges() == "" or str(out.get("body", "")).strip_edges() == "":
 		return
 	var memo := {
-		"id": "m-%03d" % sessione,
-		"sessione": sessione,
-		"creato": Time.get_datetime_string_from_system(),
-		"mittente": str(out.get("mittente", "Risorse Umane")).left(60),
-		"oggetto": str(out.oggetto).strip_edges().left(140),
-		"corpo": _clean_body(str(out.corpo)).left(4000),
-		"letta": false,
-		"consegnata": deliver_now,
+		"id": "m-%03d" % session,
+		"session": session,
+		"created": Time.get_datetime_string_from_system(),
+		"sender": str(out.get("sender", "Risorse Umane")).left(60),
+		"subject": str(out.subject).strip_edges().left(140),
+		"body": _clean_body(str(out.body)).left(4000),
+		"read": false,
+		"delivered": deliver_now,
 	}
-	posta.append(memo)
-	Save.write_campaign(MAIL_FILE, posta)
+	mail.append(memo)
+	Save.write_campaign(MAIL_FILE, mail)
 	if deliver_now:
 		mail_changed.emit()
 		delivered.emit("memo", memo)
@@ -274,38 +276,39 @@ func _make_memo(sessione: int, searches: int, deliver_now: bool) -> void:
 func _make_file(level: int, deliver_now: bool) -> void:
 	if not _file_for_level(level).is_empty():
 		return
-	var section := _canone_section(level)
+	var section := _canon_section(level)
 	if section.is_empty():
 		return
 	var points: PackedStringArray = []
-	for point: String in section.get("punti", []):
+	for point: String in section.get("points", []):
 		points.append("- " + point)
 	var secret := ""
 	for s: Dictionary in secret_commands():
-		if int(s.livello) == level:
-			secret = "Da qualche parte suggerisci al Manager di digitare %s nel prompt dei comandi, senza spiegare cosa succede." % s.comando
+		if int(s.level) == level:
+			secret = "Da qualche parte suggerisci al Manager di digitare %s nel prompt dei comandi, senza spiegare cosa succede." % s.command
+	var notes := Campaign.notes.strip_edges()
 	var prompt := _read(PROMPT_FILE).format({
-		"titolo": section.titolo,
-		"punti": "\n".join(points),
-		"comando": secret,
-		"note": "Ciò che sai del Manager e della Filiale:\n" + Campaign.note.strip_edges().left(1500) if Campaign.note.strip_edges() != "" else "",
+		"title": section.title,
+		"points": "\n".join(points),
+		"command": secret,
+		"notes": "Ciò che sai del Manager e della Filiale:\n" + notes.left(1500) if notes != "" else "",
 	})
-	var out := await LlmJson.ask(prompt, {"nome": {"type": "string"}, "contenuto": {"type": "string"}})
-	var file_name := _clean_file_name(str(out.get("nome", "")), "crepa_0%d" % level, ["txt", "log"])
-	var content := str(out.get("contenuto", "")).strip_edges()
+	var out := await LlmJson.ask(prompt, {"name": {"type": "string"}, "content": {"type": "string"}})
+	var file_name := _clean_file_name(str(out.get("name", "")), "crepa_0%d" % level, ["txt", "log"])
+	var content := str(out.get("content", "")).strip_edges()
 	if content == "":
-		# Se il modello tace, l'Entità lascia almeno i suoi appunti grezzi.
-		content = "\n\n".join(section.get("punti", [])).to_lower()
+		# If the model is silent, the Entity leaves at least its raw notes.
+		content = "\n\n".join(section.get("points", [])).to_lower()
 	var file := {
 		"id": "f-%d" % level,
-		"livello": level,
-		"nome": file_name,
-		"contenuto": content.left(4000),
-		"originale": "",
-		"creato": Time.get_datetime_string_from_system(),
-		"letto": false,
-		"corretto": false,
-		"consegnato": deliver_now,
+		"level": level,
+		"name": file_name,
+		"content": content.left(4000),
+		"original": "",
+		"created": Time.get_datetime_string_from_system(),
+		"read": false,
+		"corrected": false,
+		"delivered": deliver_now,
 	}
 	files.append(file)
 	_save_files()
@@ -313,27 +316,27 @@ func _make_file(level: int, deliver_now: bool) -> void:
 		delivered.emit("file", file)
 
 
-func _make_draft(c: Colloquio) -> void:
-	var id := "b-%03d" % c.numero
+func _make_draft(interview: Interview) -> void:
+	var id := "b-%03d" % interview.number
 	for item in Campaign.trash:
 		if item.id == id:
 			return
-	var prompt := _read(PROMPT_DRAFT).format({"ricordi": c.riassunto if c.riassunto != "" else "(confusi)"})
-	var out := await LlmJson.ask(prompt, {"nome": {"type": "string"}, "testo": {"type": "string"}}, 0.9, 500)
-	var text := str(out.get("testo", "")).strip_edges()
+	var prompt := _read(PROMPT_DRAFT).format({"memories": interview.summary if interview.summary != "" else "(confusi)"})
+	var out := await LlmJson.ask(prompt, {"name": {"type": "string"}, "text": {"type": "string"}}, 0.9, 500)
+	var text := str(out.get("text", "")).strip_edges()
 	if text == "":
 		return
 	Campaign.add_to_trash({
 		"id": id,
-		"tipo": "bozza",
-		"nome": _clean_file_name(str(out.get("nome", "")), "non_inviato_%03d" % c.numero, ["txt"]),
-		"testo": text.left(1500),
-		"sessione": c.numero,
-		"eliminato": Time.get_datetime_string_from_system(),
+		"type": "draft",
+		"name": _clean_file_name(str(out.get("name", "")), "non_inviato_%03d" % interview.number, ["txt"]),
+		"text": text.left(1500),
+		"session": interview.number,
+		"deleted": Time.get_datetime_string_from_system(),
 	})
 
 
-## Le richieste al modello partono una alla volta, nell'ordine in cui sono state chieste.
+## Model requests run one at a time, in the order they were asked for.
 func _enqueue(job: Callable) -> void:
 	_queue.append(job)
 	if _running:
@@ -345,27 +348,27 @@ func _enqueue(job: Callable) -> void:
 	_running = false
 
 
-# --- Utilità ---------------------------------------------------------------
+# --- Helpers ---------------------------------------------------------------
 
 func _has_pending_mail() -> bool:
-	return posta.any(func(m: Dictionary) -> bool: return not m.get("consegnata", true))
+	return mail.any(func(m: Dictionary) -> bool: return not m.get("delivered", true))
 
 
 func _file_for_level(level: int) -> Dictionary:
 	for file in files:
-		if int(file.livello) == level:
+		if int(file.level) == level:
 			return file
 	return {}
 
 
-func _canone_section(level: int) -> Dictionary:
-	for section: Dictionary in Campaign.canone_sections():
-		if int(section.get("livello", 0)) == level:
+func _canon_section(level: int) -> Dictionary:
+	for section: Dictionary in Campaign.canon_sections():
+		if int(section.get("level", 0)) == level:
 			return section
 	return {}
 
 
-## Minuscolo, solo lettere, numeri e trattini bassi, estensione ammessa, nome non ripetuto.
+## Lowercase, only letters, digits and underscores, an allowed extension, a name not already taken.
 func _clean_file_name(raw: String, fallback: String, extensions: Array[String]) -> String:
 	var regex := RegEx.create_from_string("[^a-z0-9_.]")
 	var cleaned := regex.sub(raw.to_lower(), "_", true).left(24)
@@ -377,11 +380,11 @@ func _clean_file_name(raw: String, fallback: String, extensions: Array[String]) 
 	if not extension in extensions:
 		extension = extensions[0]
 	var file_name := "%s.%s" % [base, extension]
-	var taken := files.any(func(f: Dictionary) -> bool: return f.nome == file_name)
+	var taken := files.any(func(f: Dictionary) -> bool: return f.name == file_name)
 	return "%s_%d.%s" % [base, randi_range(2, 99), extension] if taken else file_name
 
 
-## I modelli piccoli ripetono l'intestazione nel corpo e usano il markdown: li tolgo.
+## Small models repeat the header in the body and use markdown: strip them.
 static func _clean_body(text: String) -> String:
 	var kept: PackedStringArray = []
 	for line in text.replace("**", "").replace("__", "").split("\n"):
@@ -391,7 +394,7 @@ static func _clean_body(text: String) -> String:
 	return "\n".join(kept).strip_edges()
 
 
-## Righe da saltare in testa al memo: vuote, "Oggetto: …" e simili, titoli in maiuscolo.
+## Lines to skip at the top of a memo: empty ones, "Oggetto: …" and the like, uppercase titles.
 static func _is_heading(line: String) -> bool:
 	if line == "":
 		return true

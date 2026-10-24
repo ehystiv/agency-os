@@ -1,5 +1,5 @@
 extends Control
-## Triangolo rosso dell'Agenzia con la scritta AgencyOS 98, al centro dello schermo.
+## The Agency's red triangle with the AgencyOS 98 title, in the middle of the screen.
 
 const RED := Color("e5262c")
 const WHITE := Color("e8f6f8")

@@ -1,14 +1,14 @@
 class_name Synth
 extends RefCounted
-## Piccolo sintetizzatore: rende note e soffi di rumore come campioni audio,
-## con gli inviluppi del prototipo (Web Audio). Ogni suono si calcola una volta sola
-## e poi si riusa dalla cache. Serve al Lettore e ai suoni di sistema.
-## Si può chiamare anche da thread di lavoro: la cache è protetta da un mutex.
+## Small synthesizer: renders notes and noise bursts as audio samples,
+## with the prototype's envelopes (Web Audio). Each sound is computed once
+## and then reused from the cache. Used by the Player and by the system sounds.
+## Safe to call from worker threads: the cache is protected by a mutex.
 
 enum Wave { SINE, SQUARE, TRIANGLE, SAWTOOTH }
 
 const MIX_RATE := 22050
-## Dettagli più fini di così non si sentono: arrotondo per riusare i campioni.
+## Finer details than this can't be heard: rounding lets samples be reused.
 const DETUNE_STEP := 10.0
 const DURATION_STEP := 0.01
 
@@ -16,13 +16,13 @@ static var _cache: Dictionary = {}
 static var _lock := Mutex.new()
 
 
-## Frequenza di una nota MIDI (69 = La 440 Hz).
+## Frequency of a MIDI note (69 = A 440 Hz).
 static func midi(note: float) -> float:
 	return 440.0 * pow(2.0, (note - 69.0) / 12.0)
 
 
-## Nota: attacco lineare breve, poi decadimento esponenziale fino al silenzio.
-## attack < 0 = come la musica del prototipo (fino a 40 ms); end_frequency > 0 = glissato esponenziale.
+## Note: short linear attack, then exponential decay down to silence.
+## attack < 0 = like the prototype's music (up to 40 ms); end_frequency > 0 = exponential glide.
 static func tone(frequency: float, duration: float, wave: Wave, volume: float, detune_cents: float = 0.0, attack: float = -1.0, end_frequency: float = 0.0) -> AudioStreamWAV:
 	duration = snappedf(duration, DURATION_STEP)
 	detune_cents = snappedf(detune_cents, DETUNE_STEP)
@@ -58,8 +58,8 @@ static func tone(frequency: float, duration: float, wave: Wave, volume: float, d
 	return _store(key, _stream(data))
 
 
-## Soffio di rumore filtrato attorno a center Hz: sale fino al 40% e poi si spegne
-## (shaped = false: volume costante, come i colpi di rumore dei suoni di sistema).
+## Noise burst filtered around center Hz: rises until 40% and then fades out
+## (shaped = false: constant volume, like the noise hits of the system sounds).
 static func noise(duration: float, volume: float, center: float, shaped: bool = true) -> AudioStreamWAV:
 	duration = snappedf(duration, DURATION_STEP)
 	var key := "n%.2f/%.4f/%.0f/%s" % [duration, volume, center, shaped]
@@ -69,7 +69,7 @@ static func noise(duration: float, volume: float, center: float, shaped: bool = 
 	var frames := int(duration * MIX_RATE)
 	var data := PackedByteArray()
 	data.resize(frames * 2)
-	# Passa-banda a due poli (risonatore) per dare un colore al rumore.
+	# Two-pole band-pass (resonator) to give the noise a colour.
 	var r := 0.97
 	var theta := TAU * clampf(center, 20.0, MIX_RATE * 0.45) / MIX_RATE
 	var a1 := 2.0 * r * cos(theta)
@@ -89,7 +89,7 @@ static func noise(duration: float, volume: float, center: float, shaped: bool = 
 	return _store(key, _stream(data))
 
 
-## Somma più suoni in un solo campione: parts = [[secondi di ritardo, AudioStreamWAV], …].
+## Sums several sounds into one sample: parts = [[delay in seconds, AudioStreamWAV], …].
 static func mix(parts: Array) -> AudioStreamWAV:
 	var length := 0
 	for part: Array in parts:
@@ -108,7 +108,7 @@ static func mix(parts: Array) -> AudioStreamWAV:
 	return _stream(out)
 
 
-## Ronzio continuo della ricerca: dente di sega a 55 Hz, filtrato e tremolante, in loop.
+## Continuous search hum: 55 Hz sawtooth, filtered and wobbling, looped.
 static func hum() -> AudioStreamWAV:
 	var cached := _cached("hum")
 	if cached != null:

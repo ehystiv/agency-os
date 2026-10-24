@@ -1,24 +1,24 @@
 class_name D4
 extends RigidBody3D
-## Dado a quattro facce a fisica vera. Come un d4 reale ha tre numeri per faccia,
-## vicino agli angoli, e vale il numero del vertice che punta in alto.
-## Stile dei dadi di Triangle Agency: grigio, punta rossa attorno al 3, numeri bianchi.
+## Four-sided die with real physics. Like a real d4 it has three numbers per face,
+## near the corners, and its value is the number of the vertex pointing up.
+## Triangle Agency dice style: grey, a red tip around the 3, white numbers.
 
-## Raggio della sfera circoscritta (come nel prototipo).
+## Radius of the circumscribed sphere (as in the prototype).
 const RADIUS := 0.42
 const BODY := Color("c4c7cc")
 const CAP := Color("c4161c")
 const INK := Color("ffffff")
-## Dopo il tiro i dadi senza 3 si scuriscono un po' (moltiplica i colori dei vertici).
+## After the roll the dice without a 3 get a bit darker (multiplies the vertex colors).
 const DIM := Color(0.72, 0.72, 0.75)
-## Il vertice con la punta rossa (valore 3) e quanto la punta scende lungo gli spigoli.
+## The vertex with the red tip (value 3) and how far the tip goes down the edges.
 const CAP_VERTEX := 2
 const CAP_SIZE := 0.5
 const LABEL_FONT := preload("res://ui/fonts/IBMPlexMono-Medium.ttf")
-## Inclinazione massima della faccia d'appoggio per considerare il dado ben fermo.
+## Maximum tilt of the resting face for the die to count as properly still.
 const FLAT_DOT := 0.92
 
-## Vertici del tetraedro regolare; il valore del vertice i è i + 1.
+## Vertices of the regular tetrahedron; the value of vertex i is i + 1.
 var _vertices: PackedVector3Array
 var _material := StandardMaterial3D.new()
 
@@ -29,7 +29,7 @@ static func create() -> D4:
 	return die
 
 
-## Il numero del vertice più alto.
+## The number of the highest vertex.
 func top_value() -> int:
 	var best := 0
 	var best_y := -INF
@@ -41,7 +41,7 @@ func top_value() -> int:
 	return best + 1
 
 
-## Vero se il dado poggia su una faccia (e non su uno spigolo o su un altro dado).
+## True if the die rests on a face (and not on an edge or on another die).
 func is_flat() -> bool:
 	var top := top_value() - 1
 	var bottom_center := Vector3.ZERO
@@ -52,7 +52,7 @@ func is_flat() -> bool:
 	return down.dot(Vector3.DOWN) > FLAT_DOT
 
 
-## Dopo il tiro i dadi che non mostrano il numero buono si scuriscono; null = tutti normali.
+## After the roll the dice not showing the good number get darker; null = all normal.
 func highlight(hit: Variant) -> void:
 	_material.albedo_color = DIM if hit == false else Color.WHITE
 
@@ -85,7 +85,7 @@ func _build() -> void:
 		_add_numbers(face)
 
 
-## Le quattro facce, ognuna data dai tre vertici che la compongono.
+## The four faces, each given by the three vertices that make it.
 func _faces() -> Array[PackedInt32Array]:
 	return [PackedInt32Array([0, 1, 2]), PackedInt32Array([0, 3, 1]), PackedInt32Array([0, 2, 3]), PackedInt32Array([1, 3, 2])]
 
@@ -95,7 +95,7 @@ func _face_normal(face: PackedInt32Array) -> Vector3:
 	return center.normalized()
 
 
-## Facce piatte; sulle tre facce che toccano il vertice del 3 la punta è rossa.
+## Flat faces; on the three faces touching the vertex of the 3 the tip is red.
 func _tetrahedron() -> ArrayMesh:
 	var points := PackedVector3Array()
 	var normals := PackedVector3Array()
@@ -104,7 +104,7 @@ func _tetrahedron() -> ArrayMesh:
 		var normal := _face_normal(face)
 		var triangles: Array[Array] = []
 		if CAP_VERTEX in face:
-			# Ruoto la faccia perché cominci dal vertice del 3, mantenendo l'ordine dei vertici.
+			# Rotate the face so it starts from the vertex of the 3, keeping the vertex order.
 			var start := face.find(CAP_VERTEX)
 			var tip := _vertices[face[start]]
 			var left := _vertices[face[(start + 1) % 3]]
@@ -129,7 +129,7 @@ func _tetrahedron() -> ArrayMesh:
 	return mesh
 
 
-## Un numero per angolo della faccia, girato con la testa verso il suo vertice.
+## One number per face corner, turned with its top towards its vertex.
 func _add_numbers(face: PackedInt32Array) -> void:
 	var normal := _face_normal(face)
 	var center := (_vertices[face[0]] + _vertices[face[1]] + _vertices[face[2]]) / 3.0

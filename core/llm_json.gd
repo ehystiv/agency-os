@@ -1,16 +1,16 @@
 class_name LlmJson
 extends RefCounted
-## Chiede al modello un oggetto JSON con campi testuali, vincolato da uno schema
-## quando il server lo supporta; altrimenti cerca l'oggetto nel testo libero.
+## Asks the model for a JSON object with text fields, constrained by a schema
+## when the server supports it; otherwise looks for the object in free text.
 
 
-## fields: nome -> schema del campo, es. {"oggetto": {"type": "string"}}.
-## Restituisce {} se il modello non risponde o non scrive un oggetto valido.
+## fields: name -> field schema, e.g. {"subject": {"type": "string"}}.
+## Returns {} if the model doesn't answer or doesn't write a valid object.
 static func ask(prompt: String, fields: Dictionary, temperature: float = 0.8, max_tokens: int = 900) -> Dictionary:
 	var schema := {
 		"type": "json_schema",
 		"json_schema": {
-			"name": "risposta",
+			"name": "answer",
 			"strict": true,
 			"schema": {"type": "object", "properties": fields, "required": fields.keys(), "additionalProperties": false},
 		},
@@ -26,12 +26,12 @@ static func ask(prompt: String, fields: Dictionary, temperature: float = 0.8, ma
 		if not request.is_done:
 			await request.finished
 	if not request.ok():
-		push_warning("LlmJson: chiamata fallita: %s" % request.error)
+		push_warning("LlmJson: request failed: %s" % request.error)
 		return {}
 	return parse(request.text)
 
 
-## L'oggetto JSON nel testo, anche se circondato da altre parole o da ```json.
+## The JSON object in the text, even when surrounded by other words or by ```json.
 static func parse(text: String) -> Dictionary:
 	var start := text.find("{")
 	var end := text.rfind("}")

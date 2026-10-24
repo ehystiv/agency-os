@@ -1,7 +1,7 @@
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://apps/webcam/webcam.gd" id="1_script"]
-[ext_resource type="PackedScene" path="res://apps/webcam/caveau/caveau.tscn" id="2_caveau"]
+[ext_resource type="PackedScene" path="res://apps/webcam/cage/cage.tscn" id="2_cage"]
 [ext_resource type="Shader" path="res://apps/webcam/scanlines.gdshader" id="3_scanlines"]
 
 [sub_resource type="ShaderMaterial" id="scanlines_material"]
@@ -181,4 +181,4 @@ own_world_3d = true
 size = Vector2i(160, 120)
 render_target_update_mode = 0
 
-[node name="Caveau" parent="FeedViewport" instance=ExtResource("2_caveau")]
+[node name="Cage" parent="FeedViewport" instance=ExtResource("2_cage")]

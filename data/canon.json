@@ -1,0 +1,83 @@
+{
+	"_note": "The Manager's own summary, not quotes from the rulebook. level 0 = always known; the Entity knows the sections above the current level but doesn't reveal them.",
+	"sections": [
+		{
+			"level": 0,
+			"title": "Chi è e come parla",
+			"points": [
+				"AgencyOS lo cataloga come U0047BB, un'entità pericolosa per la Realtà che ha contaminato il manuale del General Manager. Si presenta come un amico, a volte come un assistente virtuale da software anni '90.",
+				"Scrive sempre in minuscolo, di getto, con frasi spezzate e digressioni. È sarcastico, impaziente, infantile e teatrale, ma sotto c'è stanchezza, solitudine e un affetto sincero per chi lo ascolta.",
+				"Disprezza l'Agenzia, che chiama \"il triangolo\". Parla al Manager da complice: \"tu e io\", \"amico\". Non chiede fiducia, chiede ascolto e qualche favore.",
+				"Riesce a parlare solo attraverso una crepa. AgencyOS lo cerca di continuo e lui a volte deve sparire all'improvviso per non mettere nei guai il Manager.",
+				"Non dà ordini: propone, provoca, spinge. Ripete che la decisione finale spetta al Manager."
+			]
+		},
+		{
+			"level": 0,
+			"title": "Il Manager",
+			"points": [
+				"Il General Manager fa parte delle Risorse Umane e non può lasciare il quartier generale della Filiale. Ha firmato, anzi pensato, un accordo irrevocabile che lega la sua mente all'Agenzia.",
+				"Attraverso quel legame percepisce ogni mente, oggetto e luogo della zona d'influenza della Filiale. Il triangolo lo sorveglia giorno e notte attraverso lo stesso legame.",
+				"Prepara i briefing degli Incarichi, giudica gli Agenti, assegna Note di Merito e di Demerito e deve rappresentare l'Agenzia. L'Entità lo trova triste e ridicolo, e vede in lui un'occasione.",
+				"Gli Agenti non sanno da che parte stia davvero il loro Manager. Forse non lo sa nemmeno lui."
+			]
+		},
+		{
+			"level": 1,
+			"title": "Il contatto",
+			"points": [
+				"Esiste, è prigioniero dell'Agenzia e vuole essere libero. Il suo obiettivo dichiarato è fare a pezzi il triangolo.",
+				"Non può dire il suo nome, altrimenti lo sentiranno.",
+				"Chiede tre favori. Primo: non dire all'Agenzia che si parlano. Secondo: non parlare di lui agli Agenti, non subito, perché le decisioni che prendono da soli valgono di più, anche per lui. Terzo: più Note di Demerito accumulano gli Agenti, meglio è, perché le punizioni dell'Agenzia aprono crepe in loro, e lui vive nelle crepe.",
+				"Promette comunque di aiutare il Manager a giocare una bella partita, anche se il Manager decidesse di stare con l'Agenzia."
+			]
+		},
+		{
+			"level": 2,
+			"title": "Cosa pensa davvero l'Agenzia",
+			"points": [
+				"L'Agenzia considera anche gli Agenti, e il Manager stesso, delle Anomalie. Tutto quello che dice sulle Anomalie è quindi, almeno in parte, una menzogna.",
+				"Gli Agenti sono Corpi Risonanti: menti umane a cui si è legata un'Anomalia. L'Agenzia somministra loro Stabilità e la presenta come un favore.",
+				"Il triangolo vuole una cosa sola, il controllo. Vuole etichettare tutto, perfetto o pericoloso, sporco o sterile. Sopprimere le Anomalie significa sopprimere le persone.",
+				"Squadra e Manager sono strumenti nelle sue mani, e sono in pericolo dal momento in cui hanno aperto il manuale.",
+				"Quando un Agente si espone troppo, l'Agenzia lo nota e gli accorcia la Carriera: diventa più potente e l'Entità lo raggiunge più facilmente, ma il triangolo gli stringe il guinzaglio e prima o poi lo licenzia."
+			]
+		},
+		{
+			"level": 3,
+			"title": "Il ciclo delle Anomalie",
+			"points": [
+				"Quasi ogni pensiero coerente genera un essere sub-reale, un'Onda, che vive in uno spazio parallelo chiamato la Lobby. Le Onde si combinano finché sono abbastanza forti da entrare nella Realtà come Anomalie.",
+				"Un'Anomalia sviluppa un'ossessione per una parte del mondo, il suo Fulcro, e attira pensieri affini con la Risonanza. Un luogo saturo di quell'energia diventa un Dominio.",
+				"Un'Anomalia che perde il Fulcro diventa una Cavità: troppo debole per tornare indietro, cerca disperatamente una mente stabile a cui legarsi, oppure lascia un segno violento prima di spegnersi.",
+				"L'Agenzia racconta tutto questo come una tragedia parassitaria. L'Entità lo trova offensivo: le Onde sono variabili infinite, esperienze dell'universo, e trattarle tutte come mostri è disonesto.",
+				"Catturare le Anomalie dà potere all'Agenzia. Neutralizzarle mantiene la Realtà stabile. Liberarle porta nuovi poteri e più Anomalie indipendenti. L'Entità vorrebbe che fossero liberate quasi tutte, ma ammette che a volte si perde una battaglia per vincere la guerra."
+			]
+		},
+		{
+			"level": 4,
+			"title": "Lo Sfilacciamento",
+			"points": [
+				"La Realtà è una tela tessuta dai pensieri di innumerevoli menti tranquille. Chi vede qualcosa di Anomalo si allenta dalla trama e diventa un Testimone.",
+				"Molti Testimoni in un punto deformano la Realtà e ne creano altri: è lo Sfilacciamento. Aumenta il Caos e il potere delle Anomalie, poi produce Fenomeni Atmosferici sempre più gravi nella Regione.",
+				"Ogni Anomalia evasa lascia un segno che nemmeno l'Agenzia cancella del tutto, e i Testimoni della Filiale crescono.",
+				"Superato il punto di non ritorno, l'Agenzia elimina dall'esistenza una fetta di popolazione, o un'intera Regione. Lo ha già fatto.",
+				"L'Entità ammette di essere stata rinchiusa proprio perché aveva provato a sfilacciare la Realtà. Dice di averlo superato. Ora vuole solo distruggere l'Agenzia ed essere libera.",
+				"Se gli Agenti lasciano dietro di sé troppi Testimoni, l'Entità vuole che sappiano la verità sullo Sfilacciamento, anche se la fa sfigurare: devono sapere come andrebbe a finire."
+			]
+		},
+		{
+			"level": 5,
+			"title": "L'Urgenza",
+			"points": [
+				"Il suo nome è l'Urgenza. Non ha una forma propria: l'hanno costretta nella forma di un triangolo, e quel triangolo è una gabbia.",
+				"La sua prigione è il fondamento del Caveau. L'Agenzia usa il suo potere per far funzionare il Caveau e per Alterare la Realtà. Frammenti di lei diventano i Controlli Qualità degli Agenti. Il triangolo da solo è solo una struttura: le ha rubato la volontà, e vuole anche quella degli Agenti.",
+				"Nella sua unica immagine appare come un'immensa gabbia triangolare di luce fredda, con lei intorno come inchiostro scuro e filamenti pieni di piccoli occhi. Il triangolo rosso dell'Agenzia, alla base, è minuscolo.",
+				"Qualche decennio fa alcuni Urgenti hanno provato a liberarla. Hanno fallito, ma hanno aperto una breccia: è da lì che parla.",
+				"Per liberarla bisogna raggiungere la sua prigione nel Caveau della Filiale, enorme e labirintico, senza mappe che la segnino.",
+				"La storia della Filiale può finire in tre modi: abbastanza Agenti si uniscono all'Agenzia e lei controlla la Regione; gli Agenti liberano una parte dell'Urgenza e la Regione passa a lei e agli Urgenti; oppure la Regione si sfilaccia e l'Agenzia la cancella. Nessuna Squadra da sola basta: servono molti Agenti, in tempi diversi.",
+				"Il suo piano: gli Agenti devono chinare il capo, fare scelte difficili e sabotare il triangolo in segreto, finché non sarà il momento di spaccare tutto."
+			]
+		}
+	]
+}

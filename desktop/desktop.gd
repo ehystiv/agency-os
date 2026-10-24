@@ -1,10 +1,10 @@
 extends Control
-## Scrivania di AgencyOS: collega icone, finestre, barra, menu Start e fumetti.
-## È l'unico punto che conosce tutti i pezzi; i pezzi tra loro si parlano solo con segnali.
+## The AgencyOS desktop: connects icons, windows, taskbar, Start menu and balloons.
+## It's the only place that knows all the pieces; the pieces talk to each other only through signals.
 
 const REGISTRY: AppRegistry = preload("res://data/apps/registry.tres")
-const TRASH_EMPTY := preload("res://ui/icons/cestino.svg")
-const TRASH_FULL := preload("res://ui/icons/cestino_pieno.svg")
+const TRASH_EMPTY := preload("res://ui/icons/trash.svg")
+const TRASH_FULL := preload("res://ui/icons/trash_full.svg")
 
 @onready var _wallpaper: Wallpaper = $Wallpaper
 @onready var _icons: DesktopIcons = $Icons
@@ -18,12 +18,12 @@ const TRASH_FULL := preload("res://ui/icons/cestino_pieno.svg")
 
 
 func _ready() -> void:
-	_set_fullscreen(bool(Save.get_ui("schermo_intero", false)))
+	_set_fullscreen(bool(Save.get_ui("fullscreen", false)))
 	get_window().size_changed.connect(_on_window_size_changed)
-	_wallpaper.set_mode(StringName(Save.get_ui("sfondo", "reticolo")))
+	_wallpaper.set_mode(StringName(Save.get_ui("wallpaper", "lattice")))
 
 	_icons.app_requested.connect(_windows.open)
-	_icons.file_requested.connect(func(id: String) -> void: _windows.open(&"note", {"file": id}))
+	_icons.file_requested.connect(func(id: String) -> void: _windows.open(&"notepad", {"file": id}))
 	_icons.populate(REGISTRY)
 	var mail := Campaign.correspondence
 	mail.files_changed.connect(_refresh_files)
@@ -51,10 +51,10 @@ func _ready() -> void:
 	_start_menu.app_chosen.connect(_on_start_app_chosen)
 	_start_menu.command_chosen.connect(_on_start_command)
 	_catcher.gui_input.connect(_on_catcher_input)
-	Caveau.glitch_started.connect(_on_glitch_started)
+	Entity.glitch_started.connect(_on_glitch_started)
 
 	_on_windows_changed()
-	if bool(Save.get_ui("mostra_avvio", true)):
+	if bool(Save.get_ui("show_boot", true)):
 		_boot.play()
 		await _boot.finished
 	_show_balloon("AgencyOS 98", "Benvenuto, Manager. La Filiale è operativa.")
@@ -70,7 +70,7 @@ func _unhandled_key_input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 
 
-## F11, Cmd+Ctrl+F (la scorciatoia del Mac) oppure Alt+Invio.
+## F11, Cmd+Ctrl+F (the Mac shortcut) or Alt+Enter.
 func _is_fullscreen_shortcut(event: InputEvent) -> bool:
 	var key := event as InputEventKey
 	if key == null or not key.pressed or key.echo:
@@ -86,24 +86,24 @@ func _is_fullscreen() -> bool:
 
 func _set_fullscreen(enabled: bool) -> void:
 	get_window().mode = Window.MODE_FULLSCREEN if enabled else Window.MODE_WINDOWED
-	Save.set_ui("schermo_intero", enabled)
+	Save.set_ui("fullscreen", enabled)
 
 
-## Impostazioni cambiate altrove (es. dal Pannello di controllo).
+## Settings changed elsewhere (e.g. from the Control panel).
 func _on_ui_changed(key: String) -> void:
 	match key:
-		"sfondo":
-			_wallpaper.set_mode(StringName(Save.get_ui("sfondo", "reticolo")))
-		"schermo_intero":
-			var wanted := bool(Save.get_ui("schermo_intero", false))
+		"wallpaper":
+			_wallpaper.set_mode(StringName(Save.get_ui("wallpaper", "lattice")))
+		"fullscreen":
+			var wanted := bool(Save.get_ui("fullscreen", false))
 			if wanted != _is_fullscreen():
 				_set_fullscreen(wanted)
 
 
-## Tiene allineata l'impostazione anche quando si usa il pulsante verde del Mac.
+## Keeps the setting in sync even when the Mac's green button is used.
 func _on_window_size_changed() -> void:
-	if bool(Save.get_ui("schermo_intero", false)) != _is_fullscreen():
-		Save.set_ui("schermo_intero", _is_fullscreen())
+	if bool(Save.get_ui("fullscreen", false)) != _is_fullscreen():
+		Save.set_ui("fullscreen", _is_fullscreen())
 
 
 func _set_start_open(open: bool) -> void:
@@ -117,14 +117,14 @@ func _set_start_open(open: bool) -> void:
 	_taskbar.set_start_open(open)
 
 
-## action: {"app": id, "args": {...}} da aprire cliccando il fumetto, oppure
-## {"cartella": percorso} da aprire nel Finder; vuota = il clic chiude e basta.
+## action: {"app": id, "args": {...}} to open by clicking the balloon, or
+## {"folder": path} to open in the Finder; empty = the click just closes it.
 func _show_balloon(title: String, text: String, action: Dictionary = {}) -> void:
 	var on_click := Callable()
 	if action.has("app"):
 		on_click = _windows.open.bind(StringName(action.app), action.get("args", {}))
-	elif action.has("cartella"):
-		on_click = OS.shell_open.bind(str(action.cartella))
+	elif action.has("folder"):
+		on_click = OS.shell_open.bind(str(action.folder))
 	_balloon.show_message(title, text, on_click)
 
 
@@ -156,47 +156,47 @@ func _refresh_next_session() -> void:
 	if session.is_empty():
 		_taskbar.set_next_session("")
 		return
-	var day := str(session.data)
-	_taskbar.set_next_session("Prossima: %s %s %s" % [ItalianDate.weekday_short(day), ItalianDate.numeric(day).left(5), str(session.get("ora", ""))])
+	var day := str(session.date)
+	_taskbar.set_next_session("Prossima: %s %s %s" % [ItalianDate.weekday_short(day), ItalianDate.numeric(day).left(5), str(session.get("time", ""))])
 
 
-## Se la prossima sessione è oggi, dopo il benvenuto ricorda cosa resta da preparare.
+## If the next session is today, after the welcome it reminds what is left to prepare.
 func _remind_session_today() -> void:
 	var session := Campaign.next_session()
-	if session.is_empty() or session.data != ItalianDate.today():
+	if session.is_empty() or session.date != ItalianDate.today():
 		return
 	await get_tree().create_timer(4.0).timeout
-	var todo: int = session.checklist.filter(func(item: Dictionary) -> bool: return not item.ok).size()
-	var text := ("Alle %s. " % session.ora if str(session.get("ora", "")) != "" else "")
+	var todo: int = session.checklist.filter(func(item: Dictionary) -> bool: return not item.done).size()
+	var text := ("Alle %s. " % session.time if str(session.get("time", "")) != "" else "")
 	text += "%d %s da preparare." % [todo, "cosa" if todo == 1 else "cose"] if todo > 0 else "Tutto pronto."
-	_show_balloon("Sessione oggi", text, {"app": &"agenda", "args": {"giorno": session.data}})
+	_show_balloon("Sessione oggi", text, {"app": &"agenda", "args": {"day": session.date}})
 
 
 func _refresh_trash_icon() -> void:
-	_icons.set_icon_texture("cestino", TRASH_FULL if not Campaign.trash.is_empty() else TRASH_EMPTY)
+	_icons.set_icon_texture("trash", TRASH_FULL if not Campaign.trash.is_empty() else TRASH_EMPTY)
 
 
 func _refresh_mail_badge() -> void:
 	_icons.set_badge("amail", Campaign.correspondence.unread_count())
 
 
-## Un memo o un file è appena arrivato: fumetto cliccabile e reazioni del soggetto.
+## A memo or a file just arrived: clickable balloon and the subject's reactions.
 func _on_delivered(kind: String, item: Dictionary) -> void:
 	Sfx.play(&"mail" if kind == "memo" else &"pop")
 	if kind == "memo":
-		_show_balloon("Nuovo messaggio in AMail", "%s: %s" % [item.mittente, item.oggetto], {"app": &"amail", "args": {"memo": item.id}})
+		_show_balloon("Nuovo messaggio in AMail", "%s: %s" % [item.sender, item.subject], {"app": &"amail", "args": {"memo": item.id}})
 	else:
-		_show_balloon("Nuovo file sulla scrivania", "%s · origine sconosciuta" % item.nome, {"app": &"note", "args": {"file": item.id}})
-		Caveau.stir(0.45)
-		Caveau.glitch("reticolo")
+		_show_balloon("Nuovo file sulla scrivania", "%s · origine sconosciuta" % item.name, {"app": &"notepad", "args": {"file": item.id}})
+		Entity.stir(0.45)
+		Entity.glitch("lattice")
 
 
-## Glitch che escono dalla finestra della linea e toccano il sistema.
+## Glitches that leave the line window and touch the system.
 func _on_glitch_started(glitch_name: String) -> void:
 	match glitch_name:
-		"sabotaggio":
+		"sabotage":
 			_taskbar.sabotage()
-		"reticolo":
+		"lattice":
 			_wallpaper.pulse()
 
 
@@ -208,21 +208,21 @@ func _on_start_app_chosen(id: StringName) -> void:
 func _on_start_command(command: StringName) -> void:
 	_set_start_open(false)
 	match command:
-		&"suoni":
+		&"sounds":
 			Sfx.toggle()
-		&"allinea_icone":
+		&"align_icons":
 			_icons.align()
-		&"riordina_finestre":
+		&"arrange_windows":
 			_windows.reset_positions()
-		&"salvaschermo":
+		&"screensaver":
 			_saver.start()
-		&"azzera":
-			_windows.open(&"fascicolo", {"azzera": true})
-		&"schermo_intero":
+		&"reset_branch":
+			_windows.open(&"dossier", {"reset": true})
+		&"fullscreen":
 			_set_fullscreen(not _is_fullscreen())
-		&"riavvia":
+		&"restart":
 			Save.flush()
 			get_tree().reload_current_scene()
-		&"spegni":
+		&"shutdown":
 			Save.flush()
 			get_tree().quit()

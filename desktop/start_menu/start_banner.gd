@@ -1,5 +1,5 @@
 extends Control
-## Banda verticale "AgencyOS 98" a sinistra del menu Start, letta dal basso verso l'alto.
+## Vertical "AgencyOS 98" band on the left of the Start menu, read bottom to top.
 
 const BG := Color("14245e")
 const BRAND := Color.WHITE

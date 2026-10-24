@@ -1,16 +1,16 @@
 extends Node
-## Suoni di sistema e volume generale (applicato all'uscita principale).
-## enabled riguarda solo i suoni di sistema; la musica del Lettore segue il volume generale.
-## I suoni sono quelli del prototipo, sintetizzati con Synth e preparati in sottofondo all'avvio.
+## System sounds and master volume (applied to the main output).
+## enabled only concerns system sounds; the Player's music follows the master volume.
+## The sounds are the prototype's, synthesized with Synth and prepared in the background at startup.
 
 signal settings_changed
 
-const BUS := "Sistema"
+const BUS := "System"
 const VOICES := 6
 const SQUARE := Synth.Wave.SQUARE
 const SINE := Synth.Wave.SINE
 const TRIANGLE := Synth.Wave.TRIANGLE
-## Attacco dei suoni di sistema (più secco di quello della musica).
+## Attack of the system sounds (sharper than the music's).
 const ATTACK := 0.01
 const HUM_FADE_SECONDS := 0.6
 
@@ -40,7 +40,7 @@ var _hum: AudioStreamPlayer
 
 func _ready() -> void:
 	var audio: Dictionary = Save.get_ui("audio", {})
-	enabled = bool(audio.get("attivo", true))
+	enabled = bool(audio.get("enabled", true))
 	volume = float(audio.get("volume", 0.8))
 	_apply_volume()
 	_ensure_bus()
@@ -64,7 +64,7 @@ func toggle() -> void:
 	enabled = not enabled
 
 
-## Suona un suono di sistema: modem, ding, mail, pop, chime, key, battito.
+## Plays a system sound: modem, ding, mail, pop, chime, key, heartbeat.
 func play(sound: StringName) -> void:
 	if not enabled:
 		return
@@ -84,7 +84,7 @@ func play(sound: StringName) -> void:
 	voice.play()
 
 
-## Ronzio continuo durante le ricerche di AgencyOS.
+## Continuous hum during AgencyOS searches.
 func start_hum() -> void:
 	if not enabled or _hum.playing:
 		return
@@ -101,10 +101,10 @@ func stop_hum() -> void:
 	tween.tween_callback(_hum.stop)
 
 
-# --- Suoni del prototipo ---------------------------------------------------
+# --- Prototype sounds ------------------------------------------------------
 
 func _build_all() -> void:
-	for sound: StringName in [&"ding", &"mail", &"pop", &"chime", &"key", &"battito", &"modem"]:
+	for sound: StringName in [&"ding", &"mail", &"pop", &"chime", &"key", &"heartbeat", &"modem"]:
 		_build(sound)
 
 
@@ -122,7 +122,7 @@ func _build(sound: StringName) -> AudioStreamWAV:
 			parts = [[0.0, _tone(380, 0.16, SINE, 0.07, 980)], [0.12, _tone(1200, 0.08, TRIANGLE, 0.03)]]
 		&"key":
 			parts = [[0.0, Synth.noise(0.012, 0.02, 3200, false)]]
-		&"battito":
+		&"heartbeat":
 			parts = [[0.0, _tone(60, 0.18, SINE, 0.12)], [0.28, _tone(55, 0.22, SINE, 0.1)]]
 		&"modem":
 			parts = [[0.0, _tone(350, 0.45, SINE, 0.03)], [0.0, _tone(440, 0.45, SINE, 0.03)]]
@@ -152,7 +152,7 @@ func _apply_volume() -> void:
 	AudioServer.set_bus_volume_db(0, linear_to_db(maxf(volume, 0.0001)))
 
 
-## I suoni del prototipo hanno volumi bassi pensati per Web Audio: il bus li alza.
+## The prototype's sounds have low volumes meant for Web Audio: the bus raises them.
 func _ensure_bus() -> void:
 	if AudioServer.get_bus_index(BUS) >= 0:
 		return
@@ -165,5 +165,5 @@ func _ensure_bus() -> void:
 
 func _store() -> void:
 	_apply_volume()
-	Save.set_ui("audio", {"attivo": enabled, "volume": volume})
+	Save.set_ui("audio", {"enabled": enabled, "volume": volume})
 	settings_changed.emit()

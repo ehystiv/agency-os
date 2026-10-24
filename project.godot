@@ -21,7 +21,7 @@ Save="*res://autoload/save.gd"
 Sfx="*res://autoload/sfx.gd"
 Brain="*res://autoload/brain.gd"
 Campaign="*res://autoload/campaign.gd"
-Caveau="*res://autoload/caveau.gd"
+Entity="*res://autoload/entity.gd"
 
 [display]
 

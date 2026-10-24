@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://desktop/wallpaper/wallpaper.gd" id="1_script"]
 [ext_resource type="Shader" path="res://desktop/wallpaper/lattice.gdshader" id="2_shader"]
-[ext_resource type="Texture2D" path="res://ui/wallpapers/caveau.svg" id="3_caveau"]
+[ext_resource type="Texture2D" path="res://ui/wallpapers/vault.svg" id="3_caveau"]
 
 [sub_resource type="ShaderMaterial" id="lattice_material"]
 shader = ExtResource("2_shader")
@@ -38,7 +38,7 @@ grow_vertical = 2
 mouse_filter = 2
 color = Color(0.0667, 0.1412, 0.3098, 1)
 
-[node name="Caveau" type="TextureRect" parent="."]
+[node name="Vault" type="TextureRect" parent="."]
 visible = false
 layout_mode = 1
 anchors_preset = 15

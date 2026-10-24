@@ -1,19 +1,19 @@
 class_name Minefield
 extends RefCounted
-## Logica del campo minato di Contenimento: le "mine" sono Anomalie da contenere.
-## Il primo clic non trova mai un'Anomalia, né nelle caselle accanto.
+## Minesweeper logic for Containment: the "mines" are Anomalies to contain.
+## The first click never finds an Anomaly, not even in the neighbouring cells.
 
 enum State { READY, PLAYING, WON, LOST }
 
-## Livello -> [larghezza, altezza, Anomalie]
-const LEVELS := {"facile": [9, 9, 10], "medio": [12, 12, 24], "esperto": [16, 16, 40]}
+## Level -> [width, height, Anomalies]
+const LEVELS := {"easy": [9, 9, 10], "medium": [12, 12, 24], "expert": [16, 16, 40]}
 
 var width: int
 var height: int
 var mines: int
 var state := State.READY
 var flags := 0
-## Casella dell'Anomalia che ha fatto perdere, -1 se nessuna.
+## Cell of the Anomaly that lost the game, -1 if none.
 var exploded := -1
 
 var _mined := PackedByteArray()
@@ -21,12 +21,12 @@ var _opened := PackedByteArray()
 var _flagged := PackedByteArray()
 
 
-func _init(level: String = "facile") -> void:
-	var size: Array = LEVELS.get(level, LEVELS.facile)
+func _init(level: String = "easy") -> void:
+	var size: Array = LEVELS.get(level, LEVELS.easy)
 	width = size[0]
 	height = size[1]
 	mines = size[2]
-	# I Packed*Array si copiano per valore: vanno ridimensionati uno per uno.
+	# Packed*Arrays are copied by value: each one must be resized on its own.
 	_mined.resize(width * height)
 	_mined.fill(0)
 	_opened.resize(width * height)
@@ -68,7 +68,7 @@ func neighbors(i: int) -> PackedInt32Array:
 	return result
 
 
-## Anomalie nelle caselle accanto.
+## Anomalies in the neighbouring cells.
 func count(i: int) -> int:
 	var total := 0
 	for n in neighbors(i):
@@ -90,7 +90,7 @@ func open(i: int) -> void:
 			if is_mined(cell):
 				_opened[cell] = 1
 		return
-	# Le caselle senza Anomalie vicine aprono anche le loro vicine.
+	# Cells with no Anomalies around also open their neighbours.
 	var stack := [i]
 	while not stack.is_empty():
 		var cell: int = stack.pop_back()
@@ -111,7 +111,7 @@ func toggle_flag(i: int) -> void:
 	flags += 1 if is_flagged(i) else -1
 
 
-## Su un numero già aperto, con abbastanza bandierine attorno, apre le altre vicine.
+## On an opened number with enough flags around, opens the other neighbours.
 func chord(i: int) -> void:
 	if not is_opened(i) or is_over():
 		return

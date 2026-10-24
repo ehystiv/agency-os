@@ -1,28 +1,28 @@
 class_name ObsidianExporter
 extends Node
-## Scrive note Markdown nella cartella del vault della campagna.
-## Chiede la cartella la prima volta (finestra nativa) e chiede conferma
-## prima di sovrascrivere file che nel frattempo sono cambiati, es. in Obsidian.
+## Writes Markdown notes into the campaign's vault folder.
+## Asks for the folder the first time (native dialog) and asks for confirmation
+## before overwriting files that changed in the meantime, e.g. in Obsidian.
 
 signal _dialog_closed(result: Variant)
 
 
-## Gli elementi di notes sono {"nome": String, "testo": String}.
-## Restituisce {"scritti": int, "saltati": int, "cartella": String, "errore": String, "annullato": bool}.
+## The notes items are {"name": String, "text": String}.
+## Returns {"written": int, "skipped": int, "folder": String, "error": String, "cancelled": bool}.
 func export_notes(notes: Array[Dictionary]) -> Dictionary:
-	var result := {"scritti": 0, "saltati": 0, "cartella": "", "errore": "", "annullato": false}
+	var result := {"written": 0, "skipped": 0, "folder": "", "error": "", "cancelled": false}
 	var folder := Campaign.obsidian_folder
 	if folder == "" or not DirAccess.dir_exists_absolute(folder):
 		folder = await choose_folder()
 		if folder == "":
-			result.annullato = true
+			result.cancelled = true
 			return result
-	result.cartella = folder
+	result.folder = folder
 	var conflicts: Array[Dictionary] = []
 	var ready_to_write: Array[Dictionary] = []
 	for note in notes:
-		var path := folder.path_join(str(note.nome) + ".md")
-		if FileAccess.file_exists(path) and FileAccess.get_file_as_string(path) != str(note.testo):
+		var path := folder.path_join(str(note.name) + ".md")
+		if FileAccess.file_exists(path) and FileAccess.get_file_as_string(path) != str(note.text):
 			conflicts.append(note)
 		else:
 			ready_to_write.append(note)
@@ -30,17 +30,17 @@ func export_notes(notes: Array[Dictionary]) -> Dictionary:
 		if await _confirm_overwrite(conflicts):
 			ready_to_write.append_array(conflicts)
 		else:
-			result.saltati = conflicts.size()
+			result.skipped = conflicts.size()
 	for note in ready_to_write:
-		var err := Save.write_text(folder.path_join(str(note.nome) + ".md"), str(note.testo))
+		var err := Save.write_text(folder.path_join(str(note.name) + ".md"), str(note.text))
 		if err != OK:
-			result.errore = "Non riesco a scrivere nella cartella del vault (%s)." % error_string(err)
+			result.error = "Non riesco a scrivere nella cartella del vault (%s)." % error_string(err)
 			return result
-		result.scritti += 1
+		result.written += 1
 	return result
 
 
-## Finestra nativa per scegliere la cartella del vault; "" se annullata.
+## Native dialog to choose the vault folder; "" if cancelled.
 func choose_folder() -> String:
 	var dialog := FileDialog.new()
 	dialog.file_mode = FileDialog.FILE_MODE_OPEN_DIR
@@ -65,7 +65,7 @@ func _confirm_overwrite(conflicts: Array[Dictionary]) -> bool:
 	dialog.title = "AgencyOS"
 	var names: PackedStringArray = []
 	for note in conflicts.slice(0, 5):
-		names.append("• " + str(note.nome) + ".md")
+		names.append("• " + str(note.name) + ".md")
 	if conflicts.size() > 5:
 		names.append("• …e altri %d" % (conflicts.size() - 5))
 	dialog.dialog_text = "%s nel vault con un contenuto diverso, forse modificat%s in Obsidian:\n\n%s\n\nSovrascrivere?" % [
@@ -83,11 +83,11 @@ func _confirm_overwrite(conflicts: Array[Dictionary]) -> bool:
 	return overwrite
 
 
-## Testo pronto per il fumetto dopo un export.
+## Text for the balloon after an export.
 static func summary(result: Dictionary) -> String:
-	if result.errore != "":
-		return result.errore
-	var text := "%d %s nel vault." % [result.scritti, "nota scritta" if result.scritti == 1 else "note scritte"]
-	if result.saltati > 0:
-		text += " %d lasciat%s com'%s." % [result.saltati, "a" if result.saltati == 1 else "e", "era" if result.saltati == 1 else "erano"]
+	if result.error != "":
+		return result.error
+	var text := "%d %s nel vault." % [result.written, "nota scritta" if result.written == 1 else "note scritte"]
+	if result.skipped > 0:
+		text += " %d lasciat%s com'%s." % [result.skipped, "a" if result.skipped == 1 else "e", "era" if result.skipped == 1 else "erano"]
 	return text + " Clic per aprire la cartella."

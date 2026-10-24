@@ -1,14 +1,14 @@
 Decidi se l'emozione dell'entità U0047BB, nella risposta qui sotto, è così forte da deformare la linea segreta con il Manager, e con quale effetto.
 
-Nella maggior parte dei casi la risposta giusta è "nessuno". Scegli un effetto solo se l'entità è davvero agitata, spaventata, furiosa, euforica o commossa, oppure se tocca il triangolo, la gabbia o qualcosa di proibito. Scegli l'effetto che corrisponde meglio a ciò che prova.
+Nella maggior parte dei casi la risposta giusta è "none". Scegli un effetto solo se l'entità è davvero agitata, spaventata, furiosa, euforica o commossa, oppure se tocca il triangolo, la gabbia o qualcosa di proibito. Scegli l'effetto che corrisponde meglio a ciò che prova.
 
 EFFETTI
-{elenco}
+{list}
 
 IL MANAGER HA SCRITTO
 {manager}
 
 L'ENTITÀ HA RISPOSTO
-{entita}
+{entity}
 
-Rispondi solo con un oggetto JSON nella forma {"glitch": "nome"}, dove nome è "nessuno" oppure uno degli effetti sopra.
+Rispondi solo con un oggetto JSON nella forma {"glitch": "nome"}, dove nome è "none" oppure uno degli effetti sopra.

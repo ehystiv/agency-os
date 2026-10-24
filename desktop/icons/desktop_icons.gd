@@ -1,7 +1,7 @@
 class_name DesktopIcons
 extends Control
-## Griglia delle icone: aggancio alle celle, scambio di posto, posizioni salvate.
-## Riceve anche i clic sulla scrivania vuota, per togliere la selezione.
+## Icon grid: snapping to cells, swapping places, saved positions.
+## Also receives clicks on the empty desktop, to clear the selection.
 
 signal app_requested(id: StringName)
 signal file_requested(id: String)
@@ -15,7 +15,7 @@ const ORIGIN := Vector2(8, 8)
 
 var _icons: Array[DesktopIcon] = []
 var _cells: Dictionary[String, Vector2i] = {}
-## Dopo il primo elenco di file, quelli nuovi compaiono con un "pop".
+## After the first list of files, new ones appear with a "pop".
 var _populated_files := false
 
 
@@ -29,18 +29,18 @@ func populate(registry: AppRegistry) -> void:
 	_layout()
 
 
-## Allinea le icone dei file dell'Entità: aggiunge le nuove (con un "pop"), aggiorna lo stato di lettura.
+## Lays out the Entity's file icons: adds the new ones (with a "pop"), updates the read state.
 func set_files(files: Array[Dictionary]) -> void:
 	var added := false
 	for file in files:
 		var key := FILE_PREFIX + str(file.id)
 		var icon := _find(key)
 		if icon == null:
-			icon = _add_icon(key, str(file.nome), FILE_ICON)
+			icon = _add_icon(key, str(file.name), FILE_ICON)
 			added = true
 			if _populated_files:
 				icon.pop.call_deferred()
-		icon.set_unread(not file.get("letto", false))
+		icon.set_unread(not file.get("read", false))
 	_populated_files = true
 	if added:
 		_layout()
@@ -66,7 +66,7 @@ func _add_icon(key: String, label: String, texture: Texture2D) -> DesktopIcon:
 	icon.activated.connect(_on_icon_activated)
 	icon.dropped.connect(_on_icon_dropped)
 	_icons.append(icon)
-	var cell: Variant = Save.get_ui("icone", {}).get(key)
+	var cell: Variant = Save.get_ui("icons", {}).get(key)
 	if cell is Array and cell.size() == 2:
 		_cells[key] = Vector2i(int(cell[0]), int(cell[1]))
 	return icon
@@ -86,7 +86,7 @@ func _on_icon_activated(icon: DesktopIcon) -> void:
 		app_requested.emit(StringName(icon.key))
 
 
-## Riporta tutte le icone in colonna, nell'ordine del registro.
+## Brings every icon back into a column, in registry order.
 func align() -> void:
 	_cells.clear()
 	_layout()
@@ -110,8 +110,8 @@ func _grid_size() -> Vector2i:
 		maxi(1, floori((size.y - ORIGIN.y) / CELL.y)))
 
 
-## Tiene le celle valide e libere, riempie le altre in colonna dall'alto a sinistra.
-## Le celle salvate non vengono riscritte: se la finestra si allarga tornano al loro posto.
+## Keeps valid and free cells, fills the others in a column from the top left.
+## Saved cells aren't rewritten: if the window gets wider they go back in place.
 func _layout() -> void:
 	if _icons.is_empty():
 		return
@@ -164,4 +164,4 @@ func _store() -> void:
 	var data := {}
 	for key in _cells:
 		data[key] = [_cells[key].x, _cells[key].y]
-	Save.set_ui("icone", data)
+	Save.set_ui("icons", data)

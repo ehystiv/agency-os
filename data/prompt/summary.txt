@@ -1,0 +1,9 @@
+Questo è un colloquio segreto tra il General Manager di una Filiale e l'entità U0047BB. Scrivi i ricordi che l'entità conserva di questo colloquio, per riprenderne il filo la prossima volta.
+
+Da 4 a 10 righe brevi in italiano, ognuna che inizia con "- ", dal punto di vista dell'entità e dentro il suo mondo (mai parole come gioco, giocatore, sessione).
+Annota: nomi di Agenti, persone, luoghi e Anomalie citati; cosa ha detto o deciso il Manager; cosa gli hai rivelato o chiesto; promesse fatte; come ti ha trattata e cosa ne pensi; domande rimaste aperte.
+Annota solo ciò che è stato detto davvero nel colloquio qui sotto: non inventare promesse, gesti o reazioni che non ci sono.
+Scrivi solo le righe, nient'altro.
+
+COLLOQUIO N. {number}
+{transcript}

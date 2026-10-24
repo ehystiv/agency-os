@@ -1,7 +1,7 @@
 class_name BootScreen
 extends CanvasLayer
-## Avvio stile BIOS: righe di diagnostica (con un controllo vero del server del modello),
-## il triangolo dell'Agenzia e una dissolvenza. Un clic o un tasto lo salta.
+## BIOS-style boot: diagnostic lines (with a real check of the model server),
+## the Agency's triangle and a fade. A click or a key skips it.
 
 signal finished
 
@@ -15,7 +15,7 @@ const SERVER_TIMEOUT := 4.0
 
 var _skipped := false
 var _running := false
-## Righe stampate finora (bbcode); l'ultima si può riscrivere.
+## Lines printed so far (bbcode); the last one can be rewritten.
 var _lines: PackedStringArray = []
 
 @onready var _screen: ColorRect = $Screen
@@ -76,7 +76,7 @@ func _input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 
 
-## Interroga davvero il server del modello: se è spento lo sai prima di aprire la linea.
+## Really queries the model server: if it's off you know before opening the line.
 func _check_server() -> void:
 	var where := str(Brain.get_setting("url")).trim_prefix("http://").trim_prefix("https://").trim_suffix("/v1")
 	await _line("Server del modello (%s) ... " % where)

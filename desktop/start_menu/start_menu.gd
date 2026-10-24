@@ -1,16 +1,16 @@
 class_name StartMenu
 extends PanelContainer
-## Menu Start: le app installate e qualche comando di sistema.
+## Start menu: the installed apps and a few system commands.
 
 signal app_chosen(id: StringName)
-## Uno tra &"suoni", &"schermo_intero", &"allinea_icone", &"riavvia", &"azzera", &"spegni".
+## One of &"sounds", &"fullscreen", &"align_icons", &"restart", &"reset_branch", &"shutdown".
 signal command_chosen(command: StringName)
 
-const ICON_SOUND := preload("res://ui/icons/suono.svg")
-const ICON_FULLSCREEN := preload("res://ui/icons/schermo.svg")
-const ICON_ALIGN := preload("res://ui/icons/fascicolo.svg")
-const ICON_RESTART := preload("res://ui/icons/riavvia.svg")
-const ICON_SHUTDOWN := preload("res://ui/icons/spegni.svg")
+const ICON_SOUND := preload("res://ui/icons/sound.svg")
+const ICON_FULLSCREEN := preload("res://ui/icons/fullscreen.svg")
+const ICON_ALIGN := preload("res://ui/icons/dossier.svg")
+const ICON_RESTART := preload("res://ui/icons/restart.svg")
+const ICON_SHUTDOWN := preload("res://ui/icons/shutdown.svg")
 const ICON_RESET := preload("res://ui/icons/reset.svg")
 
 @onready var _scroll: ScrollContainer = %Scroll
@@ -25,17 +25,17 @@ func build(registry: AppRegistry, sound_enabled: bool, fullscreen: bool) -> void
 		var id := app.id
 		_add_item(app.icon, app.label, func() -> void: app_chosen.emit(id))
 	_items.add_child(HSeparator.new())
-	_add_command(ICON_SOUND, "Disattiva i suoni" if sound_enabled else "Attiva i suoni", &"suoni")
-	_add_command(ICON_FULLSCREEN, "Esci dallo schermo intero" if fullscreen else "Schermo intero", &"schermo_intero")
-	_add_command(ICON_ALIGN, "Allinea le icone", &"allinea_icone")
-	_add_command(ICON_RESTART, "Riavvia AgencyOS", &"riavvia")
+	_add_command(ICON_SOUND, "Disattiva i suoni" if sound_enabled else "Attiva i suoni", &"sounds")
+	_add_command(ICON_FULLSCREEN, "Esci dallo schermo intero" if fullscreen else "Schermo intero", &"fullscreen")
+	_add_command(ICON_ALIGN, "Allinea le icone", &"align_icons")
+	_add_command(ICON_RESTART, "Riavvia AgencyOS", &"restart")
 	_items.add_child(HSeparator.new())
-	_add_command(ICON_RESET, "Azzera la Filiale…", &"azzera")
-	_add_command(ICON_SHUTDOWN, "Spegni il terminale", &"spegni")
+	_add_command(ICON_RESET, "Azzera la Filiale…", &"reset_branch")
+	_add_command(ICON_SHUTDOWN, "Spegni il terminale", &"shutdown")
 
 
-## Apre il menu con l'angolo in basso a sinistra in bottom_left.
-## Se le voci non ci stanno sopra la barra, l'elenco scorre.
+## Opens the menu with its bottom left corner at bottom_left.
+## If the items don't fit above the taskbar, the list scrolls.
 func open_at(bottom_left: Vector2) -> void:
 	show()
 	var frame := get_theme_stylebox("panel").get_minimum_size().y

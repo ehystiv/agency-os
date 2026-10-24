@@ -1,6 +1,6 @@
 class_name HuggingFaceProvider
 extends OpenAICompatibleProvider
-## Modelli remoti tramite il router delle Inference Providers di Hugging Face,
-## compatibile OpenAI: basta l'indirizzo del router e un token di accesso.
+## Remote models through the Hugging Face Inference Providers router,
+## OpenAI compatible: only the router address and an access token are needed.
 
 const ROUTER_URL := "https://router.huggingface.co/v1"

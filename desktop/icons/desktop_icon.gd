@@ -1,10 +1,10 @@
 class_name DesktopIcon
 extends VBoxContainer
-## Icona della scrivania: clic seleziona, doppio clic o Invio apre, trascinamento sposta.
+## Desktop icon: click selects, double click or Enter opens, dragging moves it.
 
 signal selected(icon: DesktopIcon)
 signal activated(icon: DesktopIcon)
-## Fine di un trascinamento: la griglia decide la cella.
+## End of a drag: the grid decides the cell.
 signal dropped(icon: DesktopIcon)
 
 const DRAG_THRESHOLD := 5.0
@@ -39,7 +39,7 @@ func set_texture(texture: Texture2D) -> void:
 	_picture.texture = texture
 
 
-## Contatore rosso in alto a destra (es. memo non letti); 0 lo nasconde.
+## Red counter at the top right (e.g. unread memos); 0 hides it.
 func set_badge(count: int) -> void:
 	if _badge == null:
 		_badge = Label.new()
@@ -53,7 +53,7 @@ func set_badge(count: int) -> void:
 	_badge.position = Vector2(_picture.custom_minimum_size.x - _badge.size.x / 2.0, -4.0)
 
 
-## Un file non ancora aperto lampeggia a scatti, come nel prototipo.
+## A file not opened yet blinks in steps, as in the prototype.
 func set_unread(unread: bool) -> void:
 	if _blink != null:
 		_blink.kill()
@@ -65,7 +65,7 @@ func set_unread(unread: bool) -> void:
 		_blink.tween_property(_picture, "modulate:a", 1.0, 0.0).set_delay(BLINK_SECONDS)
 
 
-## Comparsa di un file nuovo.
+## A new file appearing.
 func pop() -> void:
 	pivot_offset = size / 2.0
 	scale = Vector2.ONE * 0.3

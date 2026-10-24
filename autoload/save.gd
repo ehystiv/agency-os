@@ -1,19 +1,19 @@
 extends Node
-## Persistenza in file JSON leggibili sotto user://.
-## config/ vale per tutte le campagne; campagne/<id>/ contiene i dati di una sola campagna.
+## Persistence in human-readable JSON files under user://.
+## config/ applies to every campaign; campaigns/<id>/ holds the data of a single campaign.
 
-const CONFIG_DIR := "user://config"
-const UI_PATH := CONFIG_DIR + "/interfaccia.json"
-const CAMPAIGNS_DIR := "user://campagne"
-const INDEX_PATH := CAMPAIGNS_DIR + "/indice.json"
-const DEFAULT_CAMPAIGN := "filiale"
-## Raggruppa le scritture ravvicinate (es. più finestre spostate di fila).
-const WRITE_DELAY := 0.4
-
-## Un'impostazione dell'interfaccia è cambiata: chi la usa si aggiorna subito.
+## An interface setting changed: whoever uses it updates right away.
 signal ui_changed(key: String)
 
-## Id della campagna attiva, che è anche il nome della sua cartella.
+const CONFIG_DIR := "user://config"
+const UI_PATH := CONFIG_DIR + "/ui.json"
+const CAMPAIGNS_DIR := "user://campaigns"
+const INDEX_PATH := CAMPAIGNS_DIR + "/index.json"
+const DEFAULT_CAMPAIGN := "branch"
+## Groups writes that happen close together (e.g. several windows moved in a row).
+const WRITE_DELAY := 0.4
+
+## Id of the active campaign, which is also the name of its folder.
 var campaign_id: String = ""
 
 var _ui: Dictionary = {}
@@ -22,6 +22,7 @@ var _ui_timer: Timer
 
 func _ready() -> void:
 	DirAccess.make_dir_recursive_absolute(CONFIG_DIR)
+	SaveMigration.run()
 	var data: Variant = read_json(UI_PATH, {})
 	_ui = data if data is Dictionary else {}
 	_open_campaign_index()
@@ -52,14 +53,14 @@ func set_ui(key: String, value: Variant) -> void:
 		ui_changed.emit(key)
 
 
-## Scrive subito ciò che è in attesa. Da chiamare prima di riavviare o uscire.
+## Writes whatever is pending right away. Call before restarting or quitting.
 func flush() -> void:
 	if _ui_timer != null and not _ui_timer.is_stopped():
 		_ui_timer.stop()
 		_write_ui()
 
 
-## Percorso di un file dentro la cartella della campagna attiva, es. "colloqui/001.json".
+## Path of a file inside the active campaign's folder, e.g. "interviews/001.json".
 func campaign_path(relative: String) -> String:
 	return "%s/%s/%s" % [CAMPAIGNS_DIR, campaign_id, relative]
 
@@ -79,7 +80,7 @@ func delete_campaign(relative: String) -> void:
 		DirAccess.remove_absolute(path)
 
 
-## Nomi dei file .json in una sottocartella della campagna, in ordine alfabetico.
+## Names of the .json files in a campaign subfolder, in alphabetical order.
 func list_campaign(subdir: String) -> PackedStringArray:
 	var names: PackedStringArray = []
 	for file_name in DirAccess.get_files_at(campaign_path(subdir)):
@@ -94,29 +95,29 @@ func read_json(path: String, default: Variant) -> Variant:
 		return default
 	var json := JSON.new()
 	if json.parse(FileAccess.get_file_as_string(path)) != OK:
-		push_warning("Save: %s non è un JSON valido (riga %d), uso i valori predefiniti." % [path, json.get_error_line()])
+		push_warning("Save: %s is not valid JSON (line %d), using defaults." % [path, json.get_error_line()])
 		return default
 	return json.data
 
 
-## Scrittura atomica: prima un file temporaneo, poi la rinomina sopra l'originale.
+## Atomic write: first a temporary file, then a rename over the original.
 func write_json(path: String, data: Variant) -> Error:
 	return write_text(path, JSON.stringify(data, "\t"))
 
 
-## Come write_json, per testo qualsiasi (es. note Markdown nel vault).
+## Like write_json, for any text (e.g. Markdown notes in the vault).
 func write_text(path: String, text: String) -> Error:
 	var tmp_path := path + ".tmp"
 	var file := FileAccess.open(tmp_path, FileAccess.WRITE)
 	if file == null:
 		var open_error := FileAccess.get_open_error()
-		push_error("Save: impossibile scrivere %s (%s)." % [tmp_path, error_string(open_error)])
+		push_error("Save: can't write %s (%s)." % [tmp_path, error_string(open_error)])
 		return open_error
 	file.store_string(text)
 	file.close()
 	var rename_error := DirAccess.rename_absolute(tmp_path, path)
 	if rename_error != OK:
-		push_error("Save: impossibile sostituire %s (%s)." % [path, error_string(rename_error)])
+		push_error("Save: can't replace %s (%s)." % [path, error_string(rename_error)])
 	return rename_error
 
 
@@ -124,16 +125,16 @@ func _write_ui() -> void:
 	write_json(UI_PATH, _ui)
 
 
-## Legge l'indice delle campagne; al primo avvio crea la campagna predefinita.
+## Reads the campaign index; on first start creates the default campaign.
 func _open_campaign_index() -> void:
 	DirAccess.make_dir_recursive_absolute(CAMPAIGNS_DIR)
 	var index: Variant = read_json(INDEX_PATH, null)
-	if not index is Dictionary or str(index.get("attiva", "")) == "":
+	if not index is Dictionary or str(index.get("active", "")) == "":
 		index = {
-			"versione": 1,
-			"attiva": DEFAULT_CAMPAIGN,
-			"campagne": [{"id": DEFAULT_CAMPAIGN, "nome": "Filiale", "creata": Time.get_datetime_string_from_system()}],
+			"version": 1,
+			"active": DEFAULT_CAMPAIGN,
+			"campaigns": [{"id": DEFAULT_CAMPAIGN, "name": "Filiale", "created": Time.get_datetime_string_from_system()}],
 		}
 		write_json(INDEX_PATH, index)
-	campaign_id = str(index.attiva)
-	DirAccess.make_dir_recursive_absolute(campaign_path("colloqui"))
+	campaign_id = str(index.active)
+	DirAccess.make_dir_recursive_absolute(campaign_path("interviews"))

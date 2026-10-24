@@ -1,0 +1,71 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://apps/webcam/cage/cage.gd" id="1_script"]
+[ext_resource type="Script" path="res://apps/webcam/cage/entity_model.gd" id="2_entity"]
+[ext_resource type="Shader" path="res://apps/webcam/cage/entity_body.gdshader" id="3_body"]
+
+[sub_resource type="Environment" id="env"]
+background_mode = 1
+background_color = Color(0.0118, 0.0235, 0.0392, 1)
+ambient_light_source = 2
+ambient_light_color = Color(0.1333, 0.2, 0.2471, 1)
+ambient_light_energy = 1.0
+tonemap_mode = 0
+fog_enabled = true
+fog_mode = 1
+fog_light_color = Color(0.0118, 0.0235, 0.0392, 1)
+fog_density = 1.0
+fog_depth_begin = 4.5
+fog_depth_end = 12.0
+
+[sub_resource type="SphereMesh" id="body_mesh"]
+radius = 0.82
+height = 1.64
+radial_segments = 24
+rings = 12
+
+[sub_resource type="ShaderMaterial" id="body_material"]
+render_priority = 0
+shader = ExtResource("3_body")
+
+[node name="Cage" type="Node3D"]
+script = ExtResource("1_script")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("env")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, 5.4)
+fov = 50.0
+near = 0.1
+far = 50.0
+
+[node name="KeyLight" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 2.6, 2.2)
+light_color = Color(0.498, 0.8824, 0.9333, 1)
+light_energy = 3.0
+omni_range = 13.0
+omni_attenuation = 0.6
+
+[node name="RedLight" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.4, 1.6)
+light_color = Color(0.898, 0.149, 0.1725, 1)
+light_energy = 0.0
+omni_range = 9.0
+
+[node name="Cage" type="MeshInstance3D" parent="."]
+cast_shadow = 0
+
+[node name="FloorGrid" type="MeshInstance3D" parent="."]
+cast_shadow = 0
+
+[node name="RedTriangle" type="MeshInstance3D" parent="."]
+cast_shadow = 0
+
+[node name="Entity" type="Node3D" parent="."]
+script = ExtResource("2_entity")
+
+[node name="Body" type="MeshInstance3D" parent="Entity"]
+cast_shadow = 0
+mesh = SubResource("body_mesh")
+material_override = SubResource("body_material")

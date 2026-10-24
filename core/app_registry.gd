@@ -1,6 +1,6 @@
 class_name AppRegistry
 extends Resource
-## Elenco ordinato delle app installate. L'ordine vale per icone, menu Start e barra.
+## Ordered list of installed apps. The order applies to icons, Start menu and taskbar.
 
 @export var apps: Array[AppInfo] = []
 

@@ -1,10 +1,10 @@
 class_name OpenAICompatibleProvider
 extends Node
-## Provider per endpoint compatibili OpenAI (/v1/chat/completions, /v1/models).
-## Fa avanzare tutte le richieste in corso a ogni frame.
+## Provider for OpenAI-compatible endpoints (/v1/chat/completions, /v1/models).
+## Advances all the running requests every frame.
 
-## Precompila la risposta con un ragionamento vuoto: i modelli "che ragionano" (Qwen e simili)
-## passano subito al testo. È l'unico metodo che LM Studio rispetta.
+## Prefills the reply with empty reasoning: "thinking" models (Qwen and the like)
+## go straight to the text. It's the only method LM Studio respects.
 const EMPTY_THINK := "<think>\n\n</think>\n\n"
 
 var base_url: String = ""
@@ -19,7 +19,7 @@ func _ready() -> void:
 	set_process(false)
 
 
-## options: stream (bool), temperature (float), max_tokens (int, 0 = nessun limite),
+## options: stream (bool), temperature (float), max_tokens (int, 0 = no limit),
 ## skip_reasoning (bool), extra (Dictionary).
 func chat(messages: Array[Dictionary], options: Dictionary = {}) -> BrainRequest:
 	var sent := messages
@@ -41,7 +41,7 @@ func chat(messages: Array[Dictionary], options: Dictionary = {}) -> BrainRequest
 	return _start("/chat/completions", HTTPClient.METHOD_POST, body)
 
 
-## Il testo della risposta è l'elenco degli id dei modelli, uno per riga.
+## The reply text is the list of model ids, one per line.
 func list_models() -> BrainRequest:
 	return _start("/models", HTTPClient.METHOD_GET, {}, _model_ids)
 
@@ -63,7 +63,7 @@ func _dialect() -> OpenAIJob.Dialect:
 	return OpenAIJob.Dialect.OPENAI
 
 
-## Il provider viene sostituito: finisce le richieste in corso e poi si libera.
+## The provider is being replaced: finishes the running requests, then frees itself.
 func retire() -> void:
 	_retired = true
 	if _jobs.is_empty():

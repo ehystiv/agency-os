@@ -1,35 +1,36 @@
 class_name AppContent
 extends MarginContainer
-## Base per il contenuto di ogni app. Parla con la sua finestra solo tramite segnali.
+## Base class for every app's content. Talks to its window only through signals.
 
 @warning_ignore("unused_signal")
 signal title_changed(title: String)
+## action, when not empty, is {"app": id, "args": {...}} (the app opened by clicking the balloon)
+## or {"folder": path} (opened in Finder).
 @warning_ignore("unused_signal")
-## action, se non è vuota, è {"app": id, "args": {...}}: l'app da aprire cliccando il fumetto.
 signal notification_requested(title: String, text: String, action: Dictionary)
-## Chiede di aprire un'altra app; args arriva a on_opened() di quell'app,
-## es. &"linea", {"colloquio": 3}.
+## Asks to open another app; args reaches that app's on_opened(),
+## e.g. &"line", {"interview": 3}.
 @warning_ignore("unused_signal")
 signal app_requested(id: StringName, args: Dictionary)
-## Comando di sistema per la scrivania, es. &"riordina_finestre", &"allinea_icone".
+## System command for the desktop, e.g. &"arrange_windows", &"align_icons".
 @warning_ignore("unused_signal")
 signal command_requested(command: StringName)
-## L'app chiede di chiudere la propria finestra (es. ESCI nel prompt dei comandi).
+## The app asks to close its own window (e.g. ESCI in the command prompt).
 @warning_ignore("unused_signal")
 signal close_requested
 
-## Assegnata dalla finestra prima che il contenuto entri nell'albero.
+## Set by the window before the content enters the tree.
 var app: AppInfo
-## Vero quando la finestra dell'app è in primo piano (aggiornato dalla finestra).
+## True while the app's window is in front (kept up to date by the window).
 var window_active: bool = false
 
 
-## Chiamata a ogni apertura, anche quando la finestra torna da ridotta.
-## args viene da chi ha chiesto l'apertura; vuoto per icone, menu Start e barra.
+## Called on every opening, including when the window is restored from minimized.
+## args comes from whoever asked to open it; empty for icons, Start menu and taskbar.
 func on_opened(_args: Dictionary = {}) -> void:
 	pass
 
 
-## Chiamata prima che la finestra venga distrutta.
+## Called when the window is closed (it is hidden, not destroyed).
 func on_closed() -> void:
 	pass

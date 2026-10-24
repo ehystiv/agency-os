@@ -1,8 +1,8 @@
 class_name WindowManager
 extends Control
-## Apre, ordina e ricorda le finestre delle app. Non conosce barra né icone:
-## chi vuole sapere cosa è aperto ascolta windows_changed e chiede entries().
-## Una finestra chiusa viene solo nascosta: l'app conserva il suo stato e i lavori in corso.
+## Opens, orders and remembers the app windows. Knows neither the taskbar nor the icons:
+## whoever wants to know what is open listens to windows_changed and asks entries().
+## A closed window is only hidden: the app keeps its state and its work in progress.
 
 signal windows_changed
 signal notification_requested(title: String, text: String, action: Dictionary)
@@ -11,9 +11,9 @@ signal command_requested(command: StringName)
 const WINDOW_SCENE := preload("res://windows/app_window.tscn")
 
 var _registry: AppRegistry
-## Tutte le finestre create, aperte o chiuse.
+## All the created windows, open or closed.
 var _windows: Dictionary[StringName, AppWindow] = {}
-## Finestre aperte (anche ridotte): sono quelle nella barra delle applicazioni.
+## Open windows (minimized too): the ones in the taskbar.
 var _open: Dictionary[StringName, bool] = {}
 
 
@@ -21,27 +21,27 @@ func _ready() -> void:
 	resized.connect(_on_resized)
 
 
-## Riapre le finestre della volta scorsa, oppure quelle predefinite al primo avvio.
+## Reopens last time's windows, or the default ones on first start.
 func restore(registry: AppRegistry) -> void:
 	_registry = registry
-	if not Save.has_ui("ordine_finestre"):
+	if not Save.has_ui("window_order"):
 		var first: AppWindow = null
 		for app in registry.apps:
 			if app.open_at_first_start:
 				open(app.id)
 				first = _windows[app.id] if first == null else first
-		# La prima app del registro resta in primo piano.
+		# The registry's first app stays in front.
 		if first != null:
 			focus(first)
 		return
-	var states: Dictionary = Save.get_ui("finestre", {})
-	for id: String in Save.get_ui("ordine_finestre", []):
+	var states: Dictionary = Save.get_ui("windows", {})
+	for id: String in Save.get_ui("window_order", []):
 		if _registry.find(StringName(id)) == null:
 			continue
 		var window := _get_or_create(StringName(id))
 		_open[StringName(id)] = true
 		var state: Dictionary = states.get(id, {})
-		window.visible = not bool(state.get("ridotta", false))
+		window.visible = not bool(state.get("minimized", false))
 		if window.visible:
 			window.content.on_opened()
 	_refresh_active()
@@ -84,7 +84,7 @@ func close(window: AppWindow) -> void:
 	windows_changed.emit()
 
 
-## Comportamento dei pulsanti della barra: riapre, porta davanti o riduce.
+## Taskbar button behavior: reopens, brings to front or minimizes.
 func activate_from_taskbar(id: StringName) -> void:
 	var window: AppWindow = _windows.get(id)
 	if window == null or not _open.has(id) or not window.visible:
@@ -95,7 +95,7 @@ func activate_from_taskbar(id: StringName) -> void:
 		focus(window)
 
 
-## Finestre aperte nell'ordine del registro, per la barra delle applicazioni.
+## Open windows in registry order, for the taskbar.
 func entries() -> Array[Dictionary]:
 	var result: Array[Dictionary] = []
 	for app in _registry.apps:
@@ -129,7 +129,7 @@ func _get_or_create(id: StringName) -> AppWindow:
 
 
 func _saved_position(info: AppInfo, window: AppWindow) -> Vector2:
-	var state: Dictionary = Save.get_ui("finestre", {}).get(String(info.id), {})
+	var state: Dictionary = Save.get_ui("windows", {}).get(String(info.id), {})
 	if state.has("x") and state.has("y"):
 		return Vector2(float(state.x), float(state.y))
 	return _default_position(info, window)
@@ -144,7 +144,7 @@ func _default_position(info: AppInfo, window: AppWindow) -> Vector2:
 	return pos
 
 
-## Riporta tutte le finestre alla posizione predefinita.
+## Brings every window back to its default position.
 func reset_positions() -> void:
 	for window: AppWindow in _windows.values():
 		window.position = window.clamp_position(_default_position(window.app, window))
@@ -172,9 +172,9 @@ func _refresh_active() -> void:
 		window.active = window == top
 
 
-## Ricorda posizione e stato di ogni finestra, anche di quelle chiuse.
+## Remembers position and state of every window, closed ones too.
 func _store() -> void:
-	var states: Dictionary = Save.get_ui("finestre", {}).duplicate()
+	var states: Dictionary = Save.get_ui("windows", {}).duplicate()
 	var order: Array[String] = []
 	for child in get_children():
 		var window := child as AppWindow
@@ -183,6 +183,6 @@ func _store() -> void:
 		var id := String(window.app.id)
 		if _open.has(window.app.id):
 			order.append(id)
-		states[id] = {"x": int(window.position.x), "y": int(window.position.y), "ridotta": not window.visible}
-	Save.set_ui("finestre", states)
-	Save.set_ui("ordine_finestre", order)
+		states[id] = {"x": int(window.position.x), "y": int(window.position.y), "minimized": not window.visible}
+	Save.set_ui("windows", states)
+	Save.set_ui("window_order", order)

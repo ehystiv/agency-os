@@ -1,13 +1,13 @@
 shader_type canvas_item;
-// Monitor CRT sopra tutto: righe di scansione, vignettatura e sfarfallio leggeri,
-// più sdoppiamento dei colori e strappo orizzontale durante i glitch forti.
-// Niente curvatura: i clic devono restare dove si vedono i pulsanti.
+// CRT monitor over everything: light scanlines, vignette and flicker,
+// plus color split and horizontal tear during strong glitches.
+// No curvature: clicks must land where the buttons are seen.
 
 uniform sampler2D screen : hint_screen_texture, filter_linear;
 uniform float scanline_alpha = 0.05;
 uniform float vignette = 0.28;
 uniform float flicker = 0.012;
-// 0..1, alzati per un attimo dai glitch.
+// 0..1, raised for a moment by glitches.
 uniform float aberration = 0.0;
 uniform float tear = 0.0;
 

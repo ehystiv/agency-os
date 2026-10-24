@@ -1,8 +1,8 @@
 class_name ScreenSaver
 extends CanvasLayer
-## Salvaschermo: triangoli in wireframe che vengono incontro nel buio
-## e, ogni tanto, un occhio che si apre al centro. Parte dopo i minuti scelti
-## nel Pannello di controllo; un tasto o il mouse lo chiudono.
+## Screensaver: wireframe triangles coming at you in the dark
+## and, now and then, an eye opening in the middle. Starts after the minutes chosen
+## in the Control panel; a key or the mouse closes it.
 
 const TRIANGLES := 40
 const CYAN := Color("7fe1ee")
@@ -12,7 +12,7 @@ const SPEED := 2.2
 const FOCAL := 420.0
 const EYE_EVERY := 9.0
 const EYE_SECONDS := 3.0
-## Il mouse deve muoversi un po' per chiudere il salvaschermo (non un tremolio).
+## The mouse must move a bit to close the screensaver (not a twitch).
 const WAKE_DISTANCE := 6.0
 
 var active := false
@@ -28,7 +28,7 @@ func _ready() -> void:
 	_canvas.draw.connect(_draw_scene)
 
 
-## Lo fa partire subito (anteprima dal Pannello di controllo).
+## Starts it right away (preview from the Control panel).
 func start() -> void:
 	active = true
 	_time = 0.0
@@ -64,7 +64,7 @@ func _process(delta: float) -> void:
 				t.merge(_new_triangle(DEPTH), true)
 		_canvas.queue_redraw()
 		return
-	var minutes := int(Save.get_ui("salvaschermo_minuti", 3))
+	var minutes := int(Save.get_ui("screensaver_minutes", 3))
 	if minutes <= 0 or _blocked():
 		_idle = 0.0
 		return
@@ -73,11 +73,11 @@ func _process(delta: float) -> void:
 		start()
 
 
-## Non parte mentre l'Entità scrive o il Lettore suona, come nel prototipo.
+## Doesn't start while the Entity is writing or the Player is playing, as in the prototype.
 func _blocked() -> bool:
-	if Caveau.speaking:
+	if Entity.speaking:
 		return true
-	for node in get_tree().get_nodes_in_group(&"musica"):
+	for node in get_tree().get_nodes_in_group(&"music"):
 		if node.get("playing"):
 			return true
 	return false
@@ -112,7 +112,7 @@ func _draw_scene() -> void:
 	_draw_eye(center)
 
 
-## L'occhio si apre per qualche secondo ogni EYE_EVERY secondi.
+## The eye opens for a few seconds every EYE_EVERY seconds.
 func _draw_eye(center: Vector2) -> void:
 	var cycle := fmod(_time, EYE_EVERY)
 	if cycle > EYE_SECONDS:

@@ -1,11 +1,11 @@
 shader_type canvas_item;
-// Reticolo triangolare del prototipo: righe a 60°, -60° e 0°, sottili e trasparenti.
+// The prototype's triangular lattice: thin, transparent lines at 60°, -60° and 0°.
 
 uniform vec4 desk_color : source_color = vec4(0.039, 0.055, 0.110, 1.0);
 uniform vec4 line_color : source_color = vec4(0.471, 0.667, 0.863, 0.07);
 uniform float diagonal_spacing = 46.0;
 uniform float horizontal_spacing = 40.0;
-// 0..1: il reticolo della gabbia che pulsa (glitch "reticolo").
+// 0..1: the cage lattice pulsing ("lattice" glitch).
 uniform float pulse = 0.0;
 uniform vec4 pulse_color : source_color = vec4(0.498, 0.882, 0.933, 0.22);
 

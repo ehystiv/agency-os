@@ -1,6 +1,6 @@
 class_name Taskbar
 extends PanelContainer
-## Barra delle applicazioni: Start, un pulsante per finestra aperta, area di notifica.
+## Taskbar: Start, one button per open window, notification area.
 
 signal start_toggled(open: bool)
 signal task_pressed(id: StringName)
@@ -59,7 +59,7 @@ func set_sound_enabled(enabled: bool) -> void:
 	_sound.tooltip_text = "Suoni attivi: clic per disattivare" if enabled else "Suoni disattivati: clic per attivare"
 
 
-## Testo vuoto = nasconde l'indicazione della prossima sessione.
+## Empty text = hides the next session hint.
 func set_next_session(text: String) -> void:
 	_next.visible = text != ""
 	_next.text = text
@@ -76,7 +76,7 @@ func _fit_tasks() -> void:
 		button.custom_minimum_size.x = width
 
 
-## Glitch "sabotaggio": modalità sicura disattivata e orologio impazzito per qualche secondo.
+## "sabotage" glitch: safe mode off and a crazy clock for a few seconds.
 func sabotage(seconds: float = 3.2) -> void:
 	_sabotaged = true
 	_mode.text = "MODALITÀ SICURA ▒▒▒ DISATTIVATA"

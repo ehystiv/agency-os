@@ -1,22 +1,22 @@
 class_name BrainRequest
 extends RefCounted
-## Una richiesta al modello. Ogni richiesta ha i suoi segnali,
-## così lo streaming della chat e un riassunto in parallelo non si mescolano.
-## Si chiude sempre con completed oppure failed, poi finished.
+## A request to the model. Each request has its own signals,
+## so the chat streaming and a parallel summary don't get mixed up.
+## It always ends with completed or failed, then finished.
 
-## piece è il testo nuovo; text contiene tutto il visibile finora.
+## piece is the new text; text holds everything visible so far.
 signal chunk_received(piece: String)
 signal completed(text: String)
-## message è già pronto da mostrare, in italiano.
+## message is ready to be shown, in Italian.
 signal failed(message: String)
 signal finished
 
-## Testo visibile ricevuto finora, senza i blocchi di ragionamento.
+## Visible text received so far, without the reasoning blocks.
 var text: String = ""
 var error: String = ""
-## Codice HTTP dell'errore, 0 se l'errore non viene dal server (spento, timeout…).
+## HTTP status of the error, 0 if the error doesn't come from the server (off, timeout…).
 var http_status: int = 0
-## Vero se la risposta è stata fermata a metà: text contiene la parte arrivata.
+## True if the reply was stopped halfway: text holds the part that arrived.
 var cancelled: bool = false
 var is_done: bool = false
 
@@ -35,7 +35,7 @@ func ok() -> bool:
 	return is_done and error == ""
 
 
-## Usate solo dai provider.
+## Used only by the providers.
 func push_text(visible_text: String) -> void:
 	if visible_text == text:
 		return
@@ -63,8 +63,8 @@ func finish_error(message: String) -> void:
 	_disconnect_all()
 
 
-## Chi ascolta lo streaming spesso cattura la richiesta stessa in una lambda:
-## scollegare tutto alla fine rompe il ciclo e la richiesta viene liberata.
+## Streaming listeners often capture the request itself in a lambda:
+## disconnecting everything at the end breaks the cycle and the request is freed.
 func _disconnect_all() -> void:
 	for sig: Signal in [chunk_received, completed, failed, finished]:
 		for connection: Dictionary in sig.get_connections():

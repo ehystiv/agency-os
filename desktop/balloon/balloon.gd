@@ -1,8 +1,8 @@
 class_name Balloon
 extends PanelContainer
-## Fumetto di notifica sopra l'area di notifica. Sparisce da solo o con un clic.
+## Notification balloon above the notification area. Goes away by itself or on click.
 
-## Distanza dall'angolo in basso a destra dello schermo (sopra la barra).
+## Distance from the bottom right corner of the screen (above the taskbar).
 const MARGIN := Vector2(8, 48)
 
 var _on_click: Callable = Callable()
