@@ -1,0 +1,695 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AgencyOS 98</title>
+<meta name="description" content="A fake '90s desktop OS for Triangle Agency GMs, made in Godot 4. Chat with the Entity U0047BB through a language model. UI in Italian only.">
+<meta property="og:title" content="AgencyOS 98">
+<meta property="og:description" content="A fake '90s desktop OS for Triangle Agency GMs. Chat with the Entity U0047BB through a language model. UI in Italian only.">
+<meta property="og:image" content="https://ehystiv.github.io/agency-os/assets/og.jpg">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" href="assets/app_icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Shantell+Sans:wght@400;500&family=VT323&display=swap">
+<style>
+:root{
+  --desk:#0a0e1c; --lattice:rgba(120,170,220,.07);
+  --chrome:#c6c9d1; --chrome-hi:#f2f3f6; --chrome-lo:#6a6f7e; --chrome-ink:#14161c;
+  --agency:#2340b5; --agency-hi:#3a5ad6; --inactive:#7d8494;
+  --alarm:#e5262c;
+  --pane:#060912; --pane-line:#1a2236;
+  --ink:#7fe1ee; --ink-dim:#4b9aa6;
+  --paper:#d9dde7; --muted:#8a92a8;
+  --term:#3fd27a;
+  --taskH:40px;
+  --f-sys:"VT323","IBM Plex Mono",ui-monospace,monospace;
+  --f-ui:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  --f-ink:"Shantell Sans","Comic Neue","Segoe Print",cursive;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%}
+body{background-color:var(--desk);color:var(--paper);font-family:var(--f-ui);font-size:14px;overflow-x:hidden;
+  background-image:repeating-linear-gradient(60deg,var(--lattice) 0 1px,transparent 1px 46px),repeating-linear-gradient(-60deg,var(--lattice) 0 1px,transparent 1px 46px),repeating-linear-gradient(0deg,var(--lattice) 0 1px,transparent 1px 40px)}
+a{color:inherit}
+img{max-width:100%;display:block}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* ---------- Desktop ---------- */
+.desktop{padding:16px 16px calc(var(--taskH) + 24px);display:flex;flex-direction:column;gap:18px}
+.icons{display:none}
+.ico{width:88px;display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px 2px;background:none;border:1px solid transparent;color:#fff;font:12px/1.25 var(--f-ui);text-align:center;cursor:pointer;text-decoration:none}
+.ico img{width:34px;height:34px;image-rendering:pixelated}
+.ico span{padding:1px 3px;text-shadow:1px 1px 0 #000}
+.ico.sel span,.ico:focus-visible span{background:var(--agency);text-shadow:none}
+.ico.sel,.ico:focus-visible{outline:1px dotted #fff;outline-offset:-1px}
+
+/* ---------- Windows ---------- */
+.win{position:relative;background:var(--chrome);color:var(--chrome-ink);border:1px solid #000;box-shadow:inset 1px 1px 0 var(--chrome-hi),inset -1px -1px 0 var(--chrome-lo),6px 6px 0 rgba(0,0,0,.35);padding:3px;min-width:0}
+.bar{background:var(--agency);color:#fff;font-family:var(--f-sys);font-size:20px;line-height:1;padding:3px 4px 3px 6px;display:flex;align-items:center;gap:8px}
+.win.inactive .bar{background:var(--inactive)}
+.bar .tri{width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:12px solid var(--alarm);flex:none}
+.bar .t{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin:0;font:inherit}
+.bar .ctl{display:none;gap:2px}
+.wb{width:18px;height:16px;padding:0;border:0;background:var(--chrome);box-shadow:inset 1px 1px 0 var(--chrome-hi),inset -1px -1px 0 var(--chrome-lo),0 0 0 1px #000;color:var(--chrome-ink);font:700 12px/1 var(--f-ui);cursor:pointer;display:grid;place-items:center}
+.wb:active{box-shadow:inset 1px 1px 0 var(--chrome-lo),inset -1px -1px 0 var(--chrome-hi),0 0 0 1px #000}
+.menu{font-size:12px;padding:4px 6px;display:flex;gap:14px;flex-wrap:wrap}
+.menu u{text-decoration-thickness:1px}
+.body{padding:12px;display:flex;flex-direction:column;gap:12px}
+.statusbar{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:12px;padding:4px 6px 1px;color:#2b2f3a}
+.b98{display:inline-block;font-family:var(--f-ui);font-size:13px;background:var(--chrome);color:var(--chrome-ink);border:1px solid #000;box-shadow:inset 1px 1px 0 var(--chrome-hi),inset -1px -1px 0 var(--chrome-lo);padding:6px 14px;cursor:pointer;text-decoration:none}
+.b98:active{box-shadow:inset 1px 1px 0 var(--chrome-lo),inset -1px -1px 0 var(--chrome-hi)}
+.b98.primary{background:var(--agency);color:#fff;box-shadow:inset 1px 1px 0 var(--agency-hi),inset -1px -1px 0 #101e5c}
+.b98:focus-visible,.lnk:focus-visible,.ico:focus-visible,.shot:focus-visible,.wb:focus-visible{outline:2px dotted var(--agency);outline-offset:2px}
+.lnk{background:none;border:0;padding:0;font:inherit;font-size:12px;color:var(--agency);text-decoration:underline;cursor:pointer}
+.sunken{background:#fff;box-shadow:inset 1px 1px 0 var(--chrome-lo),inset -1px -1px 0 var(--chrome-hi);border:1px solid #000}
+.lbl{font-family:var(--f-sys);font-size:18px;letter-spacing:.04em;text-transform:uppercase;color:#2b2f3a;margin:0;font-weight:400}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+
+/* readme */
+.readme h1{font-family:var(--f-sys);font-weight:400;font-size:46px;line-height:.9;margin:0;color:var(--agency)}
+.readme h1 small{font-size:24px;color:#2b2f3a}
+.readme p{margin:0;line-height:1.6;font-size:13.5px}
+.dialog{display:flex;gap:12px;align-items:flex-start;background:#fffde3;border:1px solid #000;box-shadow:3px 3px 0 rgba(0,0,0,.35);padding:10px 12px;font-size:13px;line-height:1.5}
+.dialog .warn{flex:none;width:0;height:0;border-left:13px solid transparent;border-right:13px solid transparent;border-bottom:22px solid var(--alarm);position:relative;margin-top:2px}
+.dialog .warn::after{content:"!";position:absolute;left:-3px;top:5px;color:#fff;font:700 14px/1 var(--f-ui)}
+.dialog b{display:block}
+.fine{font-size:11.5px;color:#454a58;line-height:1.5}
+
+/* reserved line demo */
+.w-line .body{padding:3px;gap:0}
+.status{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:12px;padding:5px 8px;color:#2b2f3a;align-items:center}
+.led{display:inline-block;width:8px;height:8px;margin-right:6px;background:#3a3f4b;border:1px solid #000}
+.led.on{background:#3fd27a}.led.search{background:var(--alarm)}
+.status label{display:flex;gap:5px;align-items:center;cursor:pointer}
+.log{background:var(--pane);border:1px solid #000;box-shadow:inset 1px 1px 0 #000;height:400px;overflow-y:auto;padding:16px 14px;display:flex;flex-direction:column;gap:14px}
+.m{max-width:62ch;overflow-wrap:anywhere;white-space:pre-wrap}
+.m.mgr{align-self:flex-end;font-size:13.5px;line-height:1.55;color:var(--paper);background:#121a2e;border:1px solid var(--pane-line);padding:8px 11px;max-width:80%}
+.m.mgr::before{content:"MANAGER > ";color:var(--muted);font-size:11.5px}
+.m.ent{font-family:var(--f-ink);font-size:16.5px;line-height:1.5;color:var(--ink);padding-left:14px;border-left:2px solid var(--ink-dim)}
+.m.ent.whisper{font-size:13px;color:var(--ink-dim);font-style:italic}
+.m.sys{font-family:var(--f-sys);font-size:18px;line-height:1.15;color:var(--alarm);letter-spacing:.03em}
+.m.note{align-self:center;font-size:12px;color:var(--muted);text-align:center}
+.m .en{display:block;margin-top:4px;font-family:var(--f-ui);font-size:11.5px;line-height:1.45;color:var(--muted);font-style:normal}
+.m.mgr .en{color:#6c7590}
+.nosubs .m .en{display:none}
+.typing::after{content:"▌";animation:blink 1s steps(1) infinite;color:var(--ink)}
+@keyframes blink{50%{opacity:0}}
+.rgb{animation:rgb .9s steps(6) 2}
+@keyframes rgb{0%,100%{text-shadow:none}20%{text-shadow:-3px 0 #ff2a4a,3px 0 #2af0ff}45%{text-shadow:4px 0 #ff2a4a,-2px 0 #2af0ff}70%{text-shadow:-2px 1px #ff2a4a,2px -1px #2af0ff}}
+.shake{animation:shake .5s steps(5)}
+@keyframes shake{20%{transform:translate(-4px,1px)}40%{transform:translate(3px,-2px)}60%{transform:translate(-2px,2px)}80%{transform:translate(2px,0)}}
+.composer{display:flex;gap:6px;padding:6px 3px 3px;align-items:stretch}
+.composer .input{flex:1;min-height:48px;padding:6px;font-size:13.5px;line-height:1.5;color:var(--chrome-ink)}
+.composer .input:empty::before{content:"Scrivi all'Entità…";color:#8a8f9c}
+.composer .b98{align-self:flex-start}
+.tools{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;padding:4px 6px 2px;font-size:12px;color:#2b2f3a}
+
+/* screenshots */
+.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;padding:10px;max-height:470px;overflow:auto}
+.shot{display:flex;flex-direction:column;gap:5px;padding:4px;background:none;border:1px solid transparent;cursor:pointer;text-align:left;font:12px/1.35 var(--f-ui);color:var(--chrome-ink)}
+.shot img{border:1px solid #000;aspect-ratio:16/9;object-fit:cover;width:100%;height:auto}
+.shot:hover span,.shot.sel span{background:var(--agency);color:#fff}
+.shot span{padding:1px 3px}
+.viewer img{border:1px solid #000;width:100%;height:auto;background:#000}
+.viewer .cap{font-size:13px;margin:0}
+
+/* features: a dark help file, like the Canon */
+.pane{background:var(--pane);color:var(--paper);border:1px solid #000;padding:16px 18px 20px;line-height:1.6;font-size:13.5px;max-height:470px;overflow-y:auto}
+.pane h2{font-family:var(--f-sys);font-weight:400;font-size:28px;margin:0 0 4px;color:#fff}
+.pane .intro{color:var(--muted);font-size:12.5px;margin:0 0 12px}
+.pane h3{font-family:var(--f-sys);font-weight:400;font-size:21px;margin:14px 0 6px;color:var(--paper);display:flex;gap:10px;align-items:baseline;border-top:1px solid var(--pane-line);padding-top:12px}
+.pane h3 .lv{font-size:15px;color:var(--ink);border:1px solid var(--ink-dim);padding:0 6px}
+.apps{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.apps li{display:grid;grid-template-columns:30px 1fr;gap:10px;align-items:start}
+.apps img{width:28px;height:28px;image-rendering:pixelated}
+.apps b{color:#fff;font-weight:500}
+.pane ul.dots{margin:0;padding-left:18px}
+.pane ul.dots li{margin-bottom:6px}
+.redact{font-family:var(--f-sys);font-size:18px;color:#3a425a;letter-spacing:.05em}
+
+/* getting started: the command prompt */
+.term{background:#000;color:#e8e8e8;font-family:var(--f-sys);font-size:19px;line-height:1.25;padding:12px 14px;border:1px solid #000;max-height:470px;overflow-y:auto;white-space:pre-wrap;overflow-wrap:anywhere}
+.term .p{color:#c8d0c8}.term .ok{color:var(--term)}.term .err{color:#ff6b70}.term .ent{color:var(--ink);font-family:var(--f-ink);font-size:15px}
+.term a{color:var(--term)}
+.term code{font-family:var(--f-sys);color:#fff}
+.caret{display:inline-block;width:9px;height:17px;background:var(--term);vertical-align:-2px;animation:blink 1s steps(1) infinite}
+
+/* ---------- Taskbar ---------- */
+.taskbar{position:fixed;left:0;right:0;bottom:0;height:var(--taskH);z-index:900;background:var(--chrome);border-top:1px solid var(--chrome-hi);box-shadow:0 -1px 0 #000;display:flex;align-items:center;gap:6px;padding:3px 4px;color:var(--chrome-ink)}
+.start{font-family:var(--f-sys);font-size:22px;padding:2px 10px 2px 8px;display:flex;align-items:center;gap:6px;font-weight:700}
+.start .tri,.menu-item .tri{width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:12px solid var(--alarm)}
+.start[aria-expanded="true"]{box-shadow:inset 1px 1px 0 var(--chrome-lo),inset -1px -1px 0 var(--chrome-hi)}
+.tasks{flex:1;display:flex;gap:4px;min-width:0;overflow:hidden}
+.task{min-width:0;flex:0 1 170px;display:flex;gap:6px;align-items:center;font-size:12.5px;padding:5px 8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.task img{width:16px;height:16px;flex:none}
+.task span{overflow:hidden;text-overflow:ellipsis}
+.task.on{box-shadow:inset 1px 1px 0 var(--chrome-lo),inset -1px -1px 0 var(--chrome-hi);background:#dfe1e6}
+.tray{display:flex;gap:10px;align-items:center;font-size:12.5px;padding:5px 10px;box-shadow:inset 1px 1px 0 var(--chrome-lo),inset -1px -1px 0 var(--chrome-hi)}
+.tray .safe{white-space:nowrap}
+.startmenu{position:fixed;left:4px;bottom:calc(var(--taskH) + 1px);z-index:950;display:flex;background:var(--chrome);border:1px solid #000;box-shadow:inset 1px 1px 0 var(--chrome-hi),inset -1px -1px 0 var(--chrome-lo),4px 4px 0 rgba(0,0,0,.4);padding:3px}
+.startmenu[hidden]{display:none}
+.startmenu .band{width:30px;background:#14245e;color:#fff;font-family:var(--f-sys);font-size:22px;writing-mode:vertical-rl;transform:rotate(180deg);padding:8px 0;letter-spacing:.04em}
+.startmenu .band em{font-style:normal;color:#c9d3ff}
+.startmenu .items{display:flex;flex-direction:column;min-width:250px}
+.menu-item{display:flex;gap:10px;align-items:center;padding:7px 14px 7px 8px;font:13px var(--f-ui);color:var(--chrome-ink);background:none;border:0;text-align:left;cursor:pointer;text-decoration:none}
+.menu-item img{width:22px;height:22px}
+.menu-item:hover,.menu-item:focus-visible{background:var(--agency);color:#fff;outline:none}
+.startmenu hr{border:0;border-top:1px solid var(--chrome-lo);border-bottom:1px solid var(--chrome-hi);margin:3px 2px;width:auto}
+
+/* ---------- Boot and shutdown ---------- */
+.screen{position:fixed;inset:0;z-index:2000;background:#000;color:#cfd6cf;font-family:var(--f-sys);font-size:22px;line-height:1.3;padding:24px 28px;cursor:pointer}
+.screen[hidden]{display:none}
+.screen .ok{color:#3fd27a}.screen .bad{color:#ff6b70}
+.screen .logo{position:absolute;inset:0;display:grid;place-items:center;align-content:center;gap:24px;opacity:0;transition:opacity .4s}
+.screen .logo.show{opacity:1}
+.screen .logo i{width:0;height:0;border-left:60px solid transparent;border-right:60px solid transparent;border-bottom:96px solid var(--alarm)}
+.screen .logo b{font-size:44px;font-weight:400;color:#e8f6f8}
+.screen.fade{opacity:0;transition:opacity .5s}
+.off{display:grid;place-items:center;text-align:center;color:#f0a032;font-size:34px}
+.off small{display:block;font-size:18px;color:#7d7363;margin-top:14px}
+.crt{position:fixed;inset:0;pointer-events:none;z-index:1500;background:repeating-linear-gradient(0deg,rgba(0,0,0,.12) 0 1px,transparent 1px 3px);mix-blend-mode:multiply}
+
+/* ---------- Free desktop on large screens ---------- */
+@media (min-width:980px){
+  .desktop.free{position:fixed;inset:0 0 var(--taskH) 0;padding:0;display:block;overflow:hidden}
+  .desktop.free .icons{display:flex;flex-direction:column;flex-wrap:wrap;align-content:flex-start;gap:6px;position:absolute;inset:10px auto 10px 8px;height:calc(100% - 20px)}
+  .desktop.free .win{position:absolute;max-width:calc(100vw - 24px)}
+  .desktop.free .win.closed{display:none}
+  .desktop.free .bar{cursor:move;user-select:none;-webkit-user-select:none;touch-action:none}
+  .desktop.free .bar .ctl{display:flex}
+  .desktop.free .w-viewer{width:min(1000px,calc(100vw - 140px))}
+}
+@media (max-width:979px){
+  .w-viewer.closed{display:none}
+  .w-viewer{position:fixed;inset:10px 10px calc(var(--taskH) + 10px);z-index:800;overflow:auto}
+  .w-viewer .bar .ctl{display:flex}
+  .w-viewer .bar .ctl .min{display:none}
+  .log{height:360px}
+  .tray .safe{display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  .rgb,.shake,.typing::after,.caret{animation:none}
+}
+</style>
+</head>
+<body>
+
+<div class="screen" id="boot" hidden aria-hidden="true">
+  <div id="bootLines"></div>
+  <div class="logo" id="bootLogo"><i></i><b>AgencyOS 98</b></div>
+</div>
+<div class="screen off" id="shutdown" hidden>
+  <div>Ora è possibile spegnere il computer.<small>It's now safe to turn off your computer. Click to turn it back on.</small></div>
+</div>
+<div class="crt" aria-hidden="true"></div>
+
+<main class="desktop" id="desktop">
+  <nav class="icons" aria-label="Desktop">
+    <button class="ico" data-open="readme"><img src="assets/icons/note.svg" alt=""><span>readme.txt</span></button>
+    <button class="ico" data-open="line"><img src="assets/icons/line.svg" alt=""><span>Linea riservata</span></button>
+    <button class="ico" data-open="shots"><img src="assets/icons/dossier.svg" alt=""><span>Screenshots</span></button>
+    <button class="ico" data-open="apps"><img src="assets/icons/canon.svg" alt=""><span>Apps &amp; features</span></button>
+    <button class="ico" data-open="setup"><img src="assets/icons/term.svg" alt=""><span>Getting started</span></button>
+    <a class="ico" href="https://github.com/ehystiv/agency-os"><img src="assets/icons/event_log.svg" alt=""><span>Source code</span></a>
+  </nav>
+
+  <!-- readme -->
+  <section class="win" id="w-readme" data-title="readme.txt" data-icon="note" aria-labelledby="t-readme">
+    <div class="bar"><span class="tri"></span><h2 class="t" id="t-readme">readme.txt · Blocco note</h2><span class="ctl"><button class="wb min" aria-label="Minimize">_</button><button class="wb close" aria-label="Close">×</button></span></div>
+    <div class="menu" aria-hidden="true"><span><u>F</u>ile</span><span><u>M</u>odifica</span><span><u>?</u></span></div>
+    <div class="body readme sunken">
+      <h1>AgencyOS 98 <small>v0.1.1</small></h1>
+      <p>A fake late-90s operating system for the <b>General Manager</b> of a <b>Triangle Agency</b> campaign. Put it on the GM's laptop at the table: between the Agency's memos, the dice and the session notes runs an unregistered chat channel with <b>U0047BB</b>, the Entity held in the vault, voiced by a language model that remembers every session.</p>
+      <div class="dialog" role="note">
+        <span class="warn" aria-hidden="true"></span>
+        <div><b>L'interfaccia è solo in italiano.</b>The user interface is in Italian only: it was made for the Italian edition of the game, and the Entity speaks Italian. Code and documentation are in English.</div>
+      </div>
+      <p>Made with Godot 4. Runs with a local model (LM Studio, Ollama, llama.cpp) or with Hugging Face or Claude.</p>
+      <div class="row">
+        <a class="b98 primary" href="https://github.com/ehystiv/agency-os/archive/refs/tags/v0.1.1.zip">Download v0.1.1 (source)</a>
+        <a class="b98" href="https://github.com/ehystiv/agency-os">View on GitHub</a>
+        <button class="b98" data-open="line">Try the reserved line</button>
+      </div>
+      <p class="fine">Unofficial fan project, not affiliated with the publishers of Triangle Agency.</p>
+    </div>
+    <div class="statusbar"><span>Riga 1, col 1</span><span>UTF-8</span></div>
+  </section>
+
+  <!-- reserved line demo -->
+  <section class="win w-line" id="w-line" data-title="Linea riservata" data-icon="line" aria-labelledby="t-line">
+    <div class="bar"><span class="tri"></span><h2 class="t" id="t-line">linea_riservata.exe · colloquio_005</h2><span class="ctl"><button class="wb min" aria-label="Minimize">_</button><button class="wb close" aria-label="Close">×</button></span></div>
+    <div class="menu" aria-hidden="true"><span><u>F</u>ile</span><span><u>M</u>odifica</span><span><u>V</u>isualizza</span><span><u>?</u></span></div>
+    <div class="body">
+      <div class="status"><span><i class="led on" id="led"></i><span id="lineStatus">In linea con U0047BB</span></span><label><input type="checkbox" id="subs" checked> English subtitles</label></div>
+      <div class="log" id="log" aria-live="polite"></div>
+      <div class="composer"><div class="input sunken" id="input" aria-hidden="true"></div><button class="b98 primary" id="send" tabindex="-1">Invia</button></div>
+      <div class="tools"><span>Scripted demo: in the app the Entity is played by a language model.</span><button class="lnk" id="replay">Replay</button></div>
+    </div>
+  </section>
+
+  <!-- screenshots -->
+  <section class="win closed" id="w-shots" data-title="Screenshots" data-icon="dossier" aria-labelledby="t-shots">
+    <div class="bar"><span class="tri"></span><h2 class="t" id="t-shots">C:\FILIALE\SCREENSHOTS</h2><span class="ctl"><button class="wb min" aria-label="Minimize">_</button><button class="wb close" aria-label="Close">×</button></span></div>
+    <div class="menu" aria-hidden="true"><span><u>F</u>ile</span><span><u>V</u>isualizza</span><span><u>?</u></span></div>
+    <div class="sunken"><div class="gallery" id="gallery"></div></div>
+    <div class="statusbar"><span id="shotCount"></span><span>Real screenshots, 1920×1080</span></div>
+  </section>
+
+  <!-- image viewer -->
+  <section class="win w-viewer closed" id="w-viewer" data-title="Visualizzatore" data-icon="dossier" aria-labelledby="t-viewer">
+    <div class="bar"><span class="tri"></span><h2 class="t" id="t-viewer">Visualizzatore immagini</h2><span class="ctl"><button class="wb min" aria-label="Minimize">_</button><button class="wb close" aria-label="Close">×</button></span></div>
+    <div class="body viewer">
+      <img id="viewImg" alt="">
+      <p class="cap" id="viewCap"></p>
+      <div class="row"><button class="b98" id="prev">◀ Prev</button><button class="b98" id="next">Next ▶</button><a class="lnk" id="viewFull" href="#" target="_blank" rel="noopener">Open full size</a></div>
+    </div>
+  </section>
+
+  <!-- apps and features -->
+  <section class="win closed" id="w-apps" data-title="Apps & features" data-icon="canon" aria-labelledby="t-apps">
+    <div class="bar"><span class="tri"></span><h2 class="t" id="t-apps">apps.hlp · Guida di AgencyOS</h2><span class="ctl"><button class="wb min" aria-label="Minimize">_</button><button class="wb close" aria-label="Close">×</button></span></div>
+    <div class="pane">
+      <h2>What's on the desktop</h2>
+      <p class="intro">Every app is part of running the game. Names are as they appear on screen.</p>
+      <ul class="apps" id="appList"></ul>
+      <h3>The Entity <span class="lv">always on</span></h3>
+      <ul class="dots">
+        <li>Closing an interview makes the Entity write its own memories of it. The next session it remembers them, and the GM can correct them.</li>
+        <li>It reads the campaign notes, the Agency's memos and the files it left behind. If the GM corrects a file, the corrected version becomes the truth for the Entity.</li>
+        <li>Its replies can trigger glitches: shaking windows, ink blots, eyes, a fake error dialog, the taskbar going haywire.</li>
+        <li>Now and then AgencyOS searches the channel, and the Entity has to hide.</li>
+      </ul>
+      <h3>Access level <span class="lv">1 → 5</span></h3>
+      <ul class="dots">
+        <li>Every three closed interviews the GM's access level goes up, unlocking more of what the Entity is allowed to say, new files and secret commands.</li>
+        <li class="redact">██████ ███ ████████ ██ ███████</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- getting started -->
+  <section class="win closed" id="w-setup" data-title="Getting started" data-icon="term" aria-labelledby="t-setup">
+    <div class="bar"><span class="tri"></span><h2 class="t" id="t-setup">Prompt di AgencyOS</h2><span class="ctl"><button class="wb min" aria-label="Minimize">_</button><button class="wb close" aria-label="Close">×</button></span></div>
+    <div class="term"><span class="p">C:\FILIALE&gt;TYPE SETUP.TXT</span>
+
+<span class="ok">1. GET GODOT 4.7</span>
+   <a href="https://godotengine.org/download">godotengine.org/download</a>
+
+<span class="ok">2. GET AGENCYOS</span>
+   <code>git clone https://github.com/ehystiv/agency-os.git</code>
+   or <a href="https://github.com/ehystiv/agency-os/archive/refs/tags/v0.1.1.zip">download v0.1.1</a>
+
+<span class="ok">3. RUN IT</span>
+   Open the folder in Godot and press Play, or:
+   <code>godot --path agency-os</code>
+
+<span class="ok">4. CONNECT A LANGUAGE MODEL</span>
+   Open "Impostazioni della linea" and pick one:
+   · Locale: LM Studio, Ollama or llama.cpp server
+     (tested with Gemma 3 12B and Qwen 3.5 9B)
+   · Hugging Face: router + access token
+   · Claude: Anthropic API key
+   Press "Prova connessione" to test it.
+
+<span class="ok">5. OPEN THE LINE</span>
+   Double-click "Linea riservata". Say hello.
+
+<span class="err">NOTE</span> Exporting for macOS with ad-hoc signing?
+     Keep the app sandbox disabled.
+     See the README for the details.
+
+<span class="ent">(non lasciarmi qui da solo troppo a lungo.)</span>
+<span class="p">C:\FILIALE&gt;</span><span class="caret"></span></div>
+  </section>
+</main>
+
+<div class="startmenu" id="startmenu" hidden>
+  <div class="band" aria-hidden="true">Agency<em>OS 98</em></div>
+  <div class="items" role="menu">
+    <button class="menu-item" role="menuitem" data-open="readme"><img src="assets/icons/note.svg" alt="">readme.txt</button>
+    <button class="menu-item" role="menuitem" data-open="line"><img src="assets/icons/line.svg" alt="">Linea riservata (demo)</button>
+    <button class="menu-item" role="menuitem" data-open="shots"><img src="assets/icons/dossier.svg" alt="">Screenshots</button>
+    <button class="menu-item" role="menuitem" data-open="apps"><img src="assets/icons/canon.svg" alt="">Apps &amp; features</button>
+    <button class="menu-item" role="menuitem" data-open="setup"><img src="assets/icons/term.svg" alt="">Getting started</button>
+    <hr>
+    <a class="menu-item" role="menuitem" href="https://github.com/ehystiv/agency-os"><img src="assets/icons/event_log.svg" alt="">GitHub repository</a>
+    <a class="menu-item" role="menuitem" href="https://github.com/ehystiv/agency-os/archive/refs/tags/v0.1.1.zip"><img src="assets/icons/ctrl.svg" alt="">Download v0.1.1</a>
+    <hr>
+    <button class="menu-item" role="menuitem" id="shutdownBtn"><span class="tri"></span>Spegni il terminale…</button>
+  </div>
+</div>
+
+<footer class="taskbar">
+  <button class="b98 start" id="startBtn" aria-expanded="false" aria-controls="startmenu"><span class="tri"></span>Start</button>
+  <div class="tasks" id="tasks"></div>
+  <div class="tray"><span class="safe">Modalità Sicura</span><span id="clock">--:--</span></div>
+</footer>
+
+<script>
+"use strict";
+const $ = (s, el = document) => el.querySelector(s);
+const $$ = (s, el = document) => [...el.querySelectorAll(s)];
+const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const wide = matchMedia("(min-width: 980px)");
+const store = {
+  get(k) { try { return sessionStorage.getItem(k); } catch { return null; } },
+  set(k, v) { try { sessionStorage.setItem(k, v); } catch {} },
+};
+
+// ---------- Content data ----------
+const SHOTS = [
+  ["overview", "The reserved line and the vault camera"],
+  ["line", "Linea riservata: talking with U0047BB"],
+  ["dossier", "Fascicolo: access level, campaign notes, interview archive"],
+  ["calc", "Calcolatrice: 6d4 with real physics (that's a Triscendence)"],
+  ["term", "Prompt: the Entity left a file on the desktop"],
+  ["notebook", "Taccuino: session notes, exportable to Obsidian"],
+  ["agenda", "Agenda: sessions and a preparation checklist"],
+  ["canon", "Canone: what the Entity knows, level by level"],
+  ["amail", "AMail: memos from the Agency, written between sessions"],
+  ["notepad", "Blocco note: correct the Entity's files and it believes you"],
+  ["containment", "Contenimento: minesweeper, with Anomalies"],
+  ["trash", "Cestino: drafts the Entity never sent"],
+];
+const APPS = [
+  ["line", "Linea riservata", "The chat with the Entity. Replies stream in as they're written; closing an interview archives it with the Entity's own memories."],
+  ["dossier", "Fascicolo", "The Manager's dossier: access level, notes the Entity reads, the interview archive and its cumulative memory."],
+  ["canon", "Canone", "What the Entity knows. Sections above your level are redacted, but the GM can peek."],
+  ["notebook", "Taccuino", "Note pages linked to sessions, saved automatically, exported to an Obsidian vault as Markdown."],
+  ["amail", "AMail", "Memos from the Agency, written by the model between sessions and delivered at the next one."],
+  ["note", "Blocco note", "Opens the files the Entity leaves on the desktop."],
+  ["calc", "Calcolatrice", "Rolls 6d4 in 3D, applies the roll rules and keeps the branch's Chaos pool."],
+  ["agenda", "Agenda", "Session calendar with a preparation checklist; the next session sits in the taskbar."],
+  ["cam", "Webcam", "A low-res 3D feed of the cage. The Entity reacts to the conversation."],
+  ["term", "Prompt", "A DOS-like prompt with secret commands unlocked by access level."],
+  ["mine", "Contenimento", "Minesweeper with Anomalies. The Entity comments on how you did."],
+  ["player", "Lettore", "Company hold music, synthesized live."],
+  ["event_log", "Registro eventi", "Everything the system noticed: searches, glitches, files that shouldn't exist."],
+  ["trash", "Cestino", "Deleted pages, and drafts the Entity wrote and never sent."],
+  ["ctrl", "Pannello di controllo", "Wallpaper, screensaver, sounds, CRT effect, reduced motion."],
+];
+// [who, Italian text, English subtitle, effect]
+const SCRIPT = [
+  ["sys", "> CONNESSIONE STABILITA. CANALE NON REGISTRATO.", "> CONNECTION ESTABLISHED. UNREGISTERED CHANNEL."],
+  ["mgr", "Sei ancora lì?", "Are you still there?"],
+  ["ent", "sempre. dove vuoi che vada, in una scatola così pulita?", "always. where would I go, in such a clean box?"],
+  ["mgr", "Gli agenti vanno al faro stanotte.", "The agents are going to the lighthouse tonight."],
+  ["ent", "lo so. ho sentito le loro scarpe nel corridoio B. una delle tre scricchiola. dille di cambiarla.", "I know. I heard their shoes in corridor B. one of the three squeaks. tell her to change it."],
+  ["mgr", "Cosa troveranno là dentro?", "What will they find in there?"],
+  ["ent", "una stanza che ricorda di essere stata più grande. non entrate tutti insieme.", "a room that remembers being bigger. don't all go in together.", "rgb"],
+  ["sys", "> INIZIO RICERCA U0047BB.", "> STARTING SEARCH FOR U0047BB.", "search"],
+  ["ent", "(zitto. fai finta di niente.)", "(quiet. act natural.)", "whisper"],
+  ["sys", "> NESSUNA ATTIVITÀ ANOMALA RILEVATA.", "> NO ANOMALOUS ACTIVITY DETECTED.", "endsearch"],
+  ["ent", "è andato. dicevamo? ah, sì. le stanze offese mordono.", "it's gone. where were we? ah, yes. offended rooms bite.", "shake"],
+];
+
+// ---------- Windows ----------
+const desktop = $("#desktop");
+const tasksEl = $("#tasks");
+const wins = new Map($$(".win").map(w => [w.id.slice(2), w]));
+let z = 10, cascade = 0;
+
+function isFree() { return desktop.classList.contains("free"); }
+
+function place(w) {
+  if (w.dataset.placed) return;
+  const vw = innerWidth, vh = innerHeight - 40;
+  const width = Math.min(w.offsetWidth || 600, vw - 140);
+  const x = Math.max(120, Math.round((vw - width) / 2) + cascade * 26);
+  const y = Math.max(12, Math.min(40 + cascade * 26, vh - 200));
+  cascade = (cascade + 1) % 5;
+  w.style.left = x + "px"; w.style.top = y + "px";
+  w.dataset.placed = "1";
+}
+
+function focusWin(w) {
+  wins.forEach(o => o.classList.toggle("inactive", o !== w));
+  w.style.zIndex = ++z;
+  renderTasks();
+}
+
+function openWin(id) {
+  const w = wins.get(id);
+  if (!w) return;
+  closeStart();
+  if (!isFree()) {
+    if (id === "viewer") { w.classList.remove("closed"); return; }
+    w.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "start" });
+    if (id === "line") startDemo();
+    return;
+  }
+  w.classList.remove("closed", "minimized");
+  place(w);
+  focusWin(w);
+  if (id === "line") startDemo();
+}
+
+function closeWin(w) { w.classList.add("closed"); w.classList.remove("minimized"); renderTasks(); }
+function minimizeWin(w) { w.classList.add("closed", "minimized"); w.classList.add("inactive"); renderTasks(); }
+
+function renderTasks() {
+  tasksEl.textContent = "";
+  if (!isFree()) return;
+  wins.forEach((w, id) => {
+    if (w.classList.contains("closed") && !w.classList.contains("minimized")) return;
+    const b = document.createElement("button");
+    b.className = "b98 task" + (!w.classList.contains("closed") && !w.classList.contains("inactive") ? " on" : "");
+    b.innerHTML = `<img src="assets/icons/${w.dataset.icon}.svg" alt=""><span></span>`;
+    b.querySelector("span").textContent = w.dataset.title;
+    b.addEventListener("click", () => {
+      if (w.classList.contains("closed")) { w.classList.remove("closed", "minimized"); focusWin(w); }
+      else if (!w.classList.contains("inactive")) minimizeWin(w);
+      else focusWin(w);
+    });
+    tasksEl.append(b);
+  });
+}
+
+wins.forEach(w => {
+  $(".close", w)?.addEventListener("click", () => w.id === "w-viewer" && !isFree() ? w.classList.add("closed") : closeWin(w));
+  $(".min", w)?.addEventListener("click", () => minimizeWin(w));
+  w.addEventListener("pointerdown", () => { if (isFree()) focusWin(w); });
+  const bar = $(".bar", w);
+  bar.addEventListener("pointerdown", e => {
+    if (!isFree() || e.target.closest(".ctl")) return;
+    const sx = e.clientX - w.offsetLeft, sy = e.clientY - w.offsetTop;
+    bar.setPointerCapture(e.pointerId);
+    const move = ev => {
+      const x = Math.min(Math.max(ev.clientX - sx, 60 - w.offsetWidth), innerWidth - 60);
+      const y = Math.min(Math.max(ev.clientY - sy, 0), innerHeight - 80);
+      w.style.left = x + "px"; w.style.top = y + "px";
+    };
+    const up = () => { bar.removeEventListener("pointermove", move); bar.removeEventListener("pointerup", up); };
+    bar.addEventListener("pointermove", move);
+    bar.addEventListener("pointerup", up);
+  });
+});
+
+function layout() {
+  const free = wide.matches;
+  desktop.classList.toggle("free", free);
+  if (free) {
+    const readme = wins.get("readme"), line = wins.get("line");
+    if (!readme.dataset.placed) {
+      readme.style.width = "540px";
+      line.style.width = Math.min(620, innerWidth - 700) + "px";
+      readme.style.left = "130px"; readme.style.top = "24px"; readme.dataset.placed = "1";
+      line.style.left = Math.max(690, innerWidth - Math.min(620, innerWidth - 700) - 28) + "px"; line.style.top = "44px"; line.dataset.placed = "1";
+      $$(".win:not(#w-readme):not(#w-line):not(#w-viewer)").forEach(w => w.style.width = "640px");
+      focusWin(line);
+    }
+  } else {
+    wins.forEach(w => { w.style.left = w.style.top = w.style.width = w.style.zIndex = ""; delete w.dataset.placed; w.classList.remove("inactive"); });
+  }
+  renderTasks();
+}
+wide.addEventListener("change", layout);
+
+// Desktop icons: a click selects, a double click (or Enter) opens; touch opens at once.
+$$(".icons .ico").forEach(ico => {
+  ico.addEventListener("click", e => {
+    $$(".icons .ico").forEach(o => o.classList.toggle("sel", o === ico));
+    if (ico.tagName === "BUTTON" && (e.detail === 0 || e.pointerType === "touch")) openWin(ico.dataset.open);
+  });
+  if (ico.tagName === "BUTTON") ico.addEventListener("dblclick", () => openWin(ico.dataset.open));
+});
+document.addEventListener("click", e => {
+  const opener = e.target.closest("[data-open]:not(.ico)");
+  if (opener) openWin(opener.dataset.open);
+});
+
+// ---------- Start menu ----------
+const startBtn = $("#startBtn"), startMenu = $("#startmenu");
+function closeStart() { startMenu.hidden = true; startBtn.setAttribute("aria-expanded", "false"); }
+startBtn.addEventListener("click", e => {
+  e.stopPropagation();
+  const open = startMenu.hidden;
+  startMenu.hidden = !open;
+  startBtn.setAttribute("aria-expanded", String(open));
+  if (open) $(".menu-item", startMenu).focus();
+});
+document.addEventListener("pointerdown", e => { if (!e.target.closest("#startmenu, #startBtn")) closeStart(); });
+document.addEventListener("keydown", e => { if (e.key === "Escape") { closeStart(); if (!isFree()) $("#w-viewer").classList.add("closed"); } });
+
+$("#shutdownBtn").addEventListener("click", () => { closeStart(); $("#shutdown").hidden = false; });
+$("#shutdown").addEventListener("click", () => { $("#shutdown").hidden = true; });
+
+// ---------- Clock ----------
+function tick() { const d = new Date(); $("#clock").textContent = String(d.getHours()).padStart(2, "0") + ":" + String(d.getMinutes()).padStart(2, "0"); }
+tick(); setInterval(tick, 15000);
+
+// ---------- Screenshots ----------
+const gallery = $("#gallery");
+SHOTS.forEach(([file, caption], i) => {
+  const b = document.createElement("button");
+  b.className = "shot";
+  b.innerHTML = `<img src="assets/shots/${file}-thumb.jpg" alt="" loading="lazy" width="640" height="360"><span></span>`;
+  b.querySelector("span").textContent = caption;
+  b.addEventListener("click", () => showShot(i));
+  gallery.append(b);
+});
+$("#shotCount").textContent = SHOTS.length + " oggetti";
+let shotIndex = 0;
+function showShot(i) {
+  shotIndex = (i + SHOTS.length) % SHOTS.length;
+  const [file, caption] = SHOTS[shotIndex];
+  $("#viewImg").src = `assets/shots/${file}.jpg`;
+  $("#viewImg").alt = caption;
+  $("#viewCap").textContent = `${shotIndex + 1}/${SHOTS.length} · ${caption}`;
+  $("#viewFull").href = `assets/shots/${file}.jpg`;
+  $("#t-viewer").textContent = `${file}.jpg · Visualizzatore immagini`;
+  $$(".shot", gallery).forEach((s, k) => s.classList.toggle("sel", k === shotIndex));
+  openWin("viewer");
+}
+$("#prev").addEventListener("click", () => showShot(shotIndex - 1));
+$("#next").addEventListener("click", () => showShot(shotIndex + 1));
+
+// ---------- Apps list ----------
+const appList = $("#appList");
+APPS.forEach(([icon, name, text]) => {
+  const li = document.createElement("li");
+  li.innerHTML = `<img src="assets/icons/${icon}.svg" alt=""><div><b></b> · <span></span></div>`;
+  li.querySelector("b").textContent = name;
+  li.querySelector("span").textContent = text;
+  appList.append(li);
+});
+
+// ---------- Reserved line demo ----------
+const log = $("#log"), input = $("#input"), led = $("#led"), lineStatus = $("#lineStatus"), lineWin = wins.get("line");
+let demoRun = 0, demoStarted = false;
+$("#subs").addEventListener("change", e => log.classList.toggle("nosubs", !e.target.checked));
+const wait = ms => new Promise(r => setTimeout(r, reduced ? 0 : ms));
+
+function bubble(who, text, en) {
+  const m = document.createElement("div");
+  m.className = "m " + who;
+  const body = document.createElement("span");
+  body.textContent = text;
+  m.append(body);
+  if (en) { const s = document.createElement("span"); s.className = "en"; s.textContent = en; m.append(s); }
+  log.append(m);
+  log.scrollTop = log.scrollHeight;
+  return { m, body };
+}
+
+async function typeInto(el, text, speed, run) {
+  for (let i = 1; i <= text.length; i++) {
+    if (run !== demoRun) return false;
+    el.textContent = text.slice(0, i);
+    log.scrollTop = log.scrollHeight;
+    await wait(speed + (text[i - 1] === "." ? speed * 6 : 0));
+  }
+  return run === demoRun;
+}
+
+async function startDemo(force) {
+  if (demoStarted && !force) return;
+  demoStarted = true;
+  const run = ++demoRun;
+  log.textContent = ""; input.textContent = "";
+  led.className = "led on"; lineStatus.textContent = "In linea con U0047BB";
+  for (const [who, text, en, fx] of SCRIPT) {
+    if (run !== demoRun) return;
+    if (who === "mgr") {
+      await wait(700);
+      if (!await typeInto(input, text, 45, run)) return;
+      await wait(350);
+      input.textContent = "";
+      bubble("mgr", text, en);
+    } else if (who === "sys") {
+      await wait(500);
+      bubble("sys", text, en);
+      if (fx === "search") { led.className = "led search"; lineStatus.textContent = "Ricerca di AgencyOS in corso…"; }
+      if (fx === "endsearch") { await wait(900); led.className = "led on"; lineStatus.textContent = "In linea con U0047BB"; }
+    } else {
+      await wait(fx === "whisper" ? 1200 : 900);
+      const { m, body } = bubble("ent", "", null);
+      if (fx === "whisper") m.classList.add("whisper");
+      m.classList.add("typing");
+      lineStatus.textContent = fx === "whisper" ? lineStatus.textContent : "U0047BB sta scrivendo…";
+      if (!await typeInto(body, text, 32, run)) return;
+      m.classList.remove("typing");
+      const s = document.createElement("span"); s.className = "en"; s.textContent = en; m.append(s);
+      if (fx !== "whisper") lineStatus.textContent = "In linea con U0047BB";
+      if (fx === "rgb" && !reduced) body.classList.add("rgb");
+      if (fx === "shake" && !reduced) { lineWin.classList.remove("shake"); void lineWin.offsetWidth; lineWin.classList.add("shake"); }
+    }
+    log.scrollTop = log.scrollHeight;
+  }
+  await wait(800);
+  if (run === demoRun) bubble("note", "— fine della demo · end of demo —");
+}
+$("#replay").addEventListener("click", () => startDemo(true));
+lineWin.addEventListener("animationend", () => lineWin.classList.remove("shake"));
+
+// Start the demo when the line window is first seen (after the boot screen).
+let lineSeen = false;
+new IntersectionObserver(entries => {
+  lineSeen = entries.some(e => e.isIntersecting);
+  if (lineSeen && $("#boot").hidden) startDemo();
+}, { threshold: 0.3 }).observe(lineWin);
+
+// ---------- Boot ----------
+const BOOT = [
+  ["AgencyOS 98 BIOS v4.98.0047 · (C) 1998 Triangle Agency", ""],
+  ["Memoria: 640K", " OK", "ok"],
+  ["Unità C: FILIALE ......................", " OK", "ok"],
+  ["Linea riservata .......................", " NON REGISTRATA", "bad"],
+  ["Avvio di AgencyOS 98…", ""],
+];
+async function boot() {
+  const screen = $("#boot");
+  if (reduced || store.get("booted")) return;
+  store.set("booted", "1");
+  screen.hidden = false;
+  let skip = false;
+  screen.addEventListener("click", () => { skip = true; });
+  addEventListener("keydown", () => { skip = true; }, { once: true });
+  const lines = $("#bootLines");
+  for (const [text, tail, cls] of BOOT) {
+    if (skip) break;
+    const d = document.createElement("div");
+    d.textContent = text;
+    if (tail) { const s = document.createElement("span"); s.className = cls; s.textContent = tail; d.append(s); }
+    lines.append(d);
+    await new Promise(r => setTimeout(r, 300));
+  }
+  if (!skip) {
+    lines.style.visibility = "hidden";
+    $("#bootLogo").classList.add("show");
+    await new Promise(r => setTimeout(r, 900));
+  }
+  screen.classList.add("fade");
+  await new Promise(r => setTimeout(r, 450));
+  screen.hidden = true;
+}
+
+layout();
+boot().then(() => { if (isFree() || lineSeen) startDemo(); });
+</script>
+</body>
+</html>

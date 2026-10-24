@@ -2,6 +2,8 @@
 
 A fake late-90s operating system for the General Manager of a **Triangle Agency** campaign. It runs on the GM's computer at the table. Its main app is the *Linea riservata* (reserved line), an unregistered chat channel with **U0047BB**, the Entity held in the Agency's vault, voiced by a language model.
 
+**Website:** https://ehystiv.github.io/agency-os/
+
 > **The user interface is in Italian only.** The app was made for the Italian edition of the game: every window, message and prompt the model receives is in Italian. The code and the documentation are in English.
 
 Unofficial fan project, not affiliated with the publishers of Triangle Agency.
