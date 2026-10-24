@@ -1,0 +1,114 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://apps/lettore/lettore.gd" id="1_script"]
+[ext_resource type="Script" path="res://apps/lettore/music_engine.gd" id="2_engine"]
+[ext_resource type="Script" path="res://apps/lettore/visualizer.gd" id="3_visualizer"]
+
+[node name="Lettore" type="MarginContainer"]
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+script = ExtResource("1_script")
+
+[node name="Layout" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Screen" type="PanelContainer" parent="Layout"]
+layout_mode = 2
+theme_type_variation = &"TermPane"
+
+[node name="Box" type="VBoxContainer" parent="Layout/Screen"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Row" type="HBoxContainer" parent="Layout/Screen/Box"]
+layout_mode = 2
+
+[node name="NowPlaying" type="Label" parent="Layout/Screen/Box/Row"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"PlayerScreen"
+text = "nessuna traccia"
+clip_text = true
+
+[node name="Time" type="Label" parent="Layout/Screen/Box/Row"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"PlayerScreen"
+text = "00:00"
+
+[node name="Visualizer" type="Control" parent="Layout/Screen/Box"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 36)
+layout_mode = 2
+script = ExtResource("3_visualizer")
+
+[node name="Controls" type="HBoxContainer" parent="Layout"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Prev" type="Button" parent="Layout/Controls"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(38, 28)
+layout_mode = 2
+tooltip_text = "Traccia precedente"
+focus_mode = 0
+text = "|◀"
+
+[node name="Play" type="Button" parent="Layout/Controls"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(38, 28)
+layout_mode = 2
+tooltip_text = "Riproduci"
+focus_mode = 0
+text = "▶"
+
+[node name="Stop" type="Button" parent="Layout/Controls"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(38, 28)
+layout_mode = 2
+tooltip_text = "Ferma"
+focus_mode = 0
+text = "■"
+
+[node name="Next" type="Button" parent="Layout/Controls"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(38, 28)
+layout_mode = 2
+tooltip_text = "Traccia successiva"
+focus_mode = 0
+text = "▶|"
+
+[node name="VolumeLabel" type="Label" parent="Layout/Controls"]
+layout_mode = 2
+text = "Vol"
+
+[node name="Volume" type="HSlider" parent="Layout/Controls"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+step = 1.0
+value = 70.0
+
+[node name="ListPanel" type="PanelContainer" parent="Layout"]
+layout_mode = 2
+theme_type_variation = &"SunkenPanel"
+
+[node name="Rows" type="VBoxContainer" parent="Layout/ListPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="Status" type="Label" parent="Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"StatusLabel"
+text = "Musiche d'attesa aziendali · sintetizzate dal vivo"
+
+[node name="Engine" type="Node" parent="."]
+unique_name_in_owner = true
+script = ExtResource("2_engine")

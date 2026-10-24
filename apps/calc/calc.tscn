@@ -1,0 +1,126 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://apps/calc/calc.gd" id="1_script"]
+[ext_resource type="Script" path="res://apps/calc/dice_tray.gd" id="2_tray"]
+
+[sub_resource type="StyleBoxFlat" id="tray_border"]
+bg_color = Color(0, 0, 0, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0, 0, 0, 1)
+
+[node name="Calc" type="MarginContainer"]
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+script = ExtResource("1_script")
+
+[node name="Layout" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="TrayFrame" type="PanelContainer" parent="Layout"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_styles/panel = SubResource("tray_border")
+
+[node name="Feed" type="TextureRect" parent="Layout/TrayFrame"]
+unique_name_in_owner = true
+texture_filter = 1
+custom_minimum_size = Vector2(320, 200)
+layout_mode = 2
+expand_mode = 1
+
+[node name="LcdPanel" type="PanelContainer" parent="Layout"]
+layout_mode = 2
+theme_type_variation = &"LcdPanel"
+
+[node name="Lcd" type="Label" parent="Layout/LcdPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"LcdText"
+text = "PRONTO"
+horizontal_alignment = 2
+clip_text = true
+
+[node name="Result" type="RichTextLabel" parent="Layout"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 38)
+layout_mode = 2
+theme_type_variation = &"CalcResult"
+bbcode_enabled = true
+fit_content = true
+scroll_active = false
+
+[node name="Roll" type="Button" parent="Layout"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+focus_mode = 0
+theme_type_variation = &"PrimaryButton"
+text = "TIRA 6d4"
+
+[node name="CaosRow" type="HBoxContainer" parent="Layout"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Label" type="Label" parent="Layout/CaosRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"FieldLabel"
+text = "Riserva Caos"
+uppercase = true
+
+[node name="CaosPanel" type="PanelContainer" parent="Layout/CaosRow"]
+custom_minimum_size = Vector2(70, 0)
+layout_mode = 2
+theme_type_variation = &"LcdPanel"
+
+[node name="Caos" type="Label" parent="Layout/CaosRow/CaosPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"LcdSmall"
+text = "00"
+horizontal_alignment = 2
+
+[node name="Keys" type="HBoxContainer" parent="Layout"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Minus" type="Button" parent="Layout/Keys"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "Togli 1 Caos"
+focus_mode = 0
+text = "− 1"
+
+[node name="Plus" type="Button" parent="Layout/Keys"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "Aggiungi 1 Caos"
+focus_mode = 0
+text = "+ 1"
+
+[node name="Reset" type="Button" parent="Layout/Keys"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+size_flags_horizontal = 3
+focus_mode = 0
+text = "Azzera"
+
+[node name="TrayViewport" type="SubViewport" parent="."]
+unique_name_in_owner = true
+own_world_3d = true
+size = Vector2i(320, 200)
+render_target_update_mode = 2
+
+[node name="DiceTray" type="Node3D" parent="TrayViewport"]
+script = ExtResource("2_tray")

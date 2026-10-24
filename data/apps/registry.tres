@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="AppRegistry" format=3]
+
+[ext_resource type="Script" path="res://core/app_registry.gd" id="1_registry"]
+[ext_resource type="Script" path="res://core/app_info.gd" id="1_info"]
+[ext_resource type="Resource" path="res://data/apps/linea.tres" id="2_linea"]
+[ext_resource type="Resource" path="res://data/apps/fascicolo.tres" id="3_fascicolo"]
+[ext_resource type="Resource" path="res://data/apps/taccuino.tres" id="4_taccuino"]
+[ext_resource type="Resource" path="res://data/apps/amail.tres" id="5_amail"]
+[ext_resource type="Resource" path="res://data/apps/cam.tres" id="6_cam"]
+[ext_resource type="Resource" path="res://data/apps/term.tres" id="7_term"]
+[ext_resource type="Resource" path="res://data/apps/registro.tres" id="8_registro"]
+[ext_resource type="Resource" path="res://data/apps/canone.tres" id="9_canone"]
+[ext_resource type="Resource" path="res://data/apps/calc.tres" id="10_calc"]
+[ext_resource type="Resource" path="res://data/apps/agenda.tres" id="11_agenda"]
+[ext_resource type="Resource" path="res://data/apps/mine.tres" id="12_mine"]
+[ext_resource type="Resource" path="res://data/apps/player.tres" id="13_player"]
+[ext_resource type="Resource" path="res://data/apps/ctrl.tres" id="14_ctrl"]
+[ext_resource type="Resource" path="res://data/apps/cestino.tres" id="15_cestino"]
+[ext_resource type="Resource" path="res://data/apps/note.tres" id="16_note"]
+[ext_resource type="Resource" path="res://data/apps/impostazioni_linea.tres" id="17_impostazioni_linea"]
+
+[resource]
+script = ExtResource("1_registry")
+apps = Array[ExtResource("1_info")]([ExtResource("2_linea"), ExtResource("3_fascicolo"), ExtResource("4_taccuino"), ExtResource("5_amail"), ExtResource("6_cam"), ExtResource("7_term"), ExtResource("8_registro"), ExtResource("9_canone"), ExtResource("10_calc"), ExtResource("11_agenda"), ExtResource("12_mine"), ExtResource("13_player"), ExtResource("14_ctrl"), ExtResource("17_impostazioni_linea"), ExtResource("15_cestino"), ExtResource("16_note")])

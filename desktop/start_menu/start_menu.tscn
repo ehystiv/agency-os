@@ -1,0 +1,33 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://desktop/start_menu/start_menu.gd" id="1_script"]
+[ext_resource type="Script" path="res://desktop/start_menu/start_banner.gd" id="2_banner"]
+
+[node name="StartMenu" type="PanelContainer"]
+visible = false
+offset_right = 250.0
+offset_bottom = 300.0
+theme_type_variation = &"StartMenuPanel"
+script = ExtResource("1_script")
+
+[node name="Row" type="HBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 3
+
+[node name="Banner" type="Control" parent="Row"]
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+mouse_filter = 2
+script = ExtResource("2_banner")
+
+[node name="Scroll" type="ScrollContainer" parent="Row"]
+unique_name_in_owner = true
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="Items" type="VBoxContainer" parent="Row/Scroll"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(214, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 0

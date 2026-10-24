@@ -1,0 +1,27 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://desktop/icons/desktop_icon.gd" id="1_script"]
+
+[node name="DesktopIcon" type="VBoxContainer"]
+custom_minimum_size = Vector2(88, 0)
+offset_right = 88.0
+offset_bottom = 60.0
+focus_mode = 1
+theme_override_constants/separation = 4
+script = ExtResource("1_script")
+
+[node name="Picture" type="TextureRect" parent="."]
+custom_minimum_size = Vector2(34, 34)
+layout_mode = 2
+size_flags_horizontal = 4
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Caption" type="Label" parent="."]
+layout_mode = 2
+theme_type_variation = &"IconLabel"
+text = "Icona"
+horizontal_alignment = 1
+autowrap_mode = 3
+max_lines_visible = 3

@@ -1,0 +1,184 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://apps/webcam/webcam.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://apps/webcam/caveau/caveau.tscn" id="2_caveau"]
+[ext_resource type="Shader" path="res://apps/webcam/scanlines.gdshader" id="3_scanlines"]
+
+[sub_resource type="ShaderMaterial" id="scanlines_material"]
+shader = ExtResource("3_scanlines")
+
+[sub_resource type="StyleBoxFlat" id="rec_dot"]
+bg_color = Color(1, 0.1882, 0.2118, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="screen_border"]
+bg_color = Color(0, 0, 0, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0, 0, 0, 1)
+
+[node name="Webcam" type="MarginContainer"]
+script = ExtResource("1_script")
+
+[node name="Layout" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="Frame" type="PanelContainer" parent="Layout"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_styles/panel = SubResource("screen_border")
+
+[node name="Screen" type="Control" parent="Layout/Frame"]
+clip_contents = true
+custom_minimum_size = Vector2(320, 240)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Feed" type="TextureRect" parent="Layout/Frame/Screen"]
+unique_name_in_owner = true
+texture_filter = 1
+layout_mode = 0
+offset_right = 320.0
+offset_bottom = 240.0
+mouse_filter = 2
+expand_mode = 1
+
+[node name="Scanlines" type="ColorRect" parent="Layout/Frame/Screen"]
+material = SubResource("scanlines_material")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Rec" type="HBoxContainer" parent="Layout/Frame/Screen"]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 5.0
+offset_right = 60.0
+offset_bottom = 21.0
+mouse_filter = 2
+theme_override_constants/separation = 5
+
+[node name="RecDotSlot" type="Control" parent="Layout/Frame/Screen/Rec"]
+custom_minimum_size = Vector2(8, 8)
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+
+[node name="RecDot" type="Panel" parent="Layout/Frame/Screen/Rec/RecDotSlot"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("rec_dot")
+
+[node name="RecLabel" type="Label" parent="Layout/Frame/Screen/Rec"]
+layout_mode = 2
+theme_type_variation = &"CamRec"
+text = "REC"
+
+[node name="CamId" type="Label" parent="Layout/Frame/Screen"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -140.0
+offset_top = 5.0
+offset_right = -8.0
+offset_bottom = 21.0
+grow_horizontal = 0
+mouse_filter = 2
+theme_type_variation = &"CamOverlay"
+text = "CAM 03 · CAVEAU"
+horizontal_alignment = 2
+
+[node name="Timestamp" type="Label" parent="Layout/Frame/Screen"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = -21.0
+offset_right = 150.0
+offset_bottom = -5.0
+grow_vertical = 0
+mouse_filter = 2
+theme_type_variation = &"CamOverlay"
+text = "00/00/00 00:00:00"
+
+[node name="Status" type="Label" parent="Layout/Frame/Screen"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -170.0
+offset_top = -21.0
+offset_right = -8.0
+offset_bottom = -5.0
+grow_horizontal = 0
+grow_vertical = 0
+mouse_filter = 2
+theme_type_variation = &"CamOverlay"
+text = "SOGGETTO CONTENUTO"
+horizontal_alignment = 2
+
+[node name="NoSignal" type="ColorRect" parent="Layout/Frame/Screen"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.047, 0.0588, 0.0784, 1)
+
+[node name="Label" type="Label" parent="Layout/Frame/Screen/NoSignal"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"CamNoSignal"
+text = "NESSUN SEGNALE"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Caption" type="HBoxContainer" parent="Layout"]
+layout_mode = 2
+
+[node name="Size" type="Label" parent="Layout/Caption"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"CamCaption"
+text = "160×120 · 15 fps"
+
+[node name="Live" type="Label" parent="Layout/Caption"]
+layout_mode = 2
+theme_type_variation = &"CamCaption"
+text = "U0047BB · LIVE"
+
+[node name="FeedViewport" type="SubViewport" parent="."]
+unique_name_in_owner = true
+own_world_3d = true
+size = Vector2i(160, 120)
+render_target_update_mode = 0
+
+[node name="Caveau" parent="FeedViewport" instance=ExtResource("2_caveau")]

@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <clipPath id="tile">
+      <rect x="100" y="100" width="824" height="824" rx="185"/>
+    </clipPath>
+    <clipPath id="screen">
+      <rect x="262" y="292" width="500" height="360"/>
+    </clipPath>
+    <radialGradient id="glow" cx="50%" cy="45%" r="60%">
+      <stop offset="0" stop-color="#11244f"/>
+      <stop offset="1" stop-color="#0a0e1c"/>
+    </radialGradient>
+    <radialGradient id="screen_glow" cx="50%" cy="50%" r="65%">
+      <stop offset="0" stop-color="#0d1f2e"/>
+      <stop offset="1" stop-color="#03060a"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Piastrella macOS: scrivania blu notte con il reticolo triangolare -->
+  <g clip-path="url(#tile)">
+    <rect x="100" y="100" width="824" height="824" fill="url(#glow)"/>
+    <g stroke="#78aadc" stroke-opacity="0.13" stroke-width="3">
+      <path d="M100 160L966 1660M100 -100L1100 1632M100 -360L1250 1632M100 -620L1400 1632M-60 160L900 1822M-220 160L740 1822"/>
+      <path d="M924 160L58 1660M924 -100L-76 1632M924 -360L-226 1632M924 -620L-376 1632M1084 160L124 1822M1244 160L284 1822"/>
+      <path d="M100 236H924M100 412H924M100 588H924M100 764H924"/>
+    </g>
+  </g>
+
+  <!-- Monitor '98: cornice grigia in rilievo con ombra -->
+  <rect x="226" y="246" width="590" height="460" fill="#000" opacity="0.35" transform="translate(16 18)"/>
+  <rect x="212" y="242" width="600" height="460" fill="#c6c9d1" stroke="#000" stroke-width="8"/>
+  <path d="M220 694V250H804" fill="none" stroke="#f2f3f6" stroke-width="10"/>
+  <path d="M220 694H804V250" fill="none" stroke="#6a6f7e" stroke-width="10"/>
+  <rect x="254" y="284" width="516" height="376" fill="#6a6f7e"/>
+  <rect x="262" y="292" width="500" height="360" fill="url(#screen_glow)"/>
+
+  <!-- Nello schermo: la gabbia della webcam, l'occhio, il triangolo dell'Agenzia -->
+  <g clip-path="url(#screen)">
+    <g stroke="#1a3d48" stroke-width="3">
+      <path d="M262 600H762M262 630H762M300 572L262 652M400 572L370 652M512 572V652M624 572L654 652M724 572L762 652"/>
+    </g>
+    <g fill="none" stroke="#7fe1ee" stroke-width="9" stroke-linejoin="round">
+      <path d="M512 322L680 600H344Z"/>
+      <path d="M428 461H596M512 322V600M386 530H638" stroke-opacity="0.45" stroke-width="5"/>
+    </g>
+    <ellipse cx="512" cy="492" rx="74" ry="40" fill="#d6f3f6"/>
+    <circle cx="512" cy="492" r="27" fill="#2fb8cc"/>
+    <circle cx="512" cy="492" r="13" fill="#020406"/>
+    <circle cx="502" cy="482" r="5" fill="#fff" opacity="0.9"/>
+    <path d="M524 604l22 36h-44z" fill="#e5262c"/>
+    <g fill="#000" opacity="0.22">
+      <rect x="262" y="300" width="500" height="4"/><rect x="262" y="324" width="500" height="4"/>
+      <rect x="262" y="348" width="500" height="4"/><rect x="262" y="372" width="500" height="4"/>
+      <rect x="262" y="396" width="500" height="4"/><rect x="262" y="420" width="500" height="4"/>
+      <rect x="262" y="444" width="500" height="4"/><rect x="262" y="468" width="500" height="4"/>
+      <rect x="262" y="516" width="500" height="4"/><rect x="262" y="540" width="500" height="4"/>
+      <rect x="262" y="564" width="500" height="4"/><rect x="262" y="588" width="500" height="4"/>
+      <rect x="262" y="612" width="500" height="4"/><rect x="262" y="636" width="500" height="4"/>
+    </g>
+  </g>
+
+  <!-- Base del monitor e triangolo rosso dell'Agenzia sulla cornice -->
+  <path d="M440 702h144l26 58H414z" fill="#9da2ae" stroke="#000" stroke-width="7"/>
+  <rect x="352" y="756" width="320" height="34" fill="#c6c9d1" stroke="#000" stroke-width="7"/>
+  <path d="M362 762H664" stroke="#f2f3f6" stroke-width="6"/>
+  <path d="M244 680l16-28 16 28z" fill="#e5262c"/>
+  <circle cx="770" cy="677" r="8" fill="#3fd27a" stroke="#000" stroke-width="3"/>
+</svg>

@@ -1,0 +1,99 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://apps/contenimento/contenimento.gd" id="1_script"]
+[ext_resource type="Script" path="res://apps/contenimento/board.gd" id="2_board"]
+
+[node name="Contenimento" type="MarginContainer"]
+theme_override_constants/margin_left = 6
+theme_override_constants/margin_top = 6
+theme_override_constants/margin_right = 6
+theme_override_constants/margin_bottom = 6
+script = ExtResource("1_script")
+
+[node name="Layout" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="TopPanel" type="PanelContainer" parent="Layout"]
+layout_mode = 2
+theme_type_variation = &"GroupPanel"
+
+[node name="Top" type="HBoxContainer" parent="Layout/TopPanel"]
+layout_mode = 2
+
+[node name="Flags" type="Label" parent="Layout/TopPanel/Top"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 4
+tooltip_text = "Anomalie ancora da segnare"
+theme_type_variation = &"Led3"
+text = "010"
+
+[node name="SpacerLeft" type="Control" parent="Layout/TopPanel/Top"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="Face" type="Button" parent="Layout/TopPanel/Top"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(32, 30)
+layout_mode = 2
+tooltip_text = "Nuova partita"
+focus_mode = 0
+theme_type_variation = &"FaceButton"
+text = "▲"
+
+[node name="SpacerRight" type="Control" parent="Layout/TopPanel/Top"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="Time" type="Label" parent="Layout/TopPanel/Top"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 4
+tooltip_text = "Secondi"
+theme_type_variation = &"Led3"
+text = "000"
+
+[node name="BoardFrame" type="PanelContainer" parent="Layout"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_type_variation = &"BoardFrame"
+
+[node name="Board" type="Control" parent="Layout/BoardFrame"]
+unique_name_in_owner = true
+layout_mode = 2
+script = ExtResource("2_board")
+
+[node name="Bottom" type="HBoxContainer" parent="Layout"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="LevelLabel" type="Label" parent="Layout/Bottom"]
+layout_mode = 2
+text = "Livello"
+
+[node name="Levels" type="OptionButton" parent="Layout/Bottom"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+
+[node name="Mode" type="Button" parent="Layout/Bottom"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Il clic destro mette sempre le bandierine"
+focus_mode = 0
+text = "Clic: scava"
+
+[node name="Record" type="Label" parent="Layout/Bottom"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"StatusLabel"
+text = "Record: —"
+horizontal_alignment = 2
+
+[node name="Tick" type="Timer" parent="."]
+unique_name_in_owner = true
+autostart = true

@@ -1,0 +1,75 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://desktop/desktop.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://desktop/wallpaper/wallpaper.tscn" id="2_wallpaper"]
+[ext_resource type="Script" path="res://desktop/icons/desktop_icons.gd" id="3_icons"]
+[ext_resource type="Script" path="res://desktop/window_manager.gd" id="4_windows"]
+[ext_resource type="PackedScene" path="res://desktop/taskbar/taskbar.tscn" id="5_taskbar"]
+[ext_resource type="PackedScene" path="res://desktop/start_menu/start_menu.tscn" id="6_start"]
+[ext_resource type="PackedScene" path="res://desktop/balloon/balloon.tscn" id="7_balloon"]
+[ext_resource type="PackedScene" path="res://system/crt/crt.tscn" id="8_crt"]
+[ext_resource type="PackedScene" path="res://system/boot/boot.tscn" id="9_boot"]
+[ext_resource type="PackedScene" path="res://system/saver/saver.tscn" id="10_saver"]
+
+[node name="Desktop" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_script")
+
+[node name="Wallpaper" parent="." instance=ExtResource("2_wallpaper")]
+layout_mode = 1
+
+[node name="Icons" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_bottom = -38.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("3_icons")
+
+[node name="Windows" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_bottom = -38.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("4_windows")
+
+[node name="Ui" type="CanvasLayer" parent="."]
+layer = 10
+
+[node name="ClickCatcher" type="Control" parent="Ui"]
+unique_name_in_owner = true
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Taskbar" parent="Ui" instance=ExtResource("5_taskbar")]
+unique_name_in_owner = true
+
+[node name="StartMenu" parent="Ui" instance=ExtResource("6_start")]
+unique_name_in_owner = true
+
+[node name="Balloon" parent="Ui" instance=ExtResource("7_balloon")]
+unique_name_in_owner = true
+
+[node name="Crt" parent="." instance=ExtResource("8_crt")]
+
+[node name="Saver" parent="." instance=ExtResource("10_saver")]
+unique_name_in_owner = true
+
+[node name="Boot" parent="." instance=ExtResource("9_boot")]
+unique_name_in_owner = true

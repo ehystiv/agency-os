@@ -1,0 +1,144 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://apps/amail/amail.gd" id="1_script"]
+
+[node name="AMail" type="MarginContainer"]
+size_flags_vertical = 3
+script = ExtResource("1_script")
+
+[node name="Layout" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 3
+
+[node name="Main" type="HBoxContainer" parent="Layout"]
+custom_minimum_size = Vector2(0, 380)
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 3
+
+[node name="ListPanel" type="PanelContainer" parent="Layout/Main"]
+custom_minimum_size = Vector2(230, 0)
+layout_mode = 2
+theme_type_variation = &"SunkenPanel"
+
+[node name="Scroll" type="ScrollContainer" parent="Layout/Main/ListPanel"]
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="List" type="VBoxContainer" parent="Layout/Main/ListPanel/Scroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 0
+
+[node name="Receiving" type="Label" parent="Layout/Main/ListPanel/Scroll/List"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_type_variation = &"HintLabel"
+text = "Ricezione di un nuovo messaggio in corso…"
+autowrap_mode = 3
+
+[node name="Empty" type="Label" parent="Layout/Main/ListPanel/Scroll/List"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"HintLabel"
+text = "Nessun messaggio. La posta dell'Agenzia arriva all'inizio di ogni colloquio."
+autowrap_mode = 3
+
+[node name="Rows" type="VBoxContainer" parent="Layout/Main/ListPanel/Scroll/List"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="ReaderPanel" type="PanelContainer" parent="Layout/Main"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"SunkenPanel"
+
+[node name="Scroll" type="ScrollContainer" parent="Layout/Main/ReaderPanel"]
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="Margin" type="MarginContainer" parent="Layout/Main/ReaderPanel/Scroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 6
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 8
+
+[node name="Content" type="VBoxContainer" parent="Layout/Main/ReaderPanel/Scroll/Margin"]
+layout_mode = 2
+
+[node name="Hint" type="Label" parent="Layout/Main/ReaderPanel/Scroll/Margin/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"HintLabel"
+
+[node name="Message" type="VBoxContainer" parent="Layout/Main/ReaderPanel/Scroll/Margin/Content"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Header" type="GridContainer" parent="Layout/Main/ReaderPanel/Scroll/Margin/Content/Message"]
+layout_mode = 2
+theme_override_constants/h_separation = 8
+theme_override_constants/v_separation = 2
+columns = 2
+
+[node name="FromLabel" type="Label" parent="Layout/Main/ReaderPanel/Scroll/Margin/Content/Message/Header"]
+layout_mode = 2
+theme_type_variation = &"HintLabel"
+text = "Da:"
+
+[node name="From" type="Label" parent="Layout/Main/ReaderPanel/Scroll/Margin/Content/Message/Header"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+autowrap_mode = 3
+
+[node name="ToLabel" type="Label" parent="Layout/Main/ReaderPanel/Scroll/Margin/Content/Message/Header"]
+layout_mode = 2
+theme_type_variation = &"HintLabel"
+text = "A:"
+
+[node name="To" type="Label" parent="Layout/Main/ReaderPanel/Scroll/Margin/Content/Message/Header"]
+layout_mode = 2
+text = "General Manager"
+
+[node name="DateLabel" type="Label" parent="Layout/Main/ReaderPanel/Scroll/Margin/Content/Message/Header"]
+layout_mode = 2
+theme_type_variation = &"HintLabel"
+text = "Data:"
+
+[node name="Date" type="Label" parent="Layout/Main/ReaderPanel/Scroll/Margin/Content/Message/Header"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Subject" type="Label" parent="Layout/Main/ReaderPanel/Scroll/Margin/Content/Message"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"MailSubject"
+autowrap_mode = 3
+
+[node name="Body" type="Label" parent="Layout/Main/ReaderPanel/Scroll/Margin/Content/Message"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"MailBody"
+autowrap_mode = 3
+
+[node name="StatusBar" type="HBoxContainer" parent="Layout"]
+layout_mode = 2
+
+[node name="Count" type="Label" parent="Layout/StatusBar"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"StatusLabel"
+text = "0 messaggi"
+
+[node name="Server" type="Label" parent="Layout/StatusBar"]
+layout_mode = 2
+theme_type_variation = &"StatusLabel"
+text = "Server: posta.filiale.agency"

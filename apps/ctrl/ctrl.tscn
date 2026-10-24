@@ -1,0 +1,197 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://apps/ctrl/ctrl.gd" id="1_script"]
+
+[node name="Ctrl" type="MarginContainer"]
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 6
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+script = ExtResource("1_script")
+
+[node name="Layout" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="WallpaperTitle" type="Label" parent="Layout"]
+layout_mode = 2
+theme_type_variation = &"FieldLabel"
+text = "Sfondo"
+uppercase = true
+
+[node name="WallpaperBox" type="PanelContainer" parent="Layout"]
+layout_mode = 2
+theme_type_variation = &"GroupPanel"
+
+[node name="Row" type="HBoxContainer" parent="Layout/WallpaperBox"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="Lattice" type="CheckBox" parent="Layout/WallpaperBox/Row"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+text = "Reticolo"
+
+[node name="Caveau" type="CheckBox" parent="Layout/WallpaperBox/Row"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+text = "Caveau"
+
+[node name="Solid" type="CheckBox" parent="Layout/WallpaperBox/Row"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+text = "Tinta unita"
+
+[node name="SaverTitle" type="Label" parent="Layout"]
+layout_mode = 2
+theme_type_variation = &"FieldLabel"
+text = "Salvaschermo"
+uppercase = true
+
+[node name="SaverBox" type="PanelContainer" parent="Layout"]
+layout_mode = 2
+theme_type_variation = &"GroupPanel"
+
+[node name="Row" type="HBoxContainer" parent="Layout/SaverBox"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Label" type="Label" parent="Layout/SaverBox/Row"]
+layout_mode = 2
+text = "Avvia dopo"
+
+[node name="Saver" type="OptionButton" parent="Layout/SaverBox/Row"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+focus_mode = 0
+
+[node name="SaverPreview" type="Button" parent="Layout/SaverBox/Row"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+text = "Anteprima"
+
+[node name="AudioTitle" type="Label" parent="Layout"]
+layout_mode = 2
+theme_type_variation = &"FieldLabel"
+text = "Audio"
+uppercase = true
+
+[node name="AudioBox" type="PanelContainer" parent="Layout"]
+layout_mode = 2
+theme_type_variation = &"GroupPanel"
+
+[node name="Row" type="HBoxContainer" parent="Layout/AudioBox"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Label" type="Label" parent="Layout/AudioBox/Row"]
+layout_mode = 2
+text = "Volume generale"
+
+[node name="Volume" type="HSlider" parent="Layout/AudioBox/Row"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+step = 1.0
+value = 80.0
+
+[node name="Sounds" type="CheckBox" parent="Layout/AudioBox/Row"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+text = "Suoni di sistema"
+
+[node name="EffectsTitle" type="Label" parent="Layout"]
+layout_mode = 2
+theme_type_variation = &"FieldLabel"
+text = "Schermo ed effetti"
+uppercase = true
+
+[node name="EffectsBox" type="PanelContainer" parent="Layout"]
+layout_mode = 2
+theme_type_variation = &"GroupPanel"
+
+[node name="Grid" type="GridContainer" parent="Layout/EffectsBox"]
+layout_mode = 2
+theme_override_constants/h_separation = 16
+columns = 2
+
+[node name="FullMotion" type="CheckBox" parent="Layout/EffectsBox/Grid"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+text = "Animazioni piene"
+
+[node name="ReducedMotion" type="CheckBox" parent="Layout/EffectsBox/Grid"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+text = "Animazioni ridotte"
+
+[node name="Glitches" type="CheckBox" parent="Layout/EffectsBox/Grid"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+text = "Glitch della linea"
+
+[node name="Crt" type="CheckBox" parent="Layout/EffectsBox/Grid"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+text = "Effetto CRT"
+
+[node name="Fullscreen" type="CheckBox" parent="Layout/EffectsBox/Grid"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+text = "Schermo intero"
+
+[node name="ShowBoot" type="CheckBox" parent="Layout/EffectsBox/Grid"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+text = "Mostra l'avvio"
+
+[node name="SystemTitle" type="Label" parent="Layout"]
+layout_mode = 2
+theme_type_variation = &"FieldLabel"
+text = "Sistema"
+uppercase = true
+
+[node name="SystemBox" type="PanelContainer" parent="Layout"]
+layout_mode = 2
+theme_type_variation = &"SunkenPanel"
+
+[node name="Info" type="Label" parent="Layout/SystemBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"InfoText"
+autowrap_mode = 3
+
+[node name="Buttons" type="HBoxContainer" parent="Layout"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="ArrangeWindows" type="Button" parent="Layout/Buttons"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+text = "Riordina le finestre"
+
+[node name="AlignIcons" type="Button" parent="Layout/Buttons"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+text = "Allinea le icone"
+
+[node name="Defaults" type="Button" parent="Layout/Buttons"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+text = "Impostazioni predefinite"

@@ -1,0 +1,131 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://apps/cestino/cestino.gd" id="1_script"]
+
+[node name="Cestino" type="MarginContainer"]
+size_flags_vertical = 3
+script = ExtResource("1_script")
+
+[node name="Layout" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 3
+
+[node name="Main" type="HBoxContainer" parent="Layout"]
+custom_minimum_size = Vector2(0, 340)
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 3
+
+[node name="ListPanel" type="PanelContainer" parent="Layout/Main"]
+custom_minimum_size = Vector2(230, 0)
+layout_mode = 2
+theme_type_variation = &"SunkenPanel"
+
+[node name="Scroll" type="ScrollContainer" parent="Layout/Main/ListPanel"]
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="List" type="VBoxContainer" parent="Layout/Main/ListPanel/Scroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 0
+
+[node name="Empty" type="Label" parent="Layout/Main/ListPanel/Scroll/List"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"HintLabel"
+text = "Il cestino è vuoto."
+
+[node name="Rows" type="VBoxContainer" parent="Layout/Main/ListPanel/Scroll/List"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="ReaderPanel" type="PanelContainer" parent="Layout/Main"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"SunkenPanel"
+
+[node name="Scroll" type="ScrollContainer" parent="Layout/Main/ReaderPanel"]
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="Margin" type="MarginContainer" parent="Layout/Main/ReaderPanel/Scroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 6
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 8
+
+[node name="Content" type="VBoxContainer" parent="Layout/Main/ReaderPanel/Scroll/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Title" type="Label" parent="Layout/Main/ReaderPanel/Scroll/Margin/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"MailSubject"
+autowrap_mode = 3
+
+[node name="Meta" type="Label" parent="Layout/Main/ReaderPanel/Scroll/Margin/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"HintLabel"
+autowrap_mode = 3
+
+[node name="PageText" type="Label" parent="Layout/Main/ReaderPanel/Scroll/Margin/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"MailBody"
+autowrap_mode = 3
+
+[node name="InkText" type="Label" parent="Layout/Main/ReaderPanel/Scroll/Margin/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"TrashInk"
+autowrap_mode = 3
+
+[node name="Note" type="Label" parent="Layout/Main/ReaderPanel/Scroll/Margin/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"HintLabel"
+autowrap_mode = 3
+
+[node name="Buttons" type="HBoxContainer" parent="Layout"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Restore" type="Button" parent="Layout/Buttons"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+text = "Ripristina"
+
+[node name="Delete" type="Button" parent="Layout/Buttons"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+text = "Elimina definitivamente"
+
+[node name="Spacer" type="Control" parent="Layout/Buttons"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="EmptyAll" type="LinkButton" parent="Layout/Buttons"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 4
+focus_mode = 0
+theme_type_variation = &"LinkDanger"
+text = "Svuota il cestino"
+
+[node name="StatusBar" type="HBoxContainer" parent="Layout"]
+layout_mode = 2
+
+[node name="Count" type="Label" parent="Layout/StatusBar"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"StatusLabel"
+text = "0 elementi"

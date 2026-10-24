@@ -1,0 +1,72 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://desktop/taskbar/taskbar.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://ui/icons/tri_small.svg" id="2_tri"]
+[ext_resource type="Texture2D" path="res://ui/icons/tray_sound_on.svg" id="3_sound"]
+
+[node name="Taskbar" type="PanelContainer"]
+custom_minimum_size = Vector2(0, 38)
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -38.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_type_variation = &"TaskbarPanel"
+script = ExtResource("1_script")
+
+[node name="Row" type="HBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="StartButton" type="Button" parent="Row"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+theme_type_variation = &"StartButton"
+toggle_mode = true
+text = "Start"
+icon = ExtResource("2_tri")
+
+[node name="Tasks" type="HBoxContainer" parent="Row"]
+unique_name_in_owner = true
+clip_contents = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 4
+
+[node name="Tray" type="PanelContainer" parent="Row"]
+layout_mode = 2
+theme_type_variation = &"TrayPanel"
+
+[node name="Items" type="HBoxContainer" parent="Row/Tray"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="SoundButton" type="TextureButton" parent="Row/Tray/Items"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 4
+focus_mode = 0
+texture_normal = ExtResource("3_sound")
+
+[node name="Mode" type="Label" parent="Row/Tray/Items"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Modalità Sicura"
+
+[node name="Next" type="Label" parent="Row/Tray/Items"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+text = "Prossima: —"
+
+[node name="Clock" type="Label" parent="Row/Tray/Items"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "--:--"
+
+[node name="ClockTimer" type="Timer" parent="."]
+unique_name_in_owner = true
+autostart = true
