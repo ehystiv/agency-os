@@ -68,13 +68,22 @@ if [ -z "$BASE_PCK" ] || [ -z "$VERSION" ]; then
 	echo "Missing the base .pck or application/config/version in project.godot." >&2
 	exit 1
 fi
+# The base version comes from Info.plist: with application/short_version empty in the export
+# preset, Godot writes application/config/version there, the same value BootPatch reads at runtime.
+LOWEST="$(printf '%s\n%s\n' "$BASE_VERSION" "$VERSION" | sort -V | head -1)"
+if [ "$LOWEST" != "$BASE_VERSION" ]; then
+	echo "The patch version ($VERSION) is older than the base ($BASE_VERSION): bump application/config/version." >&2
+	exit 1
+fi
 echo "Base: $BASE_VERSION ($APP)"
 echo "Patch: $VERSION"
 
 # 2. Export the patch from a copy (.godot is kept, so the import is quick).
-rsync -a --exclude .git --exclude build "$ROOT/" "$WORK/project/"
+rsync -a --exclude .git --exclude /build "$ROOT/" "$WORK/project/"
 FILE="agencyos-$VERSION.pck"
 mkdir -p "$OUT"
+# A .pck left by an earlier run must not pass for this export's output.
+rm -f "$OUT/$FILE" "$OUT/update.json"
 "$GODOT" --headless --path "$WORK/project" --import >/dev/null 2>&1 || true
 "$GODOT" --headless --path "$WORK/project" --export-patch macOS "$OUT/$FILE" --patches "$BASE_PCK" >"$WORK/export.log" 2>&1 || true
 if [ ! -s "$OUT/$FILE" ]; then
@@ -88,7 +97,8 @@ REPO="$(git -C "$ROOT" remote get-url origin 2>/dev/null | sed -E 's#(git@github
 [ -z "$REPO" ] && REPO="ehystiv/agency-os"
 SHA="$(shasum -a 256 "$OUT/$FILE" | cut -d' ' -f1)"
 SIZE="$(stat -f%z "$OUT/$FILE")"
-NOTES_JSON="$(printf '%s' "$NOTES" | awk 'BEGIN { ORS = "" } { gsub(/\\/, "\\\\"); gsub(/"/, "\\\""); gsub(/\t/, "\\t"); if (NR > 1) print "\\n"; print }')"
+# JSON string with quotes, escaped by JavaScriptCore (always there on macOS, like hdiutil).
+NOTES_JSON="$(osascript -l JavaScript -e 'function run(argv) { return JSON.stringify(argv[0]) }' -- "$NOTES")"
 cat >"$OUT/update.json" <<EOF
 {
 	"version": "$VERSION",
@@ -97,7 +107,7 @@ cat >"$OUT/update.json" <<EOF
 	"url": "https://github.com/$REPO/releases/download/v$VERSION/$FILE",
 	"sha256": "$SHA",
 	"size": $SIZE,
-	"notes": "$NOTES_JSON",
+	"notes": $NOTES_JSON,
 	"page": "https://github.com/$REPO/releases/tag/v$VERSION"
 }
 EOF
