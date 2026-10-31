@@ -11,6 +11,10 @@ const RELEASES_PAGE := "https://github.com/ehystiv/agency-os/releases/latest"
 ## Automatic checks happen at most once in this many seconds.
 const CHECK_INTERVAL := 24 * 3600
 const TIMEOUT := 30.0
+## HTTPRequest.timeout covers the whole transfer, so the download gets a limit that grows
+## with the file: at least DOWNLOAD_TIMEOUT seconds, or the time at DOWNLOAD_MIN_SPEED bytes/s.
+const DOWNLOAD_TIMEOUT := 120.0
+const DOWNLOAD_MIN_SPEED := 20000.0
 
 var state: State = State.IDLE
 ## The update.json of the latest release (version, base, file, url, sha256, size, notes, page).
@@ -41,11 +45,13 @@ func check_daily() -> void:
 
 
 func check(is_automatic: bool = false) -> void:
-	if _busy():
+	# READY too: the running version is still the old one, so the downloaded patch would look new again.
+	if _busy() or state == State.READY:
 		return
 	automatic = is_automatic
 	_set_state(State.CHECKING)
 	_http.download_file = ""
+	_http.timeout = TIMEOUT
 	if _http.request(manifest_url) != OK:
 		_fail("Impossibile contattare il server degli aggiornamenti.")
 		return
@@ -78,7 +84,10 @@ func download() -> void:
 	var path := BootPatch.DIR.path_join(file)
 	_part_path = path + ".part"
 	_http.download_file = _part_path
+	_http.timeout = maxf(DOWNLOAD_TIMEOUT, float(manifest.get("size", 0)) / DOWNLOAD_MIN_SPEED)
 	if file == "" or _http.request(str(manifest.get("url", ""))) != OK:
+		_http.download_file = ""
+		_discard_part()
 		_fail("Impossibile avviare il download dell'aggiornamento.")
 		return
 	var result: Array = await _http.request_completed
@@ -93,7 +102,13 @@ func download() -> void:
 		_fail("L'aggiornamento scaricato è danneggiato. Riprovare più tardi.")
 		return
 	var previous := BootPatch.read_current()
-	DirAccess.rename_absolute(_part_path, path)
+	if FileAccess.file_exists(path):
+		DirAccess.remove_absolute(path)
+	if DirAccess.rename_absolute(_part_path, path) != OK:
+		# Without the .pck in place, current.json must not point to it.
+		_discard_part()
+		_fail("Impossibile salvare l'aggiornamento.")
+		return
 	_part_path = ""
 	var current := {"version": str(manifest.version), "base": BootPatch.base_version, "file": file, "sha256": manifest.sha256}
 	var out := FileAccess.open(BootPatch.CURRENT, FileAccess.WRITE)

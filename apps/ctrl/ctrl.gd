@@ -138,7 +138,7 @@ func _refresh_update() -> void:
 	_update_notes.visible = notes != ""
 	_update_action.text = action
 	_update_action.visible = action != ""
-	%CheckUpdates.disabled = state == Updater.State.CHECKING or state == Updater.State.DOWNLOADING
+	%CheckUpdates.disabled = state in [Updater.State.CHECKING, Updater.State.DOWNLOADING, Updater.State.READY]
 	_update_progress.visible = state == Updater.State.DOWNLOADING
 	set_process(_update_progress.visible)
 
