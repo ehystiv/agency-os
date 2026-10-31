@@ -444,7 +444,7 @@ func choose_glitch(interview: Interview) -> String:
 	var request := Brain.chat(messages, options)
 	if not request.is_done:
 		await request.finished
-	if not request.ok() and request.http_status >= 400 and request.http_status < 500:
+	if LlmJson.schema_refused(request):
 		options.erase("extra")
 		request = Brain.chat(messages, options)
 		if not request.is_done:
