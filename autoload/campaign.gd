@@ -43,6 +43,9 @@ const SEARCH_STEP := 0.05
 const SEARCH_MAX := 0.4
 ## Stage direction sent when the Manager says nothing (the model reads it in Italian).
 const SILENCE := "[il Manager resta in silenzio, in attesa]"
+## Opens the window of history when it starts with the Entity: Claude and some chat
+## templates (Gemma) want the first turn after the system prompt to be the user's.
+const EARLIER := "[il colloquio è già in corso]"
 ## Rough estimate on the safe side: Italian on small tokenizers is closer to 3.5 than to 4.
 const CHARS_PER_TOKEN := 3.5
 ## Margin for the tokens the server adds by itself (roles, separators) and for the estimate's error.
@@ -513,6 +516,8 @@ func build_messages(interview: Interview, extra_user: String = "") -> Array[Dict
 			break
 		budget -= cost
 		history.push_front({"role": "user" if m.who == "manager" else "assistant", "content": str(m.text)})
+	if not history.is_empty() and history.front().role == "assistant":
+		history.push_front({"role": "user", "content": EARLIER})
 	if extra_user != "":
 		history.append({"role": "user", "content": extra_user})
 	if history.is_empty() or history.back().role != "user":
