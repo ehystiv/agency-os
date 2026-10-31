@@ -15,6 +15,7 @@ const TRASH_FULL := preload("res://ui/icons/trash_full.svg")
 @onready var _balloon: Balloon = %Balloon
 @onready var _boot: BootScreen = %Boot
 @onready var _saver: ScreenSaver = %Saver
+@onready var _shutdown: ShutdownDialog = %Shutdown
 
 var _jackpot: JackpotOverlay
 var _players: PlayerScreen
@@ -78,6 +79,8 @@ func _ready() -> void:
 
 	_start_menu.app_chosen.connect(_on_start_app_chosen)
 	_start_menu.command_chosen.connect(_on_start_command)
+	_shutdown.confirmed.connect(func(restart: bool) -> void:
+		_on_start_command(&"restart" if restart else &"quit"))
 	_catcher.gui_input.connect(_on_catcher_input)
 	Entity.glitch_started.connect(_on_glitch_started)
 	Updater.state_changed.connect(_on_update_state)
@@ -457,5 +460,7 @@ func _on_start_command(command: StringName) -> void:
 			Save.flush()
 			get_tree().reload_current_scene()
 		&"shutdown":
+			_shutdown.open()
+		&"quit":
 			Save.flush()
 			get_tree().quit()

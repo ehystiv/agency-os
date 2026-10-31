@@ -10,6 +10,7 @@
 [ext_resource type="PackedScene" path="res://system/crt/crt.tscn" id="8_crt"]
 [ext_resource type="PackedScene" path="res://system/boot/boot.tscn" id="9_boot"]
 [ext_resource type="PackedScene" path="res://system/saver/saver.tscn" id="10_saver"]
+[ext_resource type="PackedScene" path="res://system/shutdown/shutdown.tscn" id="20_shutdown"]
 
 [node name="Desktop" type="Control"]
 layout_mode = 3
@@ -72,4 +73,7 @@ unique_name_in_owner = true
 unique_name_in_owner = true
 
 [node name="Boot" parent="." instance=ExtResource("9_boot")]
+unique_name_in_owner = true
+
+[node name="Shutdown" parent="." instance=ExtResource("20_shutdown")]
 unique_name_in_owner = true

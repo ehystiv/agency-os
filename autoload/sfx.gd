@@ -73,7 +73,7 @@ func toggle() -> void:
 	enabled = not enabled
 
 
-## Plays a system sound: modem, ding, mail, pop, chime, key, heartbeat, jackpot (dice: dice_hit()).
+## Plays a system sound: modem, ding, mail, pop, chime, key, heartbeat, jackpot, shutdown (dice: dice_hit()).
 func play(sound: StringName) -> void:
 	if not enabled:
 		return
@@ -127,7 +127,7 @@ func stop_hum() -> void:
 # --- Prototype sounds ------------------------------------------------------
 
 func _build_all() -> void:
-	for sound: StringName in [&"ding", &"mail", &"pop", &"chime", &"key", &"heartbeat", &"modem", &"jackpot"]:
+	for sound: StringName in [&"ding", &"mail", &"pop", &"chime", &"key", &"heartbeat", &"modem", &"jackpot", &"shutdown"]:
 		_build(sound)
 	for variant in DICE_VARIANTS:
 		Synth.knock(variant)
@@ -139,6 +139,10 @@ func _build(sound: StringName) -> AudioStreamWAV:
 		&"chime":
 			for i in 4:
 				parts.append([i * 0.13, _tone([523, 659, 784, 1047][i], 0.5, TRIANGLE, 0.05)])
+		&"shutdown":
+			# The chime played backwards and slower: the system going to sleep.
+			for i in 4:
+				parts.append([i * 0.2, _tone([784, 659, 523, 392][i], 0.7, TRIANGLE, 0.05)])
 		&"ding":
 			parts = [[0.0, _tone(880, 0.12, SQUARE, 0.035)], [0.12, _tone(660, 0.25, SQUARE, 0.035)]]
 		&"mail":

@@ -4,13 +4,12 @@ extends PanelContainer
 
 signal app_chosen(id: StringName)
 ## One of &"sounds", &"fullscreen", &"align_icons", &"shortcuts", &"players_toggle",
-## &"players_image", &"players_blank", &"run", &"restart", &"reset_branch", &"shutdown".
+## &"players_image", &"players_blank", &"run", &"reset_branch", &"shutdown" (the Shut Down dialog).
 signal command_chosen(command: StringName)
 
 const ICON_SOUND := preload("res://ui/icons/sound.svg")
 const ICON_FULLSCREEN := preload("res://ui/icons/fullscreen.svg")
 const ICON_ALIGN := preload("res://ui/icons/dossier.svg")
-const ICON_RESTART := preload("res://ui/icons/restart.svg")
 const ICON_SHUTDOWN := preload("res://ui/icons/shutdown.svg")
 const ICON_RESET := preload("res://ui/icons/reset.svg")
 const ICON_KEYS := preload("res://ui/icons/keys.svg")
@@ -42,10 +41,9 @@ func build(registry: AppRegistry, sound_enabled: bool, fullscreen: bool, players
 	_add_command(ICON_KEYS, "Scorciatoie da tastiera", &"shortcuts")
 	_items.add_child(HSeparator.new())
 	_add_command(ICON_RUN, "Esegui…", &"run")
-	_add_command(ICON_RESTART, "Riavvia AgencyOS", &"restart")
 	_items.add_child(HSeparator.new())
 	_add_command(ICON_RESET, "Azzera la Filiale…", &"reset_branch")
-	_add_command(ICON_SHUTDOWN, "Spegni il terminale", &"shutdown")
+	_add_command(ICON_SHUTDOWN, "Chiudi sessione…", &"shutdown")
 
 
 ## Opens the menu with its bottom left corner at bottom_left.

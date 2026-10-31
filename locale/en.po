@@ -3090,3 +3090,27 @@ msgstr "Cannot find the file '%s' (or one of its components). Make sure the path
 
 msgid "Esegui…: apre un programma o un file per nome"
 msgstr "Run...: opens a program or a file by name"
+
+msgid "Chiudi sessione…"
+msgstr "Shut Down..."
+
+msgid "Chiudi sessione di AgencyOS"
+msgstr "Shut Down AgencyOS"
+
+msgid "Scegliere l'operazione da eseguire:"
+msgstr "What do you want the computer to do?"
+
+msgid "Arresta il sistema"
+msgstr "Shut down"
+
+msgid "Riavvia il sistema"
+msgstr "Restart"
+
+msgid "Attendere mentre il sistema viene arrestato…"
+msgstr "Please wait while your computer shuts down..."
+
+msgid "Riavvio di AgencyOS in corso…"
+msgstr "AgencyOS is restarting..."
+
+msgid "Ora è possibile spegnere il computer."
+msgstr "It's now safe to turn off your computer."

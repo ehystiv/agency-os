@@ -1,0 +1,145 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://system/shutdown/shutdown.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://ui/icons/shutdown.svg" id="2_icon"]
+[ext_resource type="FontFile" path="res://ui/fonts/VT323-Regular.ttf" id="3_vt323"]
+
+[sub_resource type="ButtonGroup" id="choice"]
+
+[node name="Shutdown" type="CanvasLayer"]
+layer = 55
+visible = false
+script = ExtResource("1_script")
+
+[node name="Dim" type="TextureRect" parent="."]
+unique_name_in_owner = true
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture_filter = 1
+stretch_mode = 1
+
+[node name="Center" type="CenterContainer" parent="."]
+unique_name_in_owner = true
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Dialog" type="PanelContainer" parent="Center"]
+custom_minimum_size = Vector2(380, 0)
+layout_mode = 2
+theme_type_variation = &"WindowFrame"
+
+[node name="Layout" type="VBoxContainer" parent="Center/Dialog"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="TitleBar" type="PanelContainer" parent="Center/Dialog/Layout"]
+layout_mode = 2
+theme_type_variation = &"TitleBarActive"
+
+[node name="Row" type="HBoxContainer" parent="Center/Dialog/Layout/TitleBar"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="Center/Dialog/Layout/TitleBar/Row"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"TitleLabel"
+text = "Chiudi sessione di AgencyOS"
+
+[node name="Close" type="Button" parent="Center/Dialog/Layout/TitleBar/Row"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(18, 16)
+layout_mode = 2
+size_flags_vertical = 4
+tooltip_text = "Chiudi"
+focus_mode = 0
+theme_type_variation = &"TitleButton"
+text = "×"
+
+[node name="Body" type="MarginContainer" parent="Center/Dialog/Layout"]
+layout_mode = 2
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 14
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 12
+
+[node name="Rows" type="VBoxContainer" parent="Center/Dialog/Layout/Body"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="Top" type="HBoxContainer" parent="Center/Dialog/Layout/Body/Rows"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="Icon" type="TextureRect" parent="Center/Dialog/Layout/Body/Rows/Top"]
+layout_mode = 2
+size_flags_vertical = 0
+texture = ExtResource("2_icon")
+
+[node name="Choices" type="VBoxContainer" parent="Center/Dialog/Layout/Body/Rows/Top"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 4
+
+[node name="Question" type="Label" parent="Center/Dialog/Layout/Body/Rows/Top/Choices"]
+layout_mode = 2
+theme_type_variation = &"InfoText"
+text = "Scegliere l'operazione da eseguire:"
+
+[node name="PowerOff" type="CheckBox" parent="Center/Dialog/Layout/Body/Rows/Top/Choices"]
+unique_name_in_owner = true
+layout_mode = 2
+button_pressed = true
+button_group = SubResource("choice")
+text = "Arresta il sistema"
+
+[node name="Restart" type="CheckBox" parent="Center/Dialog/Layout/Body/Rows/Top/Choices"]
+unique_name_in_owner = true
+layout_mode = 2
+button_group = SubResource("choice")
+text = "Riavvia il sistema"
+
+[node name="Buttons" type="HBoxContainer" parent="Center/Dialog/Layout/Body/Rows"]
+layout_mode = 2
+alignment = 2
+theme_override_constants/separation = 6
+
+[node name="Ok" type="Button" parent="Center/Dialog/Layout/Body/Rows/Buttons"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+text = "OK"
+
+[node name="Cancel" type="Button" parent="Center/Dialog/Layout/Body/Rows/Buttons"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+text = "Annulla"
+
+[node name="Final" type="ColorRect" parent="."]
+unique_name_in_owner = true
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+
+[node name="Message" type="Label" parent="Final"]
+unique_name_in_owner = true
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("3_vt323")
+theme_override_font_sizes/font_size = 40
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
