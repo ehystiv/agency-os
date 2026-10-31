@@ -5,6 +5,11 @@
 [ext_resource type="Script" path="res://apps/player/visualizer.gd" id="3_visualizer"]
 [ext_resource type="Script" path="res://apps/player/youtube_fetch.gd" id="4_fetch"]
 [ext_resource type="Script" path="res://apps/player/youtube_tools.gd" id="5_tools"]
+[ext_resource type="Texture2D" path="res://ui/icons/media_prev.svg" id="m0_media_prev"]
+[ext_resource type="Texture2D" path="res://ui/icons/media_play.svg" id="m1_media_play"]
+[ext_resource type="Texture2D" path="res://ui/icons/media_stop.svg" id="m2_media_stop"]
+[ext_resource type="Texture2D" path="res://ui/icons/media_next.svg" id="m3_media_next"]
+[ext_resource type="Texture2D" path="res://ui/icons/media_loop.svg" id="m4_media_loop"]
 
 [node name="Player" type="MarginContainer"]
 theme_override_constants/margin_left = 4
@@ -80,7 +85,8 @@ custom_minimum_size = Vector2(38, 28)
 layout_mode = 2
 tooltip_text = "Traccia precedente"
 focus_mode = 0
-text = "|◀"
+icon = ExtResource("m0_media_prev")
+icon_alignment = 1
 
 [node name="Play" type="Button" parent="Layout/Controls"]
 unique_name_in_owner = true
@@ -88,7 +94,8 @@ custom_minimum_size = Vector2(38, 28)
 layout_mode = 2
 tooltip_text = "Riproduci"
 focus_mode = 0
-text = "▶"
+icon = ExtResource("m1_media_play")
+icon_alignment = 1
 
 [node name="Stop" type="Button" parent="Layout/Controls"]
 unique_name_in_owner = true
@@ -96,7 +103,8 @@ custom_minimum_size = Vector2(38, 28)
 layout_mode = 2
 tooltip_text = "Ferma"
 focus_mode = 0
-text = "■"
+icon = ExtResource("m2_media_stop")
+icon_alignment = 1
 
 [node name="Next" type="Button" parent="Layout/Controls"]
 unique_name_in_owner = true
@@ -104,7 +112,8 @@ custom_minimum_size = Vector2(38, 28)
 layout_mode = 2
 tooltip_text = "Traccia successiva"
 focus_mode = 0
-text = "▶|"
+icon = ExtResource("m3_media_next")
+icon_alignment = 1
 
 [node name="Loop" type="Button" parent="Layout/Controls"]
 unique_name_in_owner = true
@@ -113,7 +122,8 @@ layout_mode = 2
 tooltip_text = "Ripeti il brano"
 focus_mode = 0
 toggle_mode = true
-text = "⟳"
+icon = ExtResource("m4_media_loop")
+icon_alignment = 1
 
 [node name="VolumeLabel" type="Label" parent="Layout/Controls"]
 layout_mode = 2

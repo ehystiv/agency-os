@@ -26,6 +26,9 @@ var _delete_armed := false
 ## The link being downloaded.
 var _downloading_url := ""
 
+const ICON_PLAY := preload("res://ui/icons/media_play.svg")
+const ICON_PAUSE := preload("res://ui/icons/media_pause.svg")
+
 @onready var _engine: MusicEngine = %Engine
 @onready var _now: Label = %NowPlaying
 @onready var _time: Label = %Time
@@ -265,7 +268,7 @@ func _refresh() -> void:
 	_seek_row.visible = _engine.is_file()
 	if _engine.is_file():
 		_length.text = _clock(_engine.length())
-	_play.text = "❚❚" if _engine.playing else "▶"
+	_play.icon = ICON_PAUSE if _engine.playing else ICON_PLAY
 	_play.tooltip_text = tr("Pausa") if _engine.playing else tr("Riproduci")
 	if _engine.playing:
 		_status.text = tr("In riproduzione")
