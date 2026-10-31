@@ -21,6 +21,8 @@ extends Resource
 @export var min_size: Vector2i = Vector2i(320, 200)
 @export var on_desktop: bool = true
 @export var on_start_menu: bool = true
+## A small icon in the taskbar's Quick Launch bar, next to Start.
+@export var on_quick_launch: bool = false
 @export var open_at_first_start: bool = false
 ## Decorative menu under the title, e.g. ["File", "Modifica", "?"].
 @export var menu_strip: PackedStringArray = []

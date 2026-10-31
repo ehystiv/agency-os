@@ -15,6 +15,7 @@ default_position = Vector2i(508, 12)
 default_size = Vector2i(560, 554)
 resizable = true
 min_size = Vector2i(380, 300)
+on_quick_launch = true
 on_desktop = true
 open_at_first_start = true
 menu_strip = PackedStringArray("File", "Modifica", "Visualizza", "?")

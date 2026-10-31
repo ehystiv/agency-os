@@ -1,17 +1,21 @@
 class_name Taskbar
 extends PanelContainer
-## Taskbar: Start, one button per open window, notification area.
+## Taskbar: Start, Quick Launch, one button per open window, notification area.
 
 signal start_toggled(open: bool)
 signal task_pressed(id: StringName)
+signal quick_launch_pressed(id: StringName)
+signal show_desktop_pressed
 signal sound_toggled
 
 const TASK_MIN_WIDTH := 70.0
 const TASK_MAX_WIDTH := 150.0
 const SOUND_ON := preload("res://ui/icons/tray_sound_on.svg")
 const SOUND_OFF := preload("res://ui/icons/tray_sound_off.svg")
+const SHOW_DESKTOP := preload("res://ui/icons/show_desktop.svg")
 
 @onready var _start: Button = %StartButton
+@onready var _quick: HBoxContainer = %QuickLaunch
 @onready var _tasks: HBoxContainer = %Tasks
 @onready var _sound: TextureButton = %SoundButton
 @onready var _next: Label = %Next
@@ -31,6 +35,29 @@ func _ready() -> void:
 
 func set_start_open(open: bool) -> void:
 	_start.set_pressed_no_signal(open)
+
+
+## Quick Launch: "Show desktop" first, then the given apps ({id, label, icon}).
+func set_quick_launch(entries: Array[Dictionary]) -> void:
+	for child in _quick.get_children():
+		child.queue_free()
+	_quick.add_child(_quick_button(SHOW_DESKTOP, tr("Mostra desktop"), show_desktop_pressed.emit))
+	for entry in entries:
+		var id: StringName = entry.id
+		_quick.add_child(_quick_button(entry.icon, entry.label, func() -> void: quick_launch_pressed.emit(id)))
+
+
+func _quick_button(icon: Texture2D, tip: String, on_press: Callable) -> Button:
+	var button := Button.new()
+	button.theme_type_variation = &"QuickLaunchButton"
+	button.focus_mode = Control.FOCUS_NONE
+	button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	button.icon = icon
+	button.expand_icon = true
+	button.custom_minimum_size = Vector2(24, 24)
+	button.tooltip_text = tip
+	button.pressed.connect(on_press)
+	return button
 
 
 func show_tasks(entries: Array[Dictionary]) -> void:

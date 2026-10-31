@@ -3,6 +3,7 @@
 [ext_resource type="Script" path="res://desktop/taskbar/taskbar.gd" id="1_script"]
 [ext_resource type="Texture2D" path="res://ui/icons/tri_small.svg" id="2_tri"]
 [ext_resource type="Texture2D" path="res://ui/icons/tray_sound_on.svg" id="3_sound"]
+[ext_resource type="Texture2D" path="res://ui/icons/toolbar_grip.svg" id="4_grip"]
 
 [node name="Taskbar" type="PanelContainer"]
 custom_minimum_size = Vector2(0, 38)
@@ -28,6 +29,21 @@ theme_type_variation = &"StartButton"
 toggle_mode = true
 text = "Start"
 icon = ExtResource("2_tri")
+
+[node name="QuickGrip" type="TextureRect" parent="Row"]
+layout_mode = 2
+size_flags_vertical = 4
+texture = ExtResource("4_grip")
+
+[node name="QuickLaunch" type="HBoxContainer" parent="Row"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="TasksGrip" type="TextureRect" parent="Row"]
+layout_mode = 2
+size_flags_vertical = 4
+texture = ExtResource("4_grip")
 
 [node name="Tasks" type="HBoxContainer" parent="Row"]
 unique_name_in_owner = true

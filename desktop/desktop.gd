@@ -49,6 +49,14 @@ func _ready() -> void:
 
 	_taskbar.start_toggled.connect(_set_start_open)
 	_taskbar.task_pressed.connect(_on_task_pressed)
+	_taskbar.quick_launch_pressed.connect(_on_start_app_chosen)
+	_taskbar.show_desktop_pressed.connect(func() -> void:
+		_set_start_open(false)
+		_windows.toggle_desktop())
+	var quick: Array[Dictionary] = []
+	for app in REGISTRY.quick_launch_apps():
+		quick.append({"id": app.id, "label": tr(app.label), "icon": app.icon})
+	_taskbar.set_quick_launch(quick)
 	_taskbar.sound_toggled.connect(Sfx.toggle)
 	Sfx.settings_changed.connect(_on_sound_changed)
 	_on_sound_changed()

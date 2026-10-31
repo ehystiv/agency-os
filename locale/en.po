@@ -3051,3 +3051,6 @@ msgstr "hahaha. no."
 
 msgid "Cerca…"
 msgstr "Search..."
+
+msgid "Mostra desktop"
+msgstr "Show Desktop"

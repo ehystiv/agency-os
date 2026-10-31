@@ -26,3 +26,11 @@ func start_menu_apps() -> Array[AppInfo]:
 		if app.on_start_menu:
 			result.append(app)
 	return result
+
+
+func quick_launch_apps() -> Array[AppInfo]:
+	var result: Array[AppInfo] = []
+	for app in apps:
+		if app.on_quick_launch:
+			result.append(app)
+	return result

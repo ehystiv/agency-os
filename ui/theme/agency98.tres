@@ -105,6 +105,36 @@ light_color = Color(0.949, 0.9529, 0.9647, 1)
 shadow_color = Color(0.4157, 0.4353, 0.4941, 1)
 draw_outline = true
 
+[sub_resource type="StyleBoxEmpty" id="quick_btn"]
+content_margin_left = 3.0
+content_margin_top = 3.0
+content_margin_right = 3.0
+content_margin_bottom = 3.0
+
+[sub_resource type="StyleBox" id="quick_btn_hover"]
+script = ExtResource("bevel")
+content_margin_left = 3.0
+content_margin_top = 3.0
+content_margin_right = 3.0
+content_margin_bottom = 3.0
+kind = 0
+bg_color = Color(0.7765, 0.7882, 0.8196, 1)
+light_color = Color(0.949, 0.9529, 0.9647, 1)
+shadow_color = Color(0.4157, 0.4353, 0.4941, 1)
+draw_outline = false
+
+[sub_resource type="StyleBox" id="quick_btn_pressed"]
+script = ExtResource("bevel")
+content_margin_left = 3.0
+content_margin_top = 3.0
+content_margin_right = 3.0
+content_margin_bottom = 3.0
+kind = 1
+bg_color = Color(0.7765, 0.7882, 0.8196, 1)
+light_color = Color(0.949, 0.9529, 0.9647, 1)
+shadow_color = Color(0.4157, 0.4353, 0.4941, 1)
+draw_outline = false
+
 [sub_resource type="StyleBox" id="task_btn"]
 script = ExtResource("bevel")
 content_margin_left = 8.0
@@ -921,6 +951,12 @@ TaskButton/styles/pressed = SubResource("task_btn_on")
 TaskButton/styles/hover_pressed = SubResource("task_btn_on")
 TaskButton/constants/icon_max_width = 16
 TaskButton/font_sizes/font_size = 12
+QuickLaunchButton/base_type = &"Button"
+QuickLaunchButton/styles/normal = SubResource("quick_btn")
+QuickLaunchButton/styles/hover = SubResource("quick_btn_hover")
+QuickLaunchButton/styles/pressed = SubResource("quick_btn_pressed")
+QuickLaunchButton/styles/hover_pressed = SubResource("quick_btn_pressed")
+QuickLaunchButton/constants/icon_max_width = 16
 StartMenuItem/base_type = &"Button"
 StartMenuItem/styles/normal = SubResource("start_item")
 StartMenuItem/styles/hover = SubResource("start_item_hover")
