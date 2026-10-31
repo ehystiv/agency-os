@@ -398,9 +398,12 @@ static func _clean_body(text: String) -> String:
 static func _is_heading(line: String) -> bool:
 	if line == "":
 		return true
-	var header := RegEx.create_from_string("^(memorandum|memo interno|mittente|oggetto|data|a|da|destinatario)\\b.*:")
+	# The long words can carry more before the colon ("Oggetto del memo:"); the short ones
+	# only as a field ("A: …", "Da: …"), or "A volte penso: …" would be lost.
+	var header := RegEx.create_from_string("^((memorandum|memo interno|mittente|oggetto|destinatario)\\b.*|a|da|data)\\s*:")
 	if header.search(line.to_lower()) != null:
 		return true
+	# Uppercase titles, and lines without letters (a date, a rule).
 	return line.length() > 3 and line.to_upper() == line
 
 
