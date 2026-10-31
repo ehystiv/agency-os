@@ -7,10 +7,15 @@ const RED := Color("e5262c")
 const BACKGROUND := Color.BLACK
 
 var engine: MusicEngine
+var _drawn_playing := false
 
 
 func _process(_delta: float) -> void:
-	if is_visible_in_tree():
+	if not is_visible_in_tree() or engine == null:
+		return
+	# The bars move only while playing; once more when it stops, to flatten them.
+	if engine.playing or _drawn_playing:
+		_drawn_playing = engine.playing
 		queue_redraw()
 
 

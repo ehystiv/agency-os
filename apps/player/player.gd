@@ -39,7 +39,9 @@ func on_closed() -> void:
 func _process(_delta: float) -> void:
 	if _engine.playing or _engine.paused:
 		var seconds := int(_engine.elapsed)
-		_time.text = "%02d:%02d" % [seconds / 60, seconds % 60]
+		var text := "%02d:%02d" % [seconds / 60, seconds % 60]
+		if _time.text != text:
+			_time.text = text
 
 
 func _on_play_pressed() -> void:

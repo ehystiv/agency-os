@@ -32,6 +32,11 @@ func _process(delta: float) -> void:
 	agitation = maxf(floor_value, agitation * pow(AGITATION_DECAY, delta))
 	tint *= pow(TINT_DECAY, delta)
 	shrink *= pow(SHRINK_DECAY, delta)
+	# Calm again: nothing to do until the next stir() or set_speaking().
+	if agitation <= floor_value and tint < 0.005 and shrink < 0.005:
+		tint = 0.0
+		shrink = 0.0
+		set_process(false)
 
 
 ## Stirs the subject: each value rises to the given one, if higher.
@@ -39,6 +44,7 @@ func stir(new_agitation: float, new_tint: float = 0.0, new_shrink: float = 0.0) 
 	agitation = maxf(agitation, clampf(new_agitation, 0.0, 1.0))
 	tint = maxf(tint, clampf(new_tint, 0.0, 1.0))
 	shrink = maxf(shrink, clampf(new_shrink, 0.0, 1.0))
+	set_process(true)
 
 
 ## The subject's reaction to a glitch (table in data/glitch.json), then tells the listeners.
@@ -56,6 +62,7 @@ func glitch(glitch_name: String) -> void:
 
 func set_speaking(value: bool) -> void:
 	speaking = value
+	set_process(true)
 
 
 ## The webcam loses the signal; with seconds > 0 it comes back by itself.
