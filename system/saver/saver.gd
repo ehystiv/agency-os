@@ -12,11 +12,13 @@ const SPEED := 2.2
 const FOCAL := 420.0
 const EYE_EVERY := 9.0
 const EYE_SECONDS := 3.0
-## The mouse must move a bit to close the screensaver (not a twitch).
+## The mouse must move a bit to close the screensaver (not a twitch): screen pixels, summed up.
 const WAKE_DISTANCE := 6.0
 
 var active := false
 var _idle := 0.0
+## Mouse movement since the screensaver started.
+var _wake_motion := 0.0
 var _time := 0.0
 var _triangles: Array[Dictionary] = []
 
@@ -32,6 +34,7 @@ func _ready() -> void:
 func start() -> void:
 	active = true
 	_time = 0.0
+	_wake_motion = 0.0
 	_triangles.clear()
 	for i in TRIANGLES:
 		_triangles.append(_new_triangle(randf() * DEPTH))
@@ -46,12 +49,25 @@ func stop() -> void:
 
 func _input(event: InputEvent) -> void:
 	var motion := event as InputEventMouseMotion
-	var real_motion := motion != null and motion.relative.length() >= WAKE_DISTANCE
-	if event is InputEventKey or event is InputEventMouseButton or real_motion:
+	if motion != null:
+		# Slow movements arrive as many 1-2 px events: any of them means someone is there,
+		# and while the screensaver runs they add up until they are a real movement.
+		if motion.screen_relative.is_zero_approx():
+			return
+		_idle = 0.0
+		_wake_motion += motion.screen_relative.length()
+		if active and _wake_motion >= WAKE_DISTANCE:
+			_wake()
+	# Trackpad scrolling and pinching on macOS come as gestures, not as mouse buttons.
+	elif event is InputEventKey or event is InputEventMouseButton or event is InputEventGesture or event is InputEventScreenTouch:
 		_idle = 0.0
 		if active:
-			stop()
-			get_viewport().set_input_as_handled()
+			_wake()
+
+
+func _wake() -> void:
+	stop()
+	get_viewport().set_input_as_handled()
 
 
 func _process(delta: float) -> void:
