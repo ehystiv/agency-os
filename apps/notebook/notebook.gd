@@ -301,6 +301,8 @@ func menu(title: String) -> Array[Dictionary]:
 			]
 		"Pagina":
 			return [
+				{"label": "Mostra ai giocatori", "action": "present", "accel": KEY_MASK_CMD_OR_CTRL | KEY_MASK_SHIFT | KEY_P, "disabled": not has_page},
+				{},
 				{"label": "Sposta la pagina nel Cestino", "action": "delete", "disabled": not has_page},
 			]
 	return []
@@ -312,6 +314,10 @@ func on_menu_action(action: StringName) -> void:
 		&"export": _export_page()
 		&"export_all": _export_all()
 		&"vault": _change_vault()
+		&"present":
+			var page := _page()
+			if not page.is_empty():
+				present_requested.emit({"kind": "text", "caption": "Taccuino", "heading": str(page.title), "body": str(page.text)})
 		&"delete":
 			# From the menu the choice is already deliberate; the page can come back from the Cestino.
 			_delete_armed = true

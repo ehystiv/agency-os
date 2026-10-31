@@ -7,6 +7,7 @@ extends Control
 signal windows_changed
 signal notification_requested(title: String, text: String, action: Dictionary)
 signal command_requested(command: StringName)
+signal present_requested(item: Dictionary)
 
 const WINDOW_SCENE := preload("res://windows/app_window.tscn")
 
@@ -187,6 +188,7 @@ func _get_or_create(id: StringName) -> AppWindow:
 	window.notification_requested.connect(notification_requested.emit)
 	window.app_requested.connect(open)
 	window.command_requested.connect(command_requested.emit)
+	window.present_requested.connect(present_requested.emit)
 	_windows[id] = window
 	return window
 

@@ -12,6 +12,8 @@ const REEL_FIRST_STOP := 0.35
 const REEL_GAP := 0.14
 
 var _reset_armed := false
+## The last roll, to show to the players: {values, outcome word, line}.
+var _last_roll: Dictionary = {}
 
 @onready var _viewport: SubViewport = %TrayViewport
 @onready var _tray: DiceTray = %TrayViewport/DiceTray
@@ -67,6 +69,7 @@ func _on_roll_pressed() -> void:
 	for value in values:
 		digits.append(str(value))
 	var real := " ".join(digits)
+	_last_roll = {"digits": real, "word": word, "line": line}
 	if triscendence:
 		_tray.gild(DiceRules.TARGET)
 		_set_live(true)
@@ -126,6 +129,8 @@ func _set_live(live: bool) -> void:
 # --- Menus ---------------------------------------------------------------------
 
 func menu(title: String) -> Array[Dictionary]:
+	if title == "Visualizza":
+		return [{"label": "Mostra il tiro ai giocatori", "action": "present", "accel": KEY_MASK_CMD_OR_CTRL | KEY_MASK_SHIFT | KEY_P, "disabled": _last_roll.is_empty() or _tray.rolling}]
 	if title != "Modifica":
 		return []
 	return [
@@ -142,6 +147,9 @@ func on_menu_action(action: StringName) -> void:
 		&"roll": _on_roll_pressed()
 		&"chaos_plus": _change_chaos(1)
 		&"chaos_minus": _change_chaos(-1)
+		&"present":
+			if not _last_roll.is_empty():
+				present_requested.emit({"kind": "text", "caption": "Calcolatrice · 6d4", "heading": _last_roll.digits, "body": str(_last_roll.line).replace(". Scegli un effetto della Triscendenza.", "")})
 		&"chaos_reset":
 			_reset_armed = false
 			Campaign.set_chaos(0)

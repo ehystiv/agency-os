@@ -407,6 +407,8 @@ func menu(title: String) -> Array[Dictionary]:
 				{"label": "Torna al colloquio in corso" if Campaign.current() != null else "Torna alla linea", "action": "back", "disabled": not _is_archive()},
 				{"label": "Colloqui archiviati…", "action": "dossier"},
 				{"label": "Webcam del Caveau", "action": "cam"},
+				{},
+				{"label": "Mostra l'ultimo messaggio dell'Entità ai giocatori", "action": "present", "accel": KEY_MASK_CMD_OR_CTRL | KEY_MASK_SHIFT | KEY_P, "disabled": _last_entity_text() == ""},
 			]
 	return []
 
@@ -420,3 +422,14 @@ func on_menu_action(action: StringName) -> void:
 		&"back": _on_back_pressed()
 		&"dossier": app_requested.emit(&"dossier", {})
 		&"cam": app_requested.emit(&"cam", {})
+		&"present":
+			present_requested.emit({"kind": "text", "caption": "Linea riservata · U0047BB", "body": _last_entity_text()})
+
+
+func _last_entity_text() -> String:
+	if _interview == null:
+		return ""
+	for i in range(_interview.messages.size() - 1, -1, -1):
+		if _interview.messages[i].who == "entity":
+			return str(_interview.messages[i].text)
+	return ""

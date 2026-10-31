@@ -17,6 +17,7 @@ const TRASH_FULL := preload("res://ui/icons/trash_full.svg")
 @onready var _saver: ScreenSaver = %Saver
 
 var _jackpot: JackpotOverlay
+var _players: PlayerScreen
 
 
 func _ready() -> void:
@@ -54,6 +55,11 @@ func _ready() -> void:
 
 	_jackpot = JackpotOverlay.new()
 	add_child(_jackpot)
+	_players = PlayerScreen.new()
+	add_child(_players)
+	_windows.present_requested.connect(_players.present)
+	if bool(Save.get_ui(PlayerScreen.PREF, {}).get("open", false)):
+		_players.set_open(true)
 
 	_start_menu.app_chosen.connect(_on_start_app_chosen)
 	_start_menu.command_chosen.connect(_on_start_command)
@@ -95,6 +101,11 @@ func _input(event: InputEvent) -> void:
 		_windows.minimize(active)
 	elif key.keycode == KEY_D:
 		_windows.toggle_desktop()
+	elif key.keycode == KEY_B:
+		_players.blank()
+	elif key.keycode == KEY_P and key.shift_pressed and active != null:
+		# Apps that can show something answer to "present"; the others ignore it.
+		active.content.on_menu_action(&"present")
 	elif key.keycode >= KEY_1 and key.keycode <= KEY_9 and not key.shift_pressed:
 		var apps := REGISTRY.start_menu_apps()
 		var index := key.keycode - KEY_1
@@ -108,6 +119,31 @@ func _input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 
 
+## An image from the disk, straight to the players' screen (handouts, maps, portraits).
+func _choose_player_image() -> void:
+	var dialog := FileDialog.new()
+	dialog.file_mode = FileDialog.FILE_MODE_OPEN_FILE
+	dialog.access = FileDialog.ACCESS_FILESYSTEM
+	dialog.use_native_dialog = true
+	dialog.title = "Immagine da mostrare ai giocatori"
+	dialog.filters = PackedStringArray(["*.png, *.jpg, *.jpeg, *.webp, *.svg ; Immagini"])
+	var folder := str(Save.get_ui("players_image_dir", ""))
+	if folder != "":
+		dialog.current_dir = folder
+	dialog.file_selected.connect(func(path: String) -> void:
+		Save.set_ui("players_image_dir", path.get_base_dir())
+		var image := Image.load_from_file(path)
+		if image == null or image.is_empty():
+			_show_balloon("Schermo giocatori", "Non riesco ad aprire l'immagine «%s»." % path.get_file())
+			return
+		_players.present({"kind": "image", "caption": path.get_file(), "texture": ImageTexture.create_from_image(image)}))
+	dialog.visibility_changed.connect(func() -> void:
+		if not dialog.visible:
+			dialog.queue_free.call_deferred())
+	add_child(dialog)
+	dialog.popup_centered_ratio(0.6)
+
+
 func _show_shortcuts() -> void:
 	var command := "Cmd" if OS.get_name() == "macOS" else "Ctrl"
 	var lines: PackedStringArray = [
@@ -115,6 +151,8 @@ func _show_shortcuts() -> void:
 		"%s+M\triduce la finestra a icona" % command,
 		"Ctrl+Tab\tfinestra successiva (Maiusc: precedente)",
 		"%s+D\tmostra il desktop (di nuovo: ripristina)" % command,
+		"%s+Maiusc+P\tmostra ai giocatori (memo, file, pagina, tiro)" % command,
+		"%s+B\toscura lo schermo giocatori" % command,
 		"F11\tschermo intero",
 		"",
 	]
@@ -128,7 +166,7 @@ func _show_shortcuts() -> void:
 	var aligned: PackedStringArray = []
 	for line in lines:
 		var parts := line.split("\t")
-		aligned.append(parts[0].rpad(10) + "  " + parts[1] if parts.size() == 2 else line)
+		aligned.append(parts[0].rpad(13) + "  " + parts[1] if parts.size() == 2 else line)
 	dialog.dialog_text = "\n".join(aligned)
 	dialog.confirmed.connect(dialog.queue_free)
 	dialog.canceled.connect(dialog.queue_free)
@@ -186,7 +224,7 @@ func _on_window_size_changed() -> void:
 func _set_start_open(open: bool) -> void:
 	if open:
 		_icons.deselect_all()
-		_start_menu.build(REGISTRY, Sfx.enabled, _is_fullscreen())
+		_start_menu.build(REGISTRY, Sfx.enabled, _is_fullscreen(), _players.visible)
 		_start_menu.open_at(Vector2(4.0, _taskbar.position.y + 2.0))
 	else:
 		_start_menu.hide()
@@ -325,6 +363,12 @@ func _on_start_command(command: StringName) -> void:
 			_saver.start()
 		&"shortcuts":
 			_show_shortcuts()
+		&"players_toggle":
+			_players.set_open(not _players.visible)
+		&"players_blank":
+			_players.blank()
+		&"players_image":
+			_choose_player_image()
 		&"jackpot":
 			# The burst comes out of the calculator, if it's on screen.
 			var calc := _windows.rect_of(&"calc")

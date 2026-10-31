@@ -14,6 +14,7 @@ signal moved(window: AppWindow)
 signal notification_requested(title: String, text: String, action: Dictionary)
 signal app_requested(id: StringName, args: Dictionary)
 signal command_requested(command: StringName)
+signal present_requested(item: Dictionary)
 
 ## How much of the window must stay inside the desktop horizontally.
 const KEEP_VISIBLE := 140.0
@@ -88,6 +89,7 @@ func setup(info: AppInfo, app_content: AppContent) -> void:
 	content.app_requested.connect(app_requested.emit)
 	content.close_requested.connect(func() -> void: close_requested.emit(self))
 	content.command_requested.connect(command_requested.emit)
+	content.present_requested.connect(present_requested.emit)
 	_content_slot.add_child(content)
 	if info.resizable:
 		_max_button.show()

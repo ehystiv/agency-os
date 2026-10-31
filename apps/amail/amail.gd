@@ -128,6 +128,8 @@ func menu(title: String) -> Array[Dictionary]:
 	match title:
 		"Messaggio":
 			return [
+				{"label": "%s" % "Mostra ai giocatori", "action": "present", "accel": KEY_MASK_CMD_OR_CTRL | KEY_MASK_SHIFT | KEY_P, "disabled": memo.is_empty()},
+				{},
 				{"label": "Copia il testo del messaggio", "action": "copy", "disabled": memo.is_empty()},
 			]
 		"Cartelle":
@@ -147,3 +149,10 @@ func on_menu_action(action: StringName) -> void:
 				DisplayServer.clipboard_set("Da: %s\nOggetto: %s\n\n%s" % [memo.sender, memo.subject, memo.body])
 		&"inbox":
 			_refresh()
+		&"present":
+			var memo := Campaign.correspondence.find_mail(_selected_id)
+			if not memo.is_empty():
+				present_requested.emit({
+					"kind": "text", "caption": "AMail · Memo interno", "heading": str(memo.subject),
+					"meta": "Da: %s · %s" % [memo.sender, ItalianDate.numeric(str(memo.created))], "body": str(memo.body),
+				})

@@ -15,6 +15,10 @@ signal app_requested(id: StringName, args: Dictionary)
 ## System command for the desktop, e.g. &"arrange_windows", &"align_icons".
 @warning_ignore("unused_signal")
 signal command_requested(command: StringName)
+## Something to show on the players' screen (the TV): {kind: "text", caption, heading?,
+## meta?, body} or {kind: "image", caption, texture}.
+@warning_ignore("unused_signal")
+signal present_requested(item: Dictionary)
 ## The app asks to close its own window (e.g. ESCI in the command prompt).
 @warning_ignore("unused_signal")
 signal close_requested

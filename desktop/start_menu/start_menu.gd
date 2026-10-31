@@ -3,7 +3,8 @@ extends PanelContainer
 ## Start menu: the installed apps and a few system commands.
 
 signal app_chosen(id: StringName)
-## One of &"sounds", &"fullscreen", &"align_icons", &"restart", &"reset_branch", &"shutdown".
+## One of &"sounds", &"fullscreen", &"align_icons", &"shortcuts", &"players_toggle",
+## &"players_image", &"players_blank", &"restart", &"reset_branch", &"shutdown".
 signal command_chosen(command: StringName)
 
 const ICON_SOUND := preload("res://ui/icons/sound.svg")
@@ -13,18 +14,26 @@ const ICON_RESTART := preload("res://ui/icons/restart.svg")
 const ICON_SHUTDOWN := preload("res://ui/icons/shutdown.svg")
 const ICON_RESET := preload("res://ui/icons/reset.svg")
 const ICON_KEYS := preload("res://ui/icons/keys.svg")
+const ICON_PLAYERS := preload("res://ui/icons/players.svg")
+const ICON_IMAGE := preload("res://ui/icons/image.svg")
+const ICON_BLANK := preload("res://ui/icons/blank.svg")
 
 @onready var _scroll: ScrollContainer = %Scroll
 @onready var _items: VBoxContainer = %Items
 
 
-func build(registry: AppRegistry, sound_enabled: bool, fullscreen: bool) -> void:
+func build(registry: AppRegistry, sound_enabled: bool, fullscreen: bool, players_open: bool) -> void:
 	for child in _items.get_children():
 		_items.remove_child(child)
 		child.queue_free()
 	for app in registry.start_menu_apps():
 		var id := app.id
 		_add_item(app.icon, app.label, func() -> void: app_chosen.emit(id))
+	_items.add_child(HSeparator.new())
+	_add_command(ICON_PLAYERS, "Chiudi lo schermo giocatori" if players_open else "Schermo giocatori (TV)", &"players_toggle")
+	_add_command(ICON_IMAGE, "Mostra un'immagine ai giocatori…", &"players_image")
+	if players_open:
+		_add_command(ICON_BLANK, "Oscura lo schermo giocatori", &"players_blank")
 	_items.add_child(HSeparator.new())
 	_add_command(ICON_SOUND, "Disattiva i suoni" if sound_enabled else "Attiva i suoni", &"sounds")
 	_add_command(ICON_FULLSCREEN, "Esci dallo schermo intero" if fullscreen else "Schermo intero", &"fullscreen")

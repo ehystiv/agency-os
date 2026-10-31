@@ -142,6 +142,8 @@ func menu(title: String) -> Array[Dictionary]:
 			return [
 				{"label": "Salva la correzione", "action": "save", "accel": KEY_MASK_CMD_OR_CTRL | KEY_S, "disabled": file.is_empty()},
 				{"label": "Ripristina la versione dell'Entità", "action": "restore", "disabled": not file.get("corrected", false)},
+				{},
+				{"label": "Mostra ai giocatori", "action": "present", "accel": KEY_MASK_CMD_OR_CTRL | KEY_MASK_SHIFT | KEY_P, "disabled": file.is_empty()},
 			]
 		"Cerca":
 			return [
@@ -157,6 +159,11 @@ func on_menu_action(action: StringName) -> void:
 		&"restore": _on_restore_pressed()
 		&"find": _open_find()
 		&"find_next": _find_next()
+		&"present":
+			var file := _file()
+			if not file.is_empty():
+				# What is on screen, unsaved corrections included.
+				present_requested.emit({"kind": "text", "caption": "%s · Blocco note" % file.name, "body": _text.text})
 
 
 # --- Find ----------------------------------------------------------------------
