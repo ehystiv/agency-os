@@ -49,7 +49,25 @@ func _ready() -> void:
 
 
 func on_opened(_args: Dictionary = {}) -> void:
-	_load()
+	# Reopening (e.g. from the taskbar) keeps what was typed and not yet saved.
+	if not _is_modified():
+		_load()
+
+
+## True if the fields differ from the saved settings of the provider shown.
+func _is_modified() -> bool:
+	var p := _shown_provider
+	if p == "":
+		return false
+	if p == "local" and _server.selected != maxi(0, _presets.find(str(Brain.get_setting("server", p)))):
+		return true
+	return _url.text != str(Brain.get_setting("url", p)) \
+			or _model.text != str(Brain.get_setting("model", p)) \
+			or _key.text != str(Brain.get_setting("api_key", p)) \
+			or absf(_temperature.value - float(Brain.get_setting("temperature", p))) > _temperature.step \
+			or int(_context.value) != int(Brain.get_setting("context", p)) \
+			or int(_max_reply.value) != int(Brain.get_setting("max_reply", p)) \
+			or _skip_reasoning.button_pressed != bool(Brain.get_setting("skip_reasoning", p))
 
 
 func _load(provider: String = "") -> void:
