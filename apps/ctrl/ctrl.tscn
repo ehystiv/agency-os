@@ -42,11 +42,17 @@ layout_mode = 2
 theme_override_constants/separation = 8
 metadata/_tab_index = 3
 
-[node name="System" type="VBoxContainer" parent="Layout/Tabs"]
+[node name="Backup" type="VBoxContainer" parent="Layout/Tabs"]
 visible = false
 layout_mode = 2
 theme_override_constants/separation = 8
 metadata/_tab_index = 4
+
+[node name="System" type="VBoxContainer" parent="Layout/Tabs"]
+visible = false
+layout_mode = 2
+theme_override_constants/separation = 8
+metadata/_tab_index = 5
 
 [node name="WallpaperTitle" type="Label" parent="Layout/Tabs/General"]
 layout_mode = 2
@@ -403,6 +409,84 @@ unique_name_in_owner = true
 layout_mode = 2
 focus_mode = 0
 text = "Controlla all'avvio"
+
+[node name="BackupTitle" type="Label" parent="Layout/Tabs/Backup"]
+layout_mode = 2
+theme_type_variation = &"FieldLabel"
+text = "Backup della Filiale"
+uppercase = true
+
+[node name="BackupBox" type="PanelContainer" parent="Layout/Tabs/Backup"]
+layout_mode = 2
+theme_type_variation = &"GroupPanel"
+
+[node name="Column" type="VBoxContainer" parent="Layout/Tabs/Backup/BackupBox"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="BackupInfo" type="Label" parent="Layout/Tabs/Backup/BackupBox/Column"]
+unique_name_in_owner = true
+layout_mode = 2
+autowrap_mode = 3
+
+[node name="BackupHint" type="Label" parent="Layout/Tabs/Backup/BackupBox/Column"]
+layout_mode = 2
+theme_type_variation = &"HintLabel"
+text = "Il backup è un unico file .zip con colloqui, memoria, posta, file, Taccuino e agenda. Le impostazioni e la Raccolta del Lettore non sono incluse."
+autowrap_mode = 3
+
+[node name="Row" type="HBoxContainer" parent="Layout/Tabs/Backup/BackupBox/Column"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="ExportBackup" type="Button" parent="Layout/Tabs/Backup/BackupBox/Column/Row"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+text = "Esporta la Filiale…"
+
+[node name="RestoreBackup" type="Button" parent="Layout/Tabs/Backup/BackupBox/Column/Row"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+text = "Ripristina da un backup…"
+
+[node name="BackupStatus" type="Label" parent="Layout/Tabs/Backup/BackupBox/Column"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"HintLabel"
+autowrap_mode = 3
+
+[node name="RestoreConfirm" type="PanelContainer" parent="Layout/Tabs/Backup"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_type_variation = &"GroupPanel"
+
+[node name="Row" type="HBoxContainer" parent="Layout/Tabs/Backup/RestoreConfirm"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="RestoreText" type="Label" parent="Layout/Tabs/Backup/RestoreConfirm/Row"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(320, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+autowrap_mode = 3
+
+[node name="RestoreGo" type="Button" parent="Layout/Tabs/Backup/RestoreConfirm/Row"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 4
+focus_mode = 0
+text = "Ripristina"
+
+[node name="RestoreCancel" type="Button" parent="Layout/Tabs/Backup/RestoreConfirm/Row"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 4
+focus_mode = 0
+text = "Annulla"
 
 [node name="SystemTitle" type="Label" parent="Layout/Tabs/System"]
 layout_mode = 2

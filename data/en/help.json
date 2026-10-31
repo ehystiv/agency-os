@@ -232,9 +232,10 @@
 				"screen saver",
 				"language",
 				"screen area",
-				"updates"
+				"updates",
+				"backup"
 			],
-			"body": "The Control Panel sets the wallpaper, screen saver, audio and effects, the screen area and the language. Its Update tab checks for, downloads and installs new versions of AgencyOS."
+			"body": "The Control Panel sets the wallpaper, screen saver, audio and effects, the screen area and the language. Its Update tab checks for, downloads and installs new versions of AgencyOS. Its Backup tab saves the whole Branch to a .zip file and restores it from there: useful before an update or to move it to another computer."
 		}
 	]
 }

@@ -232,9 +232,10 @@
 				"screensaver",
 				"lingua",
 				"area dello schermo",
-				"aggiornamenti"
+				"aggiornamenti",
+				"backup"
 			],
-			"body": "Il Pannello di controllo regola sfondo, screensaver, audio ed effetti, l'area dello schermo e la lingua. Nella scheda Aggiornamento controlla, scarica e installa le nuove versioni di AgencyOS."
+			"body": "Il Pannello di controllo regola sfondo, screensaver, audio ed effetti, l'area dello schermo e la lingua. Nella scheda Aggiornamento controlla, scarica e installa le nuove versioni di AgencyOS. Nella scheda Backup salva tutta la Filiale in un file .zip, e la ripristina da lì: utile prima di un aggiornamento o per portarla su un altro computer."
 		}
 	]
 }

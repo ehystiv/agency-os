@@ -18,6 +18,9 @@ var campaign_id: String = ""
 
 var _ui: Dictionary = {}
 var _ui_timer: Timer
+## Set by a backup restore just before the swap: the campaign's data in memory is stale,
+## and writing it (e.g. a page saved on quit) would overwrite the restored files.
+var _campaign_locked := false
 
 
 func _ready() -> void:
@@ -86,14 +89,23 @@ func read_campaign(relative: String, default: Variant) -> Variant:
 
 
 func write_campaign(relative: String, data: Variant) -> Error:
+	if _campaign_locked:
+		return ERR_LOCKED
 	DirAccess.make_dir_recursive_absolute(campaign_path(relative).get_base_dir())
 	return write_json(campaign_path(relative), data)
 
 
 func delete_campaign(relative: String) -> void:
+	if _campaign_locked:
+		return
 	var path := campaign_path(relative)
 	if FileAccess.file_exists(path):
 		DirAccess.remove_absolute(path)
+
+
+## No more campaign writes until the app restarts (see BranchBackup.restore_from).
+func lock_campaign() -> void:
+	_campaign_locked = true
 
 
 ## Names of the .json files in a campaign subfolder, in alphabetical order.

@@ -3302,3 +3302,74 @@ msgstr "Settings"
 
 msgid "La chiave API non viene inviata in chiaro (http://) a un server fuori dalla rete locale: usa un indirizzo https://."
 msgstr "The API key isn't sent unencrypted (http://) to a server outside the local network: use an https:// address."
+
+#: apps/ctrl
+msgid "Backup"
+msgstr "Backup"
+
+msgid "Backup della Filiale"
+msgstr "Branch backup"
+
+msgid "Il backup è un unico file .zip con colloqui, memoria, posta, file, Taccuino e agenda. Le impostazioni e la Raccolta del Lettore non sono incluse."
+msgstr "The backup is a single .zip file with the interviews, memory, mail, files, Notebook and agenda. Settings and the Media Player's collection are not included."
+
+msgid "Esporta la Filiale…"
+msgstr "Export the Branch…"
+
+msgid "Ripristina da un backup…"
+msgstr "Restore from a backup…"
+
+msgid "Nella Filiale: %d colloqui, %d pagine del Taccuino, livello di accesso %d."
+msgstr "In the Branch: %d interviews, %d Notebook pages, access level %d."
+
+msgid "Ultimo backup: %s"
+msgstr "Last backup: %s"
+
+msgid "Nessun backup ancora fatto."
+msgstr "No backup made yet."
+
+msgid "Esporta la Filiale"
+msgstr "Export the Branch"
+
+msgid "Ripristina da un backup"
+msgstr "Restore from a backup"
+
+msgid "Backup di AgencyOS"
+msgstr "AgencyOS backups"
+
+msgid "Backup salvato in «%s»."
+msgstr "Backup saved to \"%s\"."
+
+msgid "Ripristinare il backup del %s (%d colloqui)? I dati attuali della Filiale saranno sostituiti e AgencyOS si riavvierà."
+msgstr "Restore the backup of %s (%d interviews)? The Branch's current data will be replaced and AgencyOS will restart."
+
+#: core/branch_backup.gd
+msgid "Non riesco a scrivere «%s»."
+msgstr "Cannot write \"%s\"."
+
+msgid "Errore durante la scrittura del backup."
+msgstr "An error occurred while writing the backup."
+
+msgid "Il file non è un archivio .zip valido."
+msgstr "The file is not a valid .zip archive."
+
+msgid "Non riesco a estrarre il backup."
+msgstr "Cannot extract the backup."
+
+msgid "Non riesco a sostituire i dati della Filiale."
+msgstr "Cannot replace the Branch's data."
+
+msgid "Filiale"
+msgstr "Branch"
+
+msgid "Questo archivio non è un backup di AgencyOS."
+msgstr "This archive is not an AgencyOS backup."
+
+msgid "Il backup viene da una versione più recente di AgencyOS."
+msgstr "The backup comes from a newer version of AgencyOS."
+
+msgid "Il backup contiene file inattesi."
+msgstr "The backup contains unexpected files."
+
+msgid "Il backup è troppo grande."
+msgstr "The backup is too large."

@@ -1,5 +1,5 @@
 extends AppContent
-## Control panel: wallpaper, screensaver, audio, effects, screen area, updates and system information.
+## Control panel: wallpaper, screensaver, audio, effects, screen area, updates, backup and system information.
 ## Only writes the settings; their users update through Save.ui_changed or Sfx.
 
 const SAVER_CHOICES: Array[int] = [1, 3, 5, 10, 0]
@@ -17,13 +17,15 @@ const DEFAULTS := {
 const CONFIRM_SECONDS := 15
 const DEFAULT_VOLUME := 0.8
 ## Tab ids for on_opened({"tab": …}), in the order of the tabs, with their titles.
-const TABS := {"general": "Generale", "screen": "Schermo", "language": "Lingua", "update": "Aggiornamento", "system": "Sistema"}
+const TABS := {"general": "Generale", "screen": "Schermo", "language": "Lingua", "update": "Aggiornamento", "backup": "Backup", "system": "Sistema"}
 
 var _loading := false
 ## The area in use before Applica, while waiting for the confirmation; ZERO otherwise.
 var _previous_area := Vector2i.ZERO
 var _confirm_left := 0
 var _confirm_timer: Timer
+## The backup chosen for a restore, waiting for the confirmation.
+var _restore_path := ""
 
 @onready var _tabs: TabContainer = %Tabs
 @onready var _wallpapers: Array[CheckBox] = [%Lattice, %Vault, %Solid]
@@ -48,6 +50,8 @@ var _confirm_timer: Timer
 @onready var _confirm_area: PanelContainer = %ConfirmArea
 @onready var _confirm_text: Label = %ConfirmText
 @onready var _language: OptionButton = %Language
+@onready var _backup_status: Label = %BackupStatus
+@onready var _restore_confirm: PanelContainer = %RestoreConfirm
 
 
 func _ready() -> void:
@@ -100,6 +104,10 @@ func _ready() -> void:
 		_language.set_item_metadata(_language.item_count - 1, code)
 	_language.item_selected.connect(func(index: int) -> void: _store_setting(&"language", str(_language.get_item_metadata(index))))
 	%RestartLanguage.pressed.connect(func() -> void: Updater.restart())
+	%ExportBackup.pressed.connect(_choose_backup_file.bind(true))
+	%RestoreBackup.pressed.connect(_choose_backup_file.bind(false))
+	%RestoreGo.pressed.connect(_restore)
+	%RestoreCancel.pressed.connect(_cancel_restore)
 	Save.ui_changed.connect(func(_key: String) -> void: _load_if_visible())
 	Sfx.settings_changed.connect(_load_if_visible)
 	_load()
@@ -139,6 +147,7 @@ func _load() -> void:
 		_area_slider.set_value_no_signal(ScreenArea.SIZES.find(ScreenArea.current()))
 	_refresh_area()
 	_info.text = _system_info()
+	_refresh_backup()
 	_refresh_update()
 	_loading = false
 
@@ -259,6 +268,94 @@ func _restore_defaults() -> void:
 	Sfx.volume = DEFAULT_VOLUME
 	Sfx.enabled = true
 	_load()
+
+
+# --- Backup ----------------------------------------------------------------
+
+func _refresh_backup() -> void:
+	%BackupInfo.text = tr("Nella Filiale: %d colloqui, %d pagine del Taccuino, livello di accesso %d.") % [Campaign.interviews.size(), Campaign.pages.size(), Campaign.level()]
+	var last := str(Save.get_ui("backup_last", ""))
+	if not _backup_status.has_meta(&"message"):
+		_backup_status.text = tr("Ultimo backup: %s") % _when(last) if last != "" else tr("Nessun backup ancora fatto.")
+
+
+func _choose_backup_file(save: bool) -> void:
+	_cancel_restore()
+	var dialog := FileDialog.new()
+	dialog.file_mode = FileDialog.FILE_MODE_SAVE_FILE if save else FileDialog.FILE_MODE_OPEN_FILE
+	dialog.access = FileDialog.ACCESS_FILESYSTEM
+	dialog.use_native_dialog = true
+	dialog.title = tr("Esporta la Filiale") if save else tr("Ripristina da un backup")
+	dialog.filters = PackedStringArray(["*.zip ; %s" % tr("Backup di AgencyOS")])
+	var folder := str(Save.get_ui("backup_dir", ""))
+	if folder != "":
+		dialog.current_dir = folder
+	if save:
+		dialog.current_file = BranchBackup.default_name()
+	dialog.file_selected.connect(func(path: String) -> void:
+		Save.set_ui("backup_dir", path.get_base_dir())
+		if save:
+			_export(path)
+		else:
+			_ask_restore(path))
+	dialog.visibility_changed.connect(func() -> void:
+		if not dialog.visible:
+			dialog.queue_free.call_deferred())
+	add_child(dialog)
+	dialog.popup_centered_ratio(0.6)
+
+
+func _export(path: String) -> void:
+	if not path.to_lower().ends_with(".zip"):
+		path += ".zip"
+	var error := BranchBackup.export_to(path)
+	if error != "":
+		_show_backup_message(error)
+		Sfx.play(&"error")
+		return
+	Save.set_ui("backup_last", Time.get_datetime_string_from_system())
+	_show_backup_message(tr("Backup salvato in «%s».") % path.get_file())
+	Sfx.play(&"ding")
+
+
+func _ask_restore(path: String) -> void:
+	var info := BranchBackup.inspect(path)
+	if info.has("error"):
+		_show_backup_message(str(info.error))
+		Sfx.play(&"error")
+		return
+	_restore_path = path
+	%RestoreText.text = tr("Ripristinare il backup del %s (%d colloqui)? I dati attuali della Filiale saranno sostituiti e AgencyOS si riavvierà.") % [_when(str(info.created)), int(info.interviews)]
+	_restore_confirm.show()
+
+
+func _restore() -> void:
+	var path := _restore_path
+	_cancel_restore()
+	Campaign.generation += 1
+	Campaign.correspondence.cancel_pending()
+	var error := BranchBackup.restore_from(path)
+	if error != "":
+		_show_backup_message(error)
+		Sfx.play(&"error")
+		return
+	Updater.restart()
+
+
+func _cancel_restore() -> void:
+	_restore_path = ""
+	_restore_confirm.hide()
+
+
+func _show_backup_message(text: String) -> void:
+	_backup_status.text = text
+	_backup_status.set_meta(&"message", true)
+
+
+static func _when(iso: String) -> String:
+	if iso.length() < 16:
+		return iso
+	return "%s %s" % [ItalianDate.numeric(iso.left(10)), iso.substr(11, 5)]
 
 
 func _system_info() -> String:
