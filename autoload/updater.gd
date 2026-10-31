@@ -8,6 +8,8 @@ enum State { IDLE, CHECKING, UP_TO_DATE, AVAILABLE, NEEDS_INSTALLER, DOWNLOADING
 
 const MANIFEST_URL := "https://github.com/ehystiv/agency-os/releases/latest/download/update.json"
 const RELEASES_PAGE := "https://github.com/ehystiv/agency-os/releases/latest"
+## Links in the manifest must point inside the repository: page goes to OS.shell_open.
+const REPO_URL := "https://github.com/ehystiv/agency-os/"
 ## Automatic checks happen at most once in this many seconds.
 const CHECK_INTERVAL := 24 * 3600
 const TIMEOUT := 30.0
@@ -60,7 +62,7 @@ func check(is_automatic: bool = false) -> void:
 		_fail(tr("Server degli aggiornamenti non raggiungibile (%s).") % _describe(result))
 		return
 	var data: Variant = JSON.parse_string((result[3] as PackedByteArray).get_string_from_utf8())
-	if not data is Dictionary or not data.has("version"):
+	if not data is Dictionary or not _valid_manifest(data):
 		_fail(tr("Risposta del server degli aggiornamenti non valida."))
 		return
 	Save.set_ui("update_checked_at", int(Time.get_unix_time_from_system()))
@@ -137,7 +139,8 @@ func restart() -> void:
 
 
 func release_page() -> String:
-	return str(manifest.get("page", RELEASES_PAGE))
+	var page := str(manifest.get("page", ""))
+	return page if _trusted(page) else RELEASES_PAGE
 
 
 ## -1, 0 or 1 comparing two "x.y.z" versions.
@@ -150,6 +153,21 @@ static func compare(a: String, b: String) -> int:
 		if x != y:
 			return 1 if x > y else -1
 	return 0
+
+
+## Plain x.y.z version, a patch file name that can't leave user://updates, a download link
+## inside the repository.
+func _valid_manifest(data: Dictionary) -> bool:
+	var version := RegEx.create_from_string("^\\d+\\.\\d+\\.\\d+$")
+	var file := RegEx.create_from_string("^agencyos-\\d+\\.\\d+\\.\\d+\\.pck$")
+	return version.search(str(data.get("version", ""))) != null \
+			and file.search(str(data.get("file", ""))) != null \
+			and _trusted(str(data.get("url", "")))
+
+
+## A test manifest (manifest_url changed) may point anywhere.
+func _trusted(url: String) -> bool:
+	return url.begins_with(REPO_URL) or (manifest_url != MANIFEST_URL and url != "")
 
 
 func _busy() -> bool:

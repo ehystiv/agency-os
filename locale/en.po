@@ -3299,3 +3299,6 @@ msgstr "Programs"
 
 msgid "Impostazioni"
 msgstr "Settings"
+
+msgid "La chiave API non viene inviata in chiaro (http://) a un server fuori dalla rete locale: usa un indirizzo https://."
+msgstr "The API key isn't sent unencrypted (http://) to a server outside the local network: use an https:// address."

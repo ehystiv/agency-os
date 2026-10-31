@@ -17,7 +17,7 @@ var items: Array[Dictionary] = []
 func _init() -> void:
 	DirAccess.make_dir_recursive_absolute(CACHE_DIR)
 	for item: Variant in Save.read_json(LIBRARY_PATH, []):
-		if item is Dictionary and str(item.get("file", "")) != "":
+		if item is Dictionary and _safe_file(str(item.get("file", ""))):
 			items.append(item)
 
 
@@ -56,7 +56,12 @@ func find(id: String) -> Dictionary:
 
 
 static func path_of(item: Dictionary) -> String:
-	return CACHE_DIR.path_join(str(item.file))
+	return CACHE_DIR.path_join(str(item.file).get_file())
+
+
+## A bare file name: library.json can't make the Player read or delete outside its cache.
+static func _safe_file(file: String) -> bool:
+	return file != "" and file == file.get_file() and not file.begins_with(".")
 
 
 ## The audio files of a folder (not its subfolders), by name.

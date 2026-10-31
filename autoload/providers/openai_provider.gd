@@ -54,11 +54,28 @@ func _start(endpoint: String, method: HTTPClient.Method, body: Dictionary, on_js
 		# Otherwise the server's 401 would blame a key that was never sent.
 		request.finish_error(tr("La variabile d'ambiente %s è vuota. Le app aperte dal Finder non vedono le variabili della shell: incolla la chiave nelle impostazioni della linea, o avvia AgencyOS dal Terminale.") % missing_key_variable)
 		return request
+	if api_key != "" and not _key_safe_to_send(base_url):
+		request.finish_error(tr("La chiave API non viene inviata in chiaro (http://) a un server fuori dalla rete locale: usa un indirizzo https://."))
+		return request
 	var job := OpenAIJob.new(request, base_url, endpoint, method, _headers(), body, model, on_json)
 	job.dialect = _dialect()
 	_jobs.append(job)
 	set_process(true)
 	return request
+
+
+## Over plain http a key would cross the network readable: only to this Mac or the local network.
+static func _key_safe_to_send(url: String) -> bool:
+	if not url.begins_with("http://"):
+		return true
+	var host := url.trim_prefix("http://").get_slice("/", 0)
+	host = host.get_slice("]", 0).trim_prefix("[") if host.begins_with("[") else host.get_slice(":", 0)
+	host = host.to_lower()
+	if host in ["localhost", "::1"] or host.ends_with(".local") or host.begins_with("127.") \
+			or host.begins_with("10.") or host.begins_with("192.168.") or host.begins_with("169.254."):
+		return true
+	var parts := host.split(".")
+	return parts.size() == 4 and parts[0] == "172" and int(parts[1]) >= 16 and int(parts[1]) <= 31
 
 
 func _headers() -> PackedStringArray:

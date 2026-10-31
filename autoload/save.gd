@@ -164,4 +164,8 @@ func _open_campaign_index() -> void:
 		}
 		write_json(INDEX_PATH, index)
 	campaign_id = str(index.active)
+	# The id becomes a folder name: nothing that could point outside campaigns/.
+	if not RegEx.create_from_string("^[A-Za-z0-9_-]+$").search(campaign_id):
+		push_error("Invalid campaign id in %s: %s" % [INDEX_PATH, campaign_id])
+		campaign_id = DEFAULT_CAMPAIGN
 	DirAccess.make_dir_recursive_absolute(campaign_path("interviews"))
