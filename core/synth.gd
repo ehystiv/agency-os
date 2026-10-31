@@ -89,23 +89,24 @@ static func noise(duration: float, volume: float, center: float, shaped: bool = 
 	return _store(key, _stream(data))
 
 
-## A die hitting the tray: a sharp click (resin ringing at a few high frequencies, gone in
-## a few milliseconds) over a short low thud from the table. Each variant has slightly
-## different resonances, like different dice landing on different edges. Peak about 0.25.
+## A die hitting the tray: a dull knock, like resin on a wooden tray with felt. The die's
+## resonances are low and die out in a few milliseconds (long high ringing sounds like glass),
+## over a thud from the table, all low-passed. Each variant has slightly different
+## resonances, like different dice landing on different edges. Peak about 0.25.
 static func knock(variant: int) -> AudioStreamWAV:
 	var key := "k%d" % variant
 	var cached := _cached(key)
 	if cached != null:
 		return cached
 	const RATE := 44100
-	const SECONDS := 0.12
+	const SECONDS := 0.1
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 4047 + variant * 7919
 	# [frequency, amplitude, decay time]: the die's own ringing, then the table.
 	var modes: Array[Vector3] = []
-	for mode: Vector3 in [Vector3(2300, 0.5, 0.030), Vector3(3800, 0.36, 0.022), Vector3(5600, 0.24, 0.016), Vector3(7900, 0.14, 0.010)]:
-		modes.append(Vector3(mode.x * rng.randf_range(0.88, 1.12), mode.y * rng.randf_range(0.7, 1.0), mode.z))
-	modes.append(Vector3(rng.randf_range(170.0, 260.0), rng.randf_range(0.25, 0.4), 0.028))
+	for mode: Vector3 in [Vector3(520, 0.55, 0.012), Vector3(1100, 0.4, 0.007), Vector3(1900, 0.22, 0.004), Vector3(2900, 0.1, 0.0025)]:
+		modes.append(Vector3(mode.x * rng.randf_range(0.85, 1.15), mode.y * rng.randf_range(0.7, 1.0), mode.z))
+	modes.append(Vector3(rng.randf_range(110.0, 170.0), rng.randf_range(0.7, 0.9), 0.022))
 	var phases: Array[float] = []
 	for mode in modes:
 		phases.append(rng.randf() * TAU)
@@ -113,21 +114,22 @@ static func knock(variant: int) -> AudioStreamWAV:
 	var samples := PackedFloat32Array()
 	samples.resize(frames)
 	var peak := 0.0
-	var previous_noise := 0.0
+	# One-pole low-pass at about 2.5 kHz: the felt swallows the brightness.
+	var cutoff := 1.0 - exp(-TAU * 2500.0 / RATE)
+	var smooth := 0.0
 	for i in frames:
 		var t := float(i) / RATE
 		var value := 0.0
 		for m in modes.size():
 			var mode := modes[m]
 			value += sin(TAU * mode.x * t + phases[m]) * mode.y * exp(-t / mode.z)
-		# The contact itself: 2 ms of bright noise (differenced = high-passed).
-		var noise_value := rng.randf_range(-1.0, 1.0)
-		value += (noise_value - previous_noise) * 0.35 * exp(-t / 0.0015)
-		previous_noise = noise_value
-		# 0.3 ms attack, so the start doesn't pop.
-		value *= minf(1.0, t / 0.0003)
-		samples[i] = value
-		peak = maxf(peak, absf(value))
+		# The contact itself: a couple of milliseconds of noise.
+		value += rng.randf_range(-1.0, 1.0) * 0.3 * exp(-t / 0.002)
+		# 1 ms attack: soft, so the start doesn't click.
+		value *= minf(1.0, t / 0.001)
+		smooth += (value - smooth) * cutoff
+		samples[i] = smooth
+		peak = maxf(peak, absf(smooth))
 	var data := PackedByteArray()
 	data.resize(frames * 2)
 	for i in frames:

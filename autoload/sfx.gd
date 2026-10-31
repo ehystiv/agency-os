@@ -102,7 +102,7 @@ func dice_hit(strength: float) -> void:
 		if not voice.playing:
 			voice.stream = Synth.knock(randi() % DICE_VARIANTS)
 			voice.volume_db = linear_to_db(clampf(strength, 0.03, 1.0))
-			voice.pitch_scale = randf_range(0.92, 1.1)
+			voice.pitch_scale = randf_range(0.94, 1.06)
 			voice.play()
 			return
 
