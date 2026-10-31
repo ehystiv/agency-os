@@ -148,6 +148,19 @@ func activate_from_taskbar(id: StringName) -> void:
 		focus(window)
 
 
+## The window of an open app (shown or minimized), null otherwise.
+func window_of(id: StringName) -> AppWindow:
+	return _windows.get(id) if _open.has(id) else null
+
+
+## True if at least one window is on screen.
+func any_shown() -> bool:
+	for id: StringName in _open:
+		if _windows[id].visible:
+			return true
+	return false
+
+
 ## Where a window is on the desktop; an empty Rect2 if it isn't shown.
 func rect_of(id: StringName) -> Rect2:
 	var window: AppWindow = _windows.get(id)

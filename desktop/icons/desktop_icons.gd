@@ -5,6 +5,8 @@ extends Control
 
 signal app_requested(id: StringName)
 signal file_requested(id: String)
+## Right click on an icon (its key) or on the empty desktop (an empty key).
+signal context_requested(key: String, at: Vector2)
 
 const FILE_ICON := preload("res://ui/icons/note.svg")
 const FILE_PREFIX := "file:"
@@ -65,6 +67,7 @@ func _add_icon(key: String, label: String, texture: Texture2D) -> DesktopIcon:
 	icon.selected.connect(_on_icon_selected)
 	icon.activated.connect(_on_icon_activated)
 	icon.dropped.connect(_on_icon_dropped)
+	icon.context_requested.connect(func(i: DesktopIcon, at: Vector2) -> void: context_requested.emit(i.key, at))
 	_icons.append(icon)
 	var cell: Variant = Save.get_ui("icons", {}).get(key)
 	if cell is Array and cell.size() == 2:
@@ -80,10 +83,22 @@ func _find(key: String) -> DesktopIcon:
 
 
 func _on_icon_activated(icon: DesktopIcon) -> void:
-	if icon.key.begins_with(FILE_PREFIX):
-		file_requested.emit(icon.key.trim_prefix(FILE_PREFIX))
+	open(icon.key)
+
+
+## Opens what an icon stands for, an app or one of the Entity's files.
+func open(key: String) -> void:
+	if key.begins_with(FILE_PREFIX):
+		file_requested.emit(key.trim_prefix(FILE_PREFIX))
 	else:
-		app_requested.emit(StringName(icon.key))
+		app_requested.emit(StringName(key))
+
+
+## F5 / Aggiorna: the icons blink off for a moment, as when Explorer redraws them.
+func refresh() -> void:
+	hide()
+	await get_tree().create_timer(0.12).timeout
+	show()
 
 
 ## Brings every icon back into a column, in registry order.
@@ -102,6 +117,9 @@ func _gui_input(event: InputEvent) -> void:
 	var click := event as InputEventMouseButton
 	if click != null and click.pressed and click.button_index == MOUSE_BUTTON_LEFT:
 		deselect_all()
+	elif click != null and click.pressed and click.button_index == MOUSE_BUTTON_RIGHT:
+		deselect_all()
+		context_requested.emit("", click.global_position)
 
 
 func _grid_size() -> Vector2i:

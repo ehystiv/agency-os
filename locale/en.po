@@ -3054,3 +3054,21 @@ msgstr "Search..."
 
 msgid "Mostra desktop"
 msgstr "Show Desktop"
+
+msgid "Apri"
+msgstr "Open"
+
+msgid "Riduci a icona"
+msgstr "Minimize"
+
+msgid "Proprietà"
+msgstr "Properties"
+
+msgid "Aggiorna"
+msgstr "Refresh"
+
+msgid "Disponi le finestre"
+msgstr "Arrange Windows"
+
+msgid "Riduci a icona tutte le finestre"
+msgstr "Minimize All Windows"

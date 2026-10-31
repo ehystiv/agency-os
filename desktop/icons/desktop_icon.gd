@@ -6,6 +6,7 @@ signal selected(icon: DesktopIcon)
 signal activated(icon: DesktopIcon)
 ## End of a drag: the grid decides the cell.
 signal dropped(icon: DesktopIcon)
+signal context_requested(icon: DesktopIcon, at: Vector2)
 
 const DRAG_THRESHOLD := 5.0
 const BLINK_SECONDS := 0.8
@@ -76,6 +77,12 @@ func pop() -> void:
 
 func _gui_input(event: InputEvent) -> void:
 	var click := event as InputEventMouseButton
+	if click != null and click.button_index == MOUSE_BUTTON_RIGHT:
+		accept_event()
+		if click.pressed:
+			selected.emit(self)
+			context_requested.emit(self, click.global_position)
+		return
 	if click != null and click.button_index == MOUSE_BUTTON_LEFT:
 		accept_event()
 		if click.double_click:

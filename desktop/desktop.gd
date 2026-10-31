@@ -18,6 +18,9 @@ const TRASH_FULL := preload("res://ui/icons/trash_full.svg")
 
 var _jackpot: JackpotOverlay
 var _players: PlayerScreen
+## Right-click menu, shared by desktop, icons and taskbar.
+var _context := PopupMenu.new()
+var _context_actions: Array[Callable] = []
 
 
 func _ready() -> void:
@@ -50,6 +53,10 @@ func _ready() -> void:
 	_taskbar.start_toggled.connect(_set_start_open)
 	_taskbar.task_pressed.connect(_on_task_pressed)
 	_taskbar.quick_launch_pressed.connect(_on_start_app_chosen)
+	_taskbar.context_requested.connect(_on_taskbar_context)
+	_icons.context_requested.connect(_on_icons_context)
+	add_child(_context)
+	_context.id_pressed.connect(func(id: int) -> void: _context_actions[id].call())
 	_taskbar.show_desktop_pressed.connect(func() -> void:
 		_set_start_open(false)
 		_windows.toggle_desktop())
@@ -258,6 +265,58 @@ func _on_windows_changed() -> void:
 func _on_task_pressed(id: StringName) -> void:
 	_set_start_open(false)
 	_windows.activate_from_taskbar(id)
+
+
+## entries: {label, call, disabled?}; an empty Dictionary is a separator.
+func _show_context(entries: Array[Dictionary], at: Vector2) -> void:
+	_set_start_open(false)
+	_context.clear()
+	_context_actions.clear()
+	for entry in entries:
+		if entry.is_empty():
+			_context.add_separator()
+			continue
+		_context.add_item(tr(str(entry.label)), _context_actions.size())
+		_context.set_item_disabled(_context.item_count - 1, bool(entry.get("disabled", false)))
+		_context_actions.append(entry.call)
+	_context.popup(Rect2i(Vector2i(at), Vector2i.ZERO))
+
+
+func _on_icons_context(key: String, at: Vector2) -> void:
+	if key != "":
+		_show_context([{"label": "Apri", "call": _icons.open.bind(key)}], at)
+		return
+	_show_context([
+		{"label": "Allinea le icone", "call": _icons.align},
+		{"label": "Aggiorna", "call": _icons.refresh},
+		{},
+		{"label": "Proprietà", "call": _windows.open.bind(&"ctrl", {"tab": "screen"})},
+	], at)
+
+
+func _on_taskbar_context(id: StringName, at: Vector2) -> void:
+	if id == &"":
+		_show_context([
+			{"label": "Disponi le finestre", "call": _windows.reset_positions},
+			{"label": "Riduci a icona tutte le finestre", "call": _windows.toggle_desktop, "disabled": not _windows.any_shown()},
+		], at)
+		return
+	var window := _windows.window_of(id)
+	if window == null:
+		return
+	_show_context([
+		{"label": "Ripristina", "call": func() -> void: _show_window(window, false), "disabled": window.visible and not window.maximized},
+		{"label": "Riduci a icona", "call": _windows.minimize.bind(window), "disabled": not window.visible},
+		{"label": "Ingrandisci", "call": func() -> void: _show_window(window, true), "disabled": not window.app.resizable or (window.visible and window.maximized)},
+		{},
+		{"label": "Chiudi", "call": _windows.close.bind(window)},
+	], at)
+
+
+func _show_window(window: AppWindow, maximized: bool) -> void:
+	_windows.open(window.app.id)
+	if window.maximized != maximized:
+		window.toggle_maximized()
 
 
 func _on_sound_changed() -> void:

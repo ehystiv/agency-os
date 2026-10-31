@@ -6,6 +6,8 @@ signal start_toggled(open: bool)
 signal task_pressed(id: StringName)
 signal quick_launch_pressed(id: StringName)
 signal show_desktop_pressed
+## Right click on a window button (its id) or on the empty taskbar (an empty id).
+signal context_requested(id: StringName, at: Vector2)
 signal sound_toggled
 
 const TASK_MIN_WIDTH := 70.0
@@ -77,8 +79,23 @@ func show_tasks(entries: Array[Dictionary]) -> void:
 		button.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 		var id: StringName = entry.id
 		button.pressed.connect(func() -> void: task_pressed.emit(id))
+		button.gui_input.connect(func(event: InputEvent) -> void:
+			if _is_right_click(event):
+				button.accept_event()
+				context_requested.emit(id, (event as InputEventMouse).global_position))
 		_tasks.add_child(button)
 	_fit_tasks()
+
+
+func _gui_input(event: InputEvent) -> void:
+	if _is_right_click(event):
+		accept_event()
+		context_requested.emit(&"", (event as InputEventMouse).global_position)
+
+
+static func _is_right_click(event: InputEvent) -> bool:
+	var click := event as InputEventMouseButton
+	return click != null and click.pressed and click.button_index == MOUSE_BUTTON_RIGHT
 
 
 func set_sound_enabled(enabled: bool) -> void:
