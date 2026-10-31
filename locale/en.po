@@ -3293,3 +3293,9 @@ msgstr "%d unread memos in AMail."
 
 msgid "Mostra contenuto Web"
 msgstr "Show Web Content"
+
+msgid "Programmi"
+msgstr "Programs"
+
+msgid "Impostazioni"
+msgstr "Settings"

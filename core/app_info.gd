@@ -21,6 +21,9 @@ extends Resource
 @export var min_size: Vector2i = Vector2i(320, 200)
 @export var on_desktop: bool = true
 @export var on_start_menu: bool = true
+## Where it goes in the Start menu: &"programs" (Programmi), &"settings" (Impostazioni)
+## or &"" (the menu itself).
+@export var start_folder: StringName = &"programs"
 ## A small icon in the taskbar's Quick Launch bar, next to Start.
 @export var on_quick_launch: bool = false
 @export var open_at_first_start: bool = false

@@ -13,5 +13,6 @@ icon = ExtResource("2_icon")
 scene = ExtResource("3_scene")
 default_position = Vector2i(-1, 60)
 default_size = Vector2i(520, 0)
+start_folder = &"settings"
 on_desktop = false
 open_at_first_start = false

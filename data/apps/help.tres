@@ -15,6 +15,7 @@ default_position = Vector2i(-1, 50)
 default_size = Vector2i(780, 470)
 resizable = true
 min_size = Vector2i(480, 300)
+start_folder = &""
 on_desktop = false
 on_start_menu = true
 open_at_first_start = false

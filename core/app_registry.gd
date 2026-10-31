@@ -28,6 +28,15 @@ func start_menu_apps() -> Array[AppInfo]:
 	return result
 
 
+## The Start menu apps of one folder (see AppInfo.start_folder), in registry order.
+func start_folder_apps(folder: StringName) -> Array[AppInfo]:
+	var result: Array[AppInfo] = []
+	for app in apps:
+		if app.on_start_menu and app.start_folder == folder:
+			result.append(app)
+	return result
+
+
 func quick_launch_apps() -> Array[AppInfo]:
 	var result: Array[AppInfo] = []
 	for app in apps:
