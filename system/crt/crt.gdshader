@@ -21,8 +21,14 @@ void fragment() {
 		float band = floor(uv.y * 40.0 + floor(TIME * 20.0) * 3.0);
 		uv.x += (noise(band) - 0.5) * 0.03 * tear * step(0.75, noise(band + 7.0));
 	}
-	vec2 shift = vec2(SCREEN_PIXEL_SIZE.x * 5.0 * aberration, 0.0);
-	vec3 color = vec3(texture(screen, uv + shift).r, texture(screen, uv).g, texture(screen, uv - shift).b);
+	vec3 color;
+	// Most of the time there's no color split: one read of the screen instead of three.
+	if (aberration > 0.0) {
+		vec2 shift = vec2(SCREEN_PIXEL_SIZE.x * 5.0 * aberration, 0.0);
+		color = vec3(texture(screen, uv + shift).r, texture(screen, uv).g, texture(screen, uv - shift).b);
+	} else {
+		color = texture(screen, uv).rgb;
+	}
 	float row = mod(FRAGCOORD.y, 3.0);
 	color *= 1.0 - scanline_alpha * step(row, 1.0);
 	vec2 centered = SCREEN_UV - 0.5;
