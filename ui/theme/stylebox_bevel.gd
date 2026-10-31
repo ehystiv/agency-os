@@ -3,6 +3,8 @@ class_name StyleBoxBevel
 extends StyleBox
 ## '98-style bevelled border: black outline, light at the top left, shadow at the bottom right.
 ## SUNKEN swaps light and shadow. Optional solid offset drop shadow, without blur.
+## open_bottom leaves the bottom edge open and reaches 2 px lower, for the selected tab
+## that merges into its panel.
 
 enum Kind { RAISED, SUNKEN }
 
@@ -30,6 +32,10 @@ enum Kind { RAISED, SUNKEN }
 	set(value):
 		outline_color = value
 		emit_changed()
+@export var open_bottom: bool = false:
+	set(value):
+		open_bottom = value
+		emit_changed()
 @export var drop_shadow_offset: Vector2 = Vector2.ZERO:
 	set(value):
 		drop_shadow_offset = value
@@ -42,12 +48,16 @@ enum Kind { RAISED, SUNKEN }
 
 func _draw(to_canvas_item: RID, rect: Rect2) -> void:
 	var rs := RenderingServer
+	if open_bottom:
+		rect = rect.grow_side(SIDE_BOTTOM, 2.0)
 	if drop_shadow_offset != Vector2.ZERO:
 		rs.canvas_item_add_rect(to_canvas_item, Rect2(rect.position + drop_shadow_offset, rect.size), drop_shadow_color)
 	var inner := rect
 	if draw_outline:
 		rs.canvas_item_add_rect(to_canvas_item, rect, outline_color)
 		inner = rect.grow(-1.0)
+		if open_bottom:
+			inner = inner.grow_side(SIDE_BOTTOM, 1.0)
 	if inner.size.x <= 0.0 or inner.size.y <= 0.0:
 		return
 	rs.canvas_item_add_rect(to_canvas_item, inner, bg_color)
@@ -55,7 +65,8 @@ func _draw(to_canvas_item: RID, rect: Rect2) -> void:
 	var bottom_right := shadow_color if kind == Kind.RAISED else light_color
 	var p := inner.position
 	var e := inner.end
-	rs.canvas_item_add_rect(to_canvas_item, Rect2(p.x, e.y - 1.0, inner.size.x, 1.0), bottom_right)
+	if not open_bottom:
+		rs.canvas_item_add_rect(to_canvas_item, Rect2(p.x, e.y - 1.0, inner.size.x, 1.0), bottom_right)
 	rs.canvas_item_add_rect(to_canvas_item, Rect2(e.x - 1.0, p.y, 1.0, inner.size.y), bottom_right)
 	rs.canvas_item_add_rect(to_canvas_item, Rect2(p.x, p.y, inner.size.x - 1.0, 1.0), top_left)
 	rs.canvas_item_add_rect(to_canvas_item, Rect2(p.x, p.y, 1.0, inner.size.y - 1.0), top_left)

@@ -798,10 +798,76 @@ border_width_right = 1
 border_width_bottom = 1
 border_color = Color(0, 0, 0, 1)
 
+[sub_resource type="StyleBox" id="progress_bg"]
+script = ExtResource("bevel")
+content_margin_left = 2.0
+content_margin_top = 2.0
+content_margin_right = 2.0
+content_margin_bottom = 2.0
+kind = 1
+bg_color = Color(1, 1, 1, 1)
+
+[sub_resource type="StyleBoxFlat" id="progress_fill"]
+bg_color = Color(0.1373, 0.251, 0.7098, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(1, 1, 1, 0)
+
+[sub_resource type="StyleBox" id="tab_panel"]
+script = ExtResource("bevel")
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+kind = 0
+bg_color = Color(0.7765, 0.7882, 0.8196, 1)
+light_color = Color(0.949, 0.9529, 0.9647, 1)
+shadow_color = Color(0.4157, 0.4353, 0.4941, 1)
+draw_outline = false
+
+[sub_resource type="StyleBox" id="tab_selected"]
+script = ExtResource("bevel")
+content_margin_left = 12.0
+content_margin_top = 4.0
+content_margin_right = 12.0
+content_margin_bottom = 4.0
+kind = 0
+bg_color = Color(0.7765, 0.7882, 0.8196, 1)
+light_color = Color(0.949, 0.9529, 0.9647, 1)
+shadow_color = Color(0.4157, 0.4353, 0.4941, 1)
+draw_outline = false
+open_bottom = true
+
+[sub_resource type="StyleBox" id="tab_unselected"]
+script = ExtResource("bevel")
+content_margin_left = 10.0
+content_margin_top = 4.0
+content_margin_right = 10.0
+content_margin_bottom = 3.0
+kind = 0
+bg_color = Color(0.7255, 0.7373, 0.7725, 1)
+light_color = Color(0.949, 0.9529, 0.9647, 1)
+shadow_color = Color(0.4157, 0.4353, 0.4941, 1)
+draw_outline = false
+
+[sub_resource type="StyleBoxEmpty" id="tab_focus"]
+
 [resource]
 default_font = ExtResource("plex")
 default_font_size = 12
 Button/styles/normal = SubResource("btn_raised")
+ProgressBar/styles/background = SubResource("progress_bg")
+ProgressBar/styles/fill = SubResource("progress_fill")
+TabContainer/colors/font_hovered_color = Color(0.07843, 0.08627, 0.1098, 1)
+TabContainer/colors/font_selected_color = Color(0.07843, 0.08627, 0.1098, 1)
+TabContainer/colors/font_unselected_color = Color(0.2706, 0.2902, 0.3451, 1)
+TabContainer/styles/panel = SubResource("tab_panel")
+TabContainer/styles/tab_focus = SubResource("tab_focus")
+TabContainer/styles/tab_hovered = SubResource("tab_unselected")
+TabContainer/styles/tab_selected = SubResource("tab_selected")
+TabContainer/styles/tab_unselected = SubResource("tab_unselected")
 Button/styles/hover = SubResource("btn_raised")
 Button/styles/pressed = SubResource("btn_sunken")
 Button/styles/hover_pressed = SubResource("btn_sunken")

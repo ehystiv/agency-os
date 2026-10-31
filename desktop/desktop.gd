@@ -52,13 +52,20 @@ func _ready() -> void:
 	_start_menu.command_chosen.connect(_on_start_command)
 	_catcher.gui_input.connect(_on_catcher_input)
 	Entity.glitch_started.connect(_on_glitch_started)
+	Updater.state_changed.connect(_on_update_state)
 
 	_on_windows_changed()
+	BootPatch.confirm()
 	if bool(Save.get_ui("show_boot", true)):
 		_boot.play()
 		await _boot.finished
 	_show_balloon("AgencyOS 98", "Benvenuto, Manager. La Filiale è operativa.")
 	_remind_session_today()
+	_announce_patch()
+	if bool(Save.get_ui("update_auto", true)):
+		# After the other start-up balloons, so they don't cover each other.
+		await get_tree().create_timer(8.0).timeout
+		Updater.check_daily()
 
 
 func _unhandled_key_input(event: InputEvent) -> void:
@@ -189,6 +196,36 @@ func _on_delivered(kind: String, item: Dictionary) -> void:
 		_show_balloon("Nuovo file sulla scrivania", "%s · origine sconosciuta" % item.name, {"app": &"notepad", "args": {"file": item.id}})
 		Entity.stir(0.45)
 		Entity.glitch("lattice")
+
+
+## Once per version: the patch just installed, or the one that broke the startup and was undone.
+func _announce_patch() -> void:
+	var title := ""
+	var text := ""
+	if BootPatch.failed_version != "" and Save.get_ui("update_failed_seen", "") != BootPatch.failed_version:
+		Save.set_ui("update_failed_seen", BootPatch.failed_version)
+		title = "Aggiornamento annullato"
+		text = "La versione %s non si avviava correttamente: AgencyOS è tornato alla %s." % [BootPatch.failed_version, BootPatch.base_version]
+	elif BootPatch.patch_version != "" and Save.get_ui("update_seen", "") != BootPatch.patch_version:
+		Save.set_ui("update_seen", BootPatch.patch_version)
+		title = "AgencyOS aggiornato"
+		text = "Ora è in esecuzione la versione %s." % BootPatch.patch_version
+	if title != "":
+		await get_tree().create_timer(2.0).timeout
+		_show_balloon(title, text)
+
+
+## Automatic checks only speak up when there's something to do; downloads always do.
+func _on_update_state(state: Updater.State) -> void:
+	var details := {"app": &"ctrl", "args": {"tab": "update"}}
+	match state:
+		Updater.State.AVAILABLE when Updater.automatic:
+			_show_balloon("Aggiornamento disponibile", "AgencyOS 98 %s è pronto da scaricare. Fare clic per i dettagli." % Updater.manifest.version, details)
+		Updater.State.NEEDS_INSTALLER when Updater.automatic:
+			_show_balloon("Nuova versione disponibile", "AgencyOS 98 %s richiede il nuovo programma di installazione. Fare clic per i dettagli." % Updater.manifest.version, details)
+		Updater.State.READY:
+			Sfx.play(&"ding")
+			_show_balloon("Aggiornamento scaricato", "Riavviare AgencyOS per completare l'installazione.", details)
 
 
 ## Glitches that leave the line window and touch the system.

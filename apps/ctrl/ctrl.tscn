@@ -13,87 +13,110 @@ script = ExtResource("1_script")
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="WallpaperTitle" type="Label" parent="Layout"]
+[node name="Tabs" type="TabContainer" parent="Layout"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 380)
+layout_mode = 2
+current_tab = 0
+
+[node name="General" type="VBoxContainer" parent="Layout/Tabs"]
+layout_mode = 2
+theme_override_constants/separation = 8
+metadata/_tab_index = 0
+
+[node name="Update" type="VBoxContainer" parent="Layout/Tabs"]
+visible = false
+layout_mode = 2
+theme_override_constants/separation = 8
+metadata/_tab_index = 1
+
+[node name="System" type="VBoxContainer" parent="Layout/Tabs"]
+visible = false
+layout_mode = 2
+theme_override_constants/separation = 8
+metadata/_tab_index = 2
+
+[node name="WallpaperTitle" type="Label" parent="Layout/Tabs/General"]
 layout_mode = 2
 theme_type_variation = &"FieldLabel"
 text = "Sfondo"
 uppercase = true
 
-[node name="WallpaperBox" type="PanelContainer" parent="Layout"]
+[node name="WallpaperBox" type="PanelContainer" parent="Layout/Tabs/General"]
 layout_mode = 2
 theme_type_variation = &"GroupPanel"
 
-[node name="Row" type="HBoxContainer" parent="Layout/WallpaperBox"]
+[node name="Row" type="HBoxContainer" parent="Layout/Tabs/General/WallpaperBox"]
 layout_mode = 2
 theme_override_constants/separation = 16
 
-[node name="Lattice" type="CheckBox" parent="Layout/WallpaperBox/Row"]
+[node name="Lattice" type="CheckBox" parent="Layout/Tabs/General/WallpaperBox/Row"]
 unique_name_in_owner = true
 layout_mode = 2
 focus_mode = 0
 text = "Reticolo"
 
-[node name="Vault" type="CheckBox" parent="Layout/WallpaperBox/Row"]
+[node name="Vault" type="CheckBox" parent="Layout/Tabs/General/WallpaperBox/Row"]
 unique_name_in_owner = true
 layout_mode = 2
 focus_mode = 0
 text = "Caveau"
 
-[node name="Solid" type="CheckBox" parent="Layout/WallpaperBox/Row"]
+[node name="Solid" type="CheckBox" parent="Layout/Tabs/General/WallpaperBox/Row"]
 unique_name_in_owner = true
 layout_mode = 2
 focus_mode = 0
 text = "Tinta unita"
 
-[node name="SaverTitle" type="Label" parent="Layout"]
+[node name="SaverTitle" type="Label" parent="Layout/Tabs/General"]
 layout_mode = 2
 theme_type_variation = &"FieldLabel"
 text = "Salvaschermo"
 uppercase = true
 
-[node name="SaverBox" type="PanelContainer" parent="Layout"]
+[node name="SaverBox" type="PanelContainer" parent="Layout/Tabs/General"]
 layout_mode = 2
 theme_type_variation = &"GroupPanel"
 
-[node name="Row" type="HBoxContainer" parent="Layout/SaverBox"]
+[node name="Row" type="HBoxContainer" parent="Layout/Tabs/General/SaverBox"]
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="Label" type="Label" parent="Layout/SaverBox/Row"]
+[node name="Label" type="Label" parent="Layout/Tabs/General/SaverBox/Row"]
 layout_mode = 2
 text = "Avvia dopo"
 
-[node name="Saver" type="OptionButton" parent="Layout/SaverBox/Row"]
+[node name="Saver" type="OptionButton" parent="Layout/Tabs/General/SaverBox/Row"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
 focus_mode = 0
 
-[node name="SaverPreview" type="Button" parent="Layout/SaverBox/Row"]
+[node name="SaverPreview" type="Button" parent="Layout/Tabs/General/SaverBox/Row"]
 unique_name_in_owner = true
 layout_mode = 2
 focus_mode = 0
 text = "Anteprima"
 
-[node name="AudioTitle" type="Label" parent="Layout"]
+[node name="AudioTitle" type="Label" parent="Layout/Tabs/General"]
 layout_mode = 2
 theme_type_variation = &"FieldLabel"
 text = "Audio"
 uppercase = true
 
-[node name="AudioBox" type="PanelContainer" parent="Layout"]
+[node name="AudioBox" type="PanelContainer" parent="Layout/Tabs/General"]
 layout_mode = 2
 theme_type_variation = &"GroupPanel"
 
-[node name="Row" type="HBoxContainer" parent="Layout/AudioBox"]
+[node name="Row" type="HBoxContainer" parent="Layout/Tabs/General/AudioBox"]
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="Label" type="Label" parent="Layout/AudioBox/Row"]
+[node name="Label" type="Label" parent="Layout/Tabs/General/AudioBox/Row"]
 layout_mode = 2
 text = "Volume generale"
 
-[node name="Volume" type="HSlider" parent="Layout/AudioBox/Row"]
+[node name="Volume" type="HSlider" parent="Layout/Tabs/General/AudioBox/Row"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -101,74 +124,136 @@ size_flags_vertical = 4
 step = 1.0
 value = 80.0
 
-[node name="Sounds" type="CheckBox" parent="Layout/AudioBox/Row"]
+[node name="Sounds" type="CheckBox" parent="Layout/Tabs/General/AudioBox/Row"]
 unique_name_in_owner = true
 layout_mode = 2
 focus_mode = 0
 text = "Suoni di sistema"
 
-[node name="EffectsTitle" type="Label" parent="Layout"]
+[node name="EffectsTitle" type="Label" parent="Layout/Tabs/General"]
 layout_mode = 2
 theme_type_variation = &"FieldLabel"
 text = "Schermo ed effetti"
 uppercase = true
 
-[node name="EffectsBox" type="PanelContainer" parent="Layout"]
+[node name="EffectsBox" type="PanelContainer" parent="Layout/Tabs/General"]
 layout_mode = 2
 theme_type_variation = &"GroupPanel"
 
-[node name="Grid" type="GridContainer" parent="Layout/EffectsBox"]
+[node name="Grid" type="GridContainer" parent="Layout/Tabs/General/EffectsBox"]
 layout_mode = 2
 theme_override_constants/h_separation = 16
 columns = 2
 
-[node name="FullMotion" type="CheckBox" parent="Layout/EffectsBox/Grid"]
+[node name="FullMotion" type="CheckBox" parent="Layout/Tabs/General/EffectsBox/Grid"]
 unique_name_in_owner = true
 layout_mode = 2
 focus_mode = 0
 text = "Animazioni piene"
 
-[node name="ReducedMotion" type="CheckBox" parent="Layout/EffectsBox/Grid"]
+[node name="ReducedMotion" type="CheckBox" parent="Layout/Tabs/General/EffectsBox/Grid"]
 unique_name_in_owner = true
 layout_mode = 2
 focus_mode = 0
 text = "Animazioni ridotte"
 
-[node name="Glitches" type="CheckBox" parent="Layout/EffectsBox/Grid"]
+[node name="Glitches" type="CheckBox" parent="Layout/Tabs/General/EffectsBox/Grid"]
 unique_name_in_owner = true
 layout_mode = 2
 focus_mode = 0
 text = "Glitch della linea"
 
-[node name="Crt" type="CheckBox" parent="Layout/EffectsBox/Grid"]
+[node name="Crt" type="CheckBox" parent="Layout/Tabs/General/EffectsBox/Grid"]
 unique_name_in_owner = true
 layout_mode = 2
 focus_mode = 0
 text = "Effetto CRT"
 
-[node name="Fullscreen" type="CheckBox" parent="Layout/EffectsBox/Grid"]
+[node name="Fullscreen" type="CheckBox" parent="Layout/Tabs/General/EffectsBox/Grid"]
 unique_name_in_owner = true
 layout_mode = 2
 focus_mode = 0
 text = "Schermo intero"
 
-[node name="ShowBoot" type="CheckBox" parent="Layout/EffectsBox/Grid"]
+[node name="ShowBoot" type="CheckBox" parent="Layout/Tabs/General/EffectsBox/Grid"]
 unique_name_in_owner = true
 layout_mode = 2
 focus_mode = 0
 text = "Mostra l'avvio"
 
-[node name="SystemTitle" type="Label" parent="Layout"]
+[node name="UpdateTitle" type="Label" parent="Layout/Tabs/Update"]
+layout_mode = 2
+theme_type_variation = &"FieldLabel"
+text = "Aggiornamenti"
+uppercase = true
+
+[node name="UpdateBox" type="PanelContainer" parent="Layout/Tabs/Update"]
+layout_mode = 2
+theme_type_variation = &"GroupPanel"
+
+[node name="Column" type="VBoxContainer" parent="Layout/Tabs/Update/UpdateBox"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="UpdateStatus" type="Label" parent="Layout/Tabs/Update/UpdateBox/Column"]
+unique_name_in_owner = true
+layout_mode = 2
+autowrap_mode = 3
+
+[node name="UpdateNotes" type="Label" parent="Layout/Tabs/Update/UpdateBox/Column"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_type_variation = &"HintLabel"
+autowrap_mode = 3
+
+[node name="UpdateProgress" type="ProgressBar" parent="Layout/Tabs/Update/UpdateBox/Column"]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(0, 18)
+layout_mode = 2
+max_value = 1.0
+step = 0.0
+show_percentage = false
+
+[node name="Row" type="HBoxContainer" parent="Layout/Tabs/Update/UpdateBox/Column"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="CheckUpdates" type="Button" parent="Layout/Tabs/Update/UpdateBox/Column/Row"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+text = "Cerca aggiornamenti"
+
+[node name="UpdateAction" type="Button" parent="Layout/Tabs/Update/UpdateBox/Column/Row"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+focus_mode = 0
+theme_type_variation = &"PrimaryButton"
+
+[node name="Spacer" type="Control" parent="Layout/Tabs/Update/UpdateBox/Column/Row"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="AutoUpdate" type="CheckBox" parent="Layout/Tabs/Update/UpdateBox/Column/Row"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+text = "Controlla all'avvio"
+
+[node name="SystemTitle" type="Label" parent="Layout/Tabs/System"]
 layout_mode = 2
 theme_type_variation = &"FieldLabel"
 text = "Sistema"
 uppercase = true
 
-[node name="SystemBox" type="PanelContainer" parent="Layout"]
+[node name="SystemBox" type="PanelContainer" parent="Layout/Tabs/System"]
 layout_mode = 2
 theme_type_variation = &"SunkenPanel"
 
-[node name="Info" type="Label" parent="Layout/SystemBox"]
+[node name="Info" type="Label" parent="Layout/Tabs/System/SystemBox"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"InfoText"
