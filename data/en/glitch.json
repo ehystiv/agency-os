@@ -200,6 +200,16 @@
 				0
 			],
 			"motion": true
+		},
+		"bluescreen": {
+			"description": "you crash the whole system for a few seconds with a blue fatal-error screen: to frighten, to threaten, or when you feel cornered",
+			"timing": "start",
+			"webcam": [
+				0.8,
+				0.2,
+				0.3
+			],
+			"motion": false
 		}
 	}
 }

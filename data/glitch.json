@@ -200,6 +200,16 @@
 				0
 			],
 			"motion": true
+		},
+		"bluescreen": {
+			"description": "fai crollare tutto il sistema per qualche secondo con una schermata blu di errore irreversibile: per spaventare, minacciare, o quando ti senti messa all'angolo",
+			"timing": "start",
+			"webcam": [
+				0.8,
+				0.2,
+				0.3
+			],
+			"motion": false
 		}
 	}
 }

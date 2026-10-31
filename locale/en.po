@@ -3221,3 +3221,9 @@ msgstr "Discover AgencyOS"
 
 msgid "Le scorciatoie da tastiera e i trucchi del sistema: il tasto destro sulle icone, la barra Avvio veloce, Start › Esegui… e lo schermo per i giocatori."
 msgstr "Keyboard shortcuts and the system's tricks: right-clicking icons, the Quick Launch bar, Start › Run... and the players' screen."
+
+msgid "Si è verificata un'eccezione irreversibile 0E in 0047:BB000047 in VXD ENTITA(01) +\n0000U047. L'applicazione corrente verrà terminata.\n\n*  Premere un tasto per terminare l'applicazione corrente.\n*  Premere CTRL+ALT+CANC per riavviare il computer. Tutte le\n   informazioni non salvate andranno perse."
+msgstr "A fatal exception 0E has occurred at 0047:BB000047 in VXD ENTITY(01) +\n0000U047. The current application will be terminated.\n\n*  Press any key to terminate the current application.\n*  Press CTRL+ALT+DEL again to restart your computer. You will\n   lose any unsaved information in all applications."
+
+msgid "Premere un tasto per continuare"
+msgstr "Press any key to continue"

@@ -22,6 +22,7 @@ const CAPTION_HEIGHT := 24.0
 @onready var _shutdown: ShutdownDialog = %Shutdown
 
 var _jackpot: JackpotOverlay
+var _bluescreen: BlueScreen
 var _players: PlayerScreen
 ## Right-click menu, shared by desktop, icons and taskbar.
 var _context := PopupMenu.new()
@@ -80,6 +81,8 @@ func _ready() -> void:
 
 	_jackpot = JackpotOverlay.new()
 	add_child(_jackpot)
+	_bluescreen = BlueScreen.new()
+	add_child(_bluescreen)
 	_players = PlayerScreen.new()
 	add_child(_players)
 	_windows.present_requested.connect(_players.present)
@@ -466,6 +469,8 @@ func _on_glitch_started(glitch_name: String) -> void:
 			_taskbar.sabotage()
 		"lattice":
 			_wallpaper.pulse()
+		"bluescreen":
+			_bluescreen.crash()
 
 
 func _on_start_app_chosen(id: StringName) -> void:
