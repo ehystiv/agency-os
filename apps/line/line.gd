@@ -277,13 +277,14 @@ func _reply() -> void:
 	Entity.set_speaking(false)
 	if request.ok():
 		var text := request.text.strip_edges()
-		if request.cancelled and text != "":
+		# A reply stopped, cut by the token limit or by a dropped line ends with a dash.
+		if (request.cancelled or request.truncated) and text != "":
 			text += " —"
 		if text != "":
 			var saved := Campaign.add_message(interview, "entity", text)
 			bubble.set_entity_text(text, false)
 			_update_chrome()
-			if not request.cancelled:
+			if not request.cancelled and not request.truncated:
 				await _after_reply(interview, saved, bubble)
 		else:
 			bubble.queue_free()

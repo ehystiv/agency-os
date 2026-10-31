@@ -18,6 +18,8 @@ var error: String = ""
 var http_status: int = 0
 ## True if the reply was stopped halfway: text holds the part that arrived.
 var cancelled: bool = false
+## True if the reply is incomplete: the server hit the token limit or the stream ended early.
+var truncated: bool = false
 var is_done: bool = false
 
 var _cancel_requested: bool = false

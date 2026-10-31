@@ -35,7 +35,8 @@ var _got_first_data := false
 var _buffer := PackedByteArray()
 var _raw_body := PackedByteArray()
 var _raw_text := ""
-var _stream_done := false
+## True once the stream has signalled its end ([DONE], message_stop or a finish_reason).
+var _saw_end := false
 var _on_json: Callable
 
 
@@ -138,6 +139,14 @@ func _read(now: int) -> void:
 		request.http_status = code
 		_fail(_http_error_message(code, _raw_body.get_string_from_utf8()))
 	elif _streaming:
+		# A last line without the final newline is still a line.
+		_buffer.append(10)
+		_consume_sse_lines()
+		if _phase == Phase.DONE:
+			return
+		if not _saw_end:
+			# The connection closed before the end: what arrived is only part of the reply.
+			request.truncated = true
 		_finish_text()
 	else:
 		_finish_json(_raw_body.get_string_from_utf8())
@@ -154,6 +163,7 @@ func _consume_sse_lines() -> void:
 			continue
 		var payload := line.substr(5).strip_edges()
 		if payload == "[DONE]":
+			_saw_end = true
 			_finish_text()
 			return
 		var data: Variant = JSON.parse_string(payload)
@@ -164,16 +174,22 @@ func _consume_sse_lines() -> void:
 			return
 		var content: Variant = null
 		if dialect == Dialect.ANTHROPIC:
-			if data.get("type", "") == "message_stop":
+			var type := str(data.get("type", ""))
+			if type == "message_stop":
+				_saw_end = true
 				_finish_text()
 				return
-			if data.get("type", "") == "content_block_delta":
+			if type == "message_delta":
+				_note_stop_reason(data.get("delta", {}).get("stop_reason"))
+			if type == "content_block_delta":
 				content = data.get("delta", {}).get("text")
 		else:
 			var choices: Array = data.get("choices", [])
 			if choices.is_empty():
 				continue
-			content = choices[0].get("delta", {}).get("content")
+			var choice: Dictionary = choices[0]
+			_note_stop_reason(choice.get("finish_reason"))
+			content = choice.get("delta", {}).get("content")
 		_got_first_data = true
 		if content is String and content != "":
 			_raw_text += content
@@ -191,22 +207,39 @@ func _finish_json(body: String) -> void:
 		request.finish_ok()
 		return
 	if dialect == Dialect.ANTHROPIC:
+		_note_stop_reason(data.get("stop_reason"))
 		for block: Variant in data.get("content", []):
 			if block is Dictionary and block.get("type", "") == "text":
 				_raw_text += str(block.get("text", ""))
 	else:
 		var choices: Array = data.get("choices", [])
 		if not choices.is_empty():
-			var message: Dictionary = choices[0].get("message", {})
-			_raw_text = str(message.get("content", ""))
+			var choice: Dictionary = choices[0]
+			_note_stop_reason(choice.get("finish_reason"))
+			var content: Variant = choice.get("message", {}).get("content")
+			# content is null when the model only reasoned, or refused.
+			_raw_text = content if content is String else ""
 	_finish_text()
+
+
+## finish_reason (OpenAI) or stop_reason (Anthropic): any value means the reply is over,
+## and "length" / "max_tokens" means it was cut by the token limit.
+func _note_stop_reason(reason: Variant) -> void:
+	if not reason is String or reason == "":
+		return
+	_saw_end = true
+	if reason in ["length", "max_tokens"]:
+		request.truncated = true
 
 
 func _finish_text() -> void:
 	request.push_text(ThinkFilter.visible(_raw_text, true).strip_edges())
 	_close()
 	if request.text == "":
-		request.finish_error("L'Entità è rimasta in silenzio. Riprova.")
+		if request.truncated and _streaming and not _saw_end:
+			request.finish_error("La linea è caduta a metà risposta.")
+		else:
+			request.finish_error("L'Entità è rimasta in silenzio. Riprova.")
 	else:
 		request.finish_ok()
 
