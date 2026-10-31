@@ -12,13 +12,6 @@ const LINE_SECONDS := 0.28
 const SCAN_STEPS := 10
 const SCAN_STEP_SECONDS := 0.14
 const SCAN_WHISPERS: PackedStringArray = ["(non qui.)", "(sto trattenendo il respiro.)", "(fai finta di niente.)", "(brava. bravo. scusa, non so cosa sei.)"]
-## Branch programs: name, app id, size shown by DIR.
-const SYSTEM_FILES: Array[Array] = [
-	["LINEA.EXE", &"line", "24.576"], ["FASCICOLO.DAT", &"dossier", "8.192"], ["CAM03.AVI", &"cam", "1.048.576"],
-	["AMAIL.EXE", &"amail", "65.536"], ["TACCUINO.EXE", &"notebook", "20.480"], ["CALC.EXE", &"calc", "12.288"],
-	["AGENDA.EXE", &"agenda", "18.432"], ["CONTEN.EXE", &"mine", "28.672"], ["LETTORE.EXE", &"player", "40.960"],
-	["PANNELLO.CPL", &"ctrl", "9.216"], ["CANONE.HLP", &"canon", "32.768"], ["REGISTRO.EVT", &"event_viewer", "16.384"],
-]
 const WEEKDAYS: PackedStringArray = ["domenica", "lunedì", "martedì", "mercoledì", "giovedì", "venerdì", "sabato"]
 const MONTHS: PackedStringArray = ["gennaio", "febbraio", "marzo", "aprile", "maggio", "giugno", "luglio", "agosto", "settembre", "ottobre", "novembre", "dicembre"]
 const HELP := "Comandi disponibili:\n  DIR            elenca i file\n  TYPE <file>    mostra il contenuto di un file\n  APRI <nome>    apre un programma o un file\n  STATO          stato del General Manager\n  COLLOQUI       elenca i colloqui registrati\n  SCAN           cerca attività anomale\n  SUONI ON|OFF   attiva o disattiva i suoni\n  VER, DATA, ORA, CLS, ESCI"
@@ -191,7 +184,7 @@ func _run(raw: String) -> void:
 
 func _dir() -> void:
 	var listing := tr(" Volume nell'unità C: FILIALE\n Directory di C:\\FILIALE\n\n")
-	for entry in SYSTEM_FILES:
+	for entry in BranchFiles.SYSTEM_FILES:
 		listing += "%s%s  01/01/98\n" % [str(entry[0]).rpad(18), str(entry[2]).lpad(12)]
 	_print(listing, "text")
 	var files := Campaign.correspondence.delivered_files()
@@ -200,7 +193,7 @@ func _dir() -> void:
 		for file in files:
 			unregistered += tr("%s%s  %s  [NON REGISTRATO]\n") % [str(file.name).to_upper().rpad(18), str(str(file.content).length()).lpad(12), ItalianDate.numeric(str(file.created))]
 		_print(unregistered, "error")
-	_print(tr("      %d file") % (SYSTEM_FILES.size() + files.size()), "text")
+	_print(tr("      %d file") % (BranchFiles.SYSTEM_FILES.size() + files.size()), "text")
 
 
 func _type(argument: String) -> void:
@@ -211,44 +204,25 @@ func _type(argument: String) -> void:
 	if not file.is_empty():
 		_print(str(file.content), "entity")
 		Campaign.correspondence.mark_file_read(file)
-	elif SYSTEM_FILES.any(func(entry: Array) -> bool: return entry[0] == argument.to_upper()):
+	elif BranchFiles.SYSTEM_FILES.any(func(entry: Array) -> bool: return entry[0] == argument.to_upper()):
 		_print(tr("Impossibile visualizzare un file binario."), "error")
 	else:
 		_print(tr("File non trovato."), "error")
 
 
 func _open(argument: String) -> void:
-	var wanted := argument.to_upper()
-	if wanted == "":
+	if argument.strip_edges() == "":
 		_print(tr("Specifica un programma o un file. Esempio: APRI CALC"), "error")
 		return
-	# An exact name wins; otherwise the start of a name, but only if it's not ambiguous
-	# ("APRI C" could be CALC, CAM03, CANONE…).
-	for entry in SYSTEM_FILES:
-		if entry[0] == wanted or String(entry[1]).to_upper() == wanted:
-			_launch(entry)
-			return
-	for file in Campaign.correspondence.delivered_files():
-		if str(file.name).to_upper() == wanted:
-			_open_file(file)
-			return
-	var matches: Array = []
-	for entry in SYSTEM_FILES:
-		if str(entry[0]).begins_with(wanted):
-			matches.append(entry)
-	for file in Campaign.correspondence.delivered_files():
-		if str(file.name).to_upper().begins_with(wanted):
-			matches.append(file)
-	if matches.is_empty():
-		_print(tr("Programma o file non trovato."), "error")
-	elif matches.size() == 1:
-		if matches[0] is Array:
-			_launch(matches[0])
-		else:
-			_open_file(matches[0])
+	var found := BranchFiles.resolve(argument)
+	if found.has("program"):
+		_launch(found.program)
+	elif found.has("file"):
+		_open_file(found.file)
+	elif found.has("ambiguous"):
+		_print(tr("Più corrispondenze: %s. Specifica meglio il nome.") % ", ".join(found.ambiguous), "error")
 	else:
-		var names := matches.map(func(match_: Variant) -> String: return str(match_[0]) if match_ is Array else str(match_.name).to_upper())
-		_print(tr("Più corrispondenze: %s. Specifica meglio il nome.") % ", ".join(names), "error")
+		_print(tr("Programma o file non trovato."), "error")
 
 
 func _launch(entry: Array) -> void:

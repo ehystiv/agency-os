@@ -98,7 +98,7 @@ func _ready() -> void:
 
 ## Global shortcuts, before the focused field sees the keys (Cmd on a Mac, Ctrl elsewhere):
 ## Cmd+W closes, Cmd+M minimizes, Ctrl+Tab / Cmd+` switch window (Shift = backwards),
-## Cmd+1…9 open the Start menu's apps, Cmd+D shows the desktop.
+## Cmd+1…9 open the Start menu's apps, Cmd+D shows the desktop, Cmd+R opens Esegui.
 func _input(event: InputEvent) -> void:
 	var key := event as InputEventKey
 	if key == null or not key.pressed or _boot.is_running() or _saver.active:
@@ -116,6 +116,8 @@ func _input(event: InputEvent) -> void:
 		_windows.minimize(active)
 	elif key.keycode == KEY_D:
 		_windows.toggle_desktop()
+	elif key.keycode == KEY_R:
+		_windows.open(&"run")
 	elif key.keycode == KEY_B:
 		_players.blank()
 	elif key.keycode == KEY_P and key.shift_pressed and active != null:
@@ -166,6 +168,7 @@ func _show_shortcuts() -> void:
 		"%s+M\t%s" % [command, tr("riduce la finestra a icona")],
 		"Ctrl+Tab\t%s" % tr("finestra successiva (Maiusc: precedente)"),
 		"%s+D\t%s" % [command, tr("mostra il desktop (di nuovo: ripristina)")],
+		"%s+R\t%s" % [command, tr("Esegui…: apre un programma o un file per nome")],
 		"%s+%s+P\t%s" % [command, tr("Maiusc"), tr("mostra ai giocatori (memo, file, pagina, tiro)")],
 		"%s+B\t%s" % [command, tr("oscura lo schermo giocatori")],
 		"F11\t%s" % tr("schermo intero"),
@@ -448,6 +451,8 @@ func _on_start_command(command: StringName) -> void:
 			_windows.open(&"dossier", {"reset": true})
 		&"fullscreen":
 			_set_fullscreen(not _is_fullscreen())
+		&"run":
+			_windows.open(&"run")
 		&"restart":
 			Save.flush()
 			get_tree().reload_current_scene()

@@ -1,0 +1,63 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://apps/run/run.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://ui/icons/run.svg" id="2_icon"]
+
+[node name="Run" type="MarginContainer"]
+custom_minimum_size = Vector2(380, 0)
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 10
+script = ExtResource("1_script")
+
+[node name="Layout" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Top" type="HBoxContainer" parent="Layout"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Icon" type="TextureRect" parent="Layout/Top"]
+layout_mode = 2
+size_flags_vertical = 0
+texture = ExtResource("2_icon")
+
+[node name="Text" type="Label" parent="Layout/Top"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"InfoText"
+text = "Digita il nome di un programma o di un file della Filiale, e AgencyOS lo aprirà."
+autowrap_mode = 3
+
+[node name="Row" type="HBoxContainer" parent="Layout"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="OpenLabel" type="Label" parent="Layout/Row"]
+layout_mode = 2
+text = "Apri:"
+
+[node name="Name" type="LineEdit" parent="Layout/Row"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Buttons" type="HBoxContainer" parent="Layout"]
+layout_mode = 2
+alignment = 2
+theme_override_constants/separation = 6
+
+[node name="Ok" type="Button" parent="Layout/Buttons"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+text = "OK"
+
+[node name="Cancel" type="Button" parent="Layout/Buttons"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+text = "Annulla"

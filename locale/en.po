@@ -3072,3 +3072,21 @@ msgstr "Arrange Windows"
 
 msgid "Riduci a icona tutte le finestre"
 msgstr "Minimize All Windows"
+
+msgid "Esegui"
+msgstr "Run"
+
+msgid "Esegui…"
+msgstr "Run..."
+
+msgid "Apri:"
+msgstr "Open:"
+
+msgid "Digita il nome di un programma o di un file della Filiale, e AgencyOS lo aprirà."
+msgstr "Type the name of a program or a Branch file, and AgencyOS will open it for you."
+
+msgid "Impossibile trovare il file '%s' o uno dei suoi componenti. Verificare che il percorso e il nome del file siano corretti e che tutte le librerie richieste siano disponibili."
+msgstr "Cannot find the file '%s' (or one of its components). Make sure the path and filename are correct and that all required libraries are available."
+
+msgid "Esegui…: apre un programma o un file per nome"
+msgstr "Run...: opens a program or a file by name"

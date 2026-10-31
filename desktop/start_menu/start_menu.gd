@@ -4,7 +4,7 @@ extends PanelContainer
 
 signal app_chosen(id: StringName)
 ## One of &"sounds", &"fullscreen", &"align_icons", &"shortcuts", &"players_toggle",
-## &"players_image", &"players_blank", &"restart", &"reset_branch", &"shutdown".
+## &"players_image", &"players_blank", &"run", &"restart", &"reset_branch", &"shutdown".
 signal command_chosen(command: StringName)
 
 const ICON_SOUND := preload("res://ui/icons/sound.svg")
@@ -17,6 +17,7 @@ const ICON_KEYS := preload("res://ui/icons/keys.svg")
 const ICON_PLAYERS := preload("res://ui/icons/players.svg")
 const ICON_IMAGE := preload("res://ui/icons/image.svg")
 const ICON_BLANK := preload("res://ui/icons/blank.svg")
+const ICON_RUN := preload("res://ui/icons/run.svg")
 
 @onready var _scroll: ScrollContainer = %Scroll
 @onready var _items: VBoxContainer = %Items
@@ -39,6 +40,8 @@ func build(registry: AppRegistry, sound_enabled: bool, fullscreen: bool, players
 	_add_command(ICON_FULLSCREEN, "Esci dallo schermo intero" if fullscreen else "Schermo intero", &"fullscreen")
 	_add_command(ICON_ALIGN, "Allinea le icone", &"align_icons")
 	_add_command(ICON_KEYS, "Scorciatoie da tastiera", &"shortcuts")
+	_items.add_child(HSeparator.new())
+	_add_command(ICON_RUN, "Esegui…", &"run")
 	_add_command(ICON_RESTART, "Riavvia AgencyOS", &"restart")
 	_items.add_child(HSeparator.new())
 	_add_command(ICON_RESET, "Azzera la Filiale…", &"reset_branch")

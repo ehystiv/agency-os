@@ -18,7 +18,8 @@
 [ext_resource type="Resource" path="res://data/apps/trash.tres" id="15_trash"]
 [ext_resource type="Resource" path="res://data/apps/notepad.tres" id="16_notepad"]
 [ext_resource type="Resource" path="res://data/apps/line_settings.tres" id="17_line_settings"]
+[ext_resource type="Resource" path="res://data/apps/run.tres" id="18_run"]
 
 [resource]
 script = ExtResource("1_registry")
-apps = Array[ExtResource("1_info")]([ExtResource("2_line"), ExtResource("3_dossier"), ExtResource("4_notebook"), ExtResource("5_amail"), ExtResource("6_cam"), ExtResource("7_term"), ExtResource("8_event_viewer"), ExtResource("9_canon"), ExtResource("10_calc"), ExtResource("11_agenda"), ExtResource("12_mine"), ExtResource("13_player"), ExtResource("14_ctrl"), ExtResource("17_line_settings"), ExtResource("15_trash"), ExtResource("16_notepad")])
+apps = Array[ExtResource("1_info")]([ExtResource("2_line"), ExtResource("3_dossier"), ExtResource("4_notebook"), ExtResource("5_amail"), ExtResource("6_cam"), ExtResource("7_term"), ExtResource("8_event_viewer"), ExtResource("9_canon"), ExtResource("10_calc"), ExtResource("11_agenda"), ExtResource("12_mine"), ExtResource("13_player"), ExtResource("14_ctrl"), ExtResource("17_line_settings"), ExtResource("15_trash"), ExtResource("16_notepad"), ExtResource("18_run")])
