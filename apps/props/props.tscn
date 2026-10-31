@@ -1,0 +1,105 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://apps/props/props.gd" id="1_script"]
+
+[node name="Props" type="MarginContainer"]
+custom_minimum_size = Vector2(340, 0)
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+script = ExtResource("1_script")
+
+[node name="Layout" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Tabs" type="TabContainer" parent="Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+current_tab = 0
+
+[node name="General" type="MarginContainer" parent="Layout/Tabs"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+metadata/_tab_index = 0
+
+[node name="Rows" type="VBoxContainer" parent="Layout/Tabs/General"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Head" type="HBoxContainer" parent="Layout/Tabs/General/Rows"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="Icon" type="TextureRect" parent="Layout/Tabs/General/Rows/Head"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Name" type="LineEdit" parent="Layout/Tabs/General/Rows/Head"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_override_colors/font_uneditable_color = Color(0.07843, 0.08627, 0.1098, 1)
+editable = false
+
+[node name="Sections" type="VBoxContainer" parent="Layout/Tabs/General/Rows"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Attributes" type="HBoxContainer" parent="Layout/Tabs/General/Rows"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="AttributesLabel" type="Label" parent="Layout/Tabs/General/Rows/Attributes"]
+layout_mode = 2
+text = "Attributi:"
+
+[node name="ReadOnly" type="CheckBox" parent="Layout/Tabs/General/Rows/Attributes"]
+unique_name_in_owner = true
+layout_mode = 2
+disabled = true
+text = "Sola lettura"
+
+[node name="Hidden" type="CheckBox" parent="Layout/Tabs/General/Rows/Attributes"]
+unique_name_in_owner = true
+layout_mode = 2
+disabled = true
+text = "Nascosto"
+
+[node name="Archive" type="CheckBox" parent="Layout/Tabs/General/Rows/Attributes"]
+unique_name_in_owner = true
+layout_mode = 2
+disabled = true
+text = "Archivio"
+
+[node name="Buttons" type="HBoxContainer" parent="Layout"]
+layout_mode = 2
+alignment = 2
+theme_override_constants/separation = 6
+
+[node name="Ok" type="Button" parent="Layout/Buttons"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(76, 0)
+layout_mode = 2
+text = "OK"
+
+[node name="Cancel" type="Button" parent="Layout/Buttons"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(76, 0)
+layout_mode = 2
+text = "Annulla"
+
+[node name="Apply" type="Button" parent="Layout/Buttons"]
+custom_minimum_size = Vector2(76, 0)
+layout_mode = 2
+disabled = true
+text = "Applica"

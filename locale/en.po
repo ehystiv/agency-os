@@ -3114,3 +3114,70 @@ msgstr "AgencyOS is restarting..."
 
 msgid "Ora è possibile spegnere il computer."
 msgstr "It's now safe to turn off your computer."
+
+msgid "Tipo:"
+msgstr "Type:"
+
+msgid "Percorso:"
+msgstr "Location:"
+
+msgid "Dimensioni:"
+msgstr "Size:"
+
+msgid "Descrizione:"
+msgstr "Description:"
+
+msgid "Origine:"
+msgstr "Origin:"
+
+msgid "Creato:"
+msgstr "Created:"
+
+msgid "Modificato:"
+msgstr "Modified:"
+
+msgid "Ultimo accesso:"
+msgstr "Accessed:"
+
+msgid "Contenuto:"
+msgstr "Contains:"
+
+msgid "Attributi:"
+msgstr "Attributes:"
+
+msgid "Sola lettura"
+msgstr "Read-only"
+
+msgid "Nascosto"
+msgstr "Hidden"
+
+msgid "Applicazione"
+msgstr "Application"
+
+msgid "Cartella di sistema"
+msgstr "System Folder"
+
+msgid "%d oggetti"
+msgstr "%d objects"
+
+msgid "sconosciuta"
+msgstr "unknown"
+
+msgid "Proprietà - %s"
+msgstr "%s Properties"
+
+msgid "%s byte (%d KB)"
+msgstr "%s bytes (%d KB)"
+
+msgctxt "thousands"
+msgid "."
+msgstr ","
+
+msgid "Documento di testo"
+msgstr "Text Document"
+
+msgid "File di registro"
+msgstr "Log File"
+
+msgid "File %s"
+msgstr "%s File"

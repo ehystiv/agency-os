@@ -290,7 +290,11 @@ func _show_context(entries: Array[Dictionary], at: Vector2) -> void:
 
 func _on_icons_context(key: String, at: Vector2) -> void:
 	if key != "":
-		_show_context([{"label": "Apri", "call": _icons.open.bind(key)}], at)
+		_show_context([
+			{"label": "Apri", "call": _icons.open.bind(key)},
+			{},
+			{"label": "Proprietà", "call": _windows.open.bind(&"props", _props_args(key))},
+		], at)
 		return
 	_show_context([
 		{"label": "Allinea le icone", "call": _icons.align},
@@ -298,6 +302,13 @@ func _on_icons_context(key: String, at: Vector2) -> void:
 		{},
 		{"label": "Proprietà", "call": _windows.open.bind(&"ctrl", {"tab": "screen"})},
 	], at)
+
+
+## What the Properties window needs for an icon: its app, or its file's id.
+func _props_args(key: String) -> Dictionary:
+	if key.begins_with(DesktopIcons.FILE_PREFIX):
+		return {"file": key.trim_prefix(DesktopIcons.FILE_PREFIX)}
+	return {"app": REGISTRY.find(StringName(key))}
 
 
 func _on_taskbar_context(id: StringName, at: Vector2) -> void:
