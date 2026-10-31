@@ -93,8 +93,12 @@ jobs:
           VERSION: ${{ steps.meta.outputs.version }}
         run: |
           tag="v$VERSION"
+          # The base installer goes along, so the latest release always has one:
+          # a new user installs it and the app updates itself to this version.
+          dmg=$(ls base/AgencyOS-*.dmg)
+          printf '\n\n---\n**Nuova installazione:** scarica `%s` (trascina l’app in Applicazioni; al primo avvio clic destro › Apri). All’avvio l’app si aggiorna da sola alla %s.\n' "$(basename "$dmg")" "$VERSION" >> notes.txt
           if gh release view "$tag" > /dev/null 2>&1; then
-            gh release upload "$tag" out/* --clobber
+            gh release upload "$tag" out/* "$dmg" --clobber
           else
-            gh release create "$tag" out/* --verify-tag --title "AgencyOS 98 $VERSION" --notes-file notes.txt
+            gh release create "$tag" out/* "$dmg" --verify-tag --title "AgencyOS 98 $VERSION" --notes-file notes.txt
           fi
