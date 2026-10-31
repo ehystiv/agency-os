@@ -65,6 +65,16 @@ func on_closed() -> void:
 	_flush()
 
 
+## Shut down, Restart or Cmd+Q within SAVE_DELAY of the last keystroke: save without touching the UI.
+func _exit_tree() -> void:
+	if not _dirty:
+		return
+	_dirty = false
+	var page := _page()
+	if not page.is_empty():
+		Campaign.save_page(page, true)
+
+
 func _page() -> Dictionary:
 	return Campaign.find_page(_selected_id) if _selected_id != "" else {}
 
