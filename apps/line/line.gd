@@ -295,7 +295,8 @@ func _reply() -> void:
 	_busy = false
 	_update_chrome()
 	_scroll_to_end()
-	if is_visible_in_tree():
+	# Only if still in front: the Manager may be typing in another window meanwhile.
+	if window_active and is_visible_in_tree():
 		_input.grab_focus()
 
 

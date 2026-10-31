@@ -60,6 +60,11 @@ func open(id: StringName, args: Dictionary = {}) -> void:
 
 
 func focus(window: AppWindow) -> void:
+	# The keys follow the window in front: a field left focused in another window
+	# (e.g. the Line's input) would keep receiving them.
+	var owner := get_viewport().gui_get_focus_owner()
+	if owner != null and not window.is_ancestor_of(owner):
+		owner.release_focus()
 	if window.get_index() != get_child_count() - 1:
 		move_child(window, -1)
 		_store()

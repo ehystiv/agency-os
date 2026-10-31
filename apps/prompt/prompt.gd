@@ -81,7 +81,8 @@ func _on_submitted(raw: String) -> void:
 	await _run(raw)
 	_busy = false
 	_input.editable = true
-	if is_visible_in_tree():
+	# Only if still in front: the Manager may be typing in another window meanwhile.
+	if window_active and is_visible_in_tree():
 		_input.grab_focus()
 
 
