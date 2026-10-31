@@ -89,11 +89,11 @@ func _refresh() -> void:
 	_scroll.visible = has_view
 	# The input box always stays in place, so the window doesn't change height.
 	_input.editable = live
-	_input.placeholder_text = PLACEHOLDER_LIVE if live else (PLACEHOLDER_ARCHIVE if has_view else PLACEHOLDER_CLOSED)
+	_input.placeholder_text = tr(PLACEHOLDER_LIVE) if live else (tr(PLACEHOLDER_ARCHIVE) if has_view else tr(PLACEHOLDER_CLOSED))
 	if not live:
 		_input.text = ""
 	_end.visible = live
-	_hint.text = HINT_LIVE if live else ""
+	_hint.text = tr(HINT_LIVE) if live else ""
 	_rebuild_log()
 	_update_chrome()
 
@@ -107,30 +107,30 @@ func _update_chrome() -> void:
 	_led.color = LED_SEARCH if _searching else (LED_ON if live else LED_OFF)
 	_back.visible = _is_archive()
 	_export.visible = _interview != null
-	_back.text = "Torna al colloquio in corso" if Campaign.current() != null else "Torna alla linea"
+	_back.text = tr("Torna al colloquio in corso") if Campaign.current() != null else tr("Torna alla linea")
 	_info.visible = not _is_archive()
 	if _searching:
-		_status.text = "Ricerca di AgencyOS in corso…"
+		_status.text = tr("Ricerca di AgencyOS in corso…")
 	elif _is_archive():
-		_status.text = "Archivio"
+		_status.text = tr("Archivio")
 	elif not live:
-		_status.text = "Linea chiusa"
+		_status.text = tr("Linea chiusa")
 	elif _request != null:
-		_status.text = "U0047BB sta scrivendo…"
+		_status.text = tr("U0047BB sta scrivendo…")
 	elif _busy:
-		_status.text = "Archiviazione in corso…"
+		_status.text = tr("Archiviazione in corso…")
 	else:
-		_status.text = "In linea con U0047BB"
-	_info.text = "Accesso %d" % Campaign.level()
+		_status.text = tr("In linea con U0047BB")
+	_info.text = tr("Accesso %d") % Campaign.level()
 	if live:
-		_info.text += " · Colloquio n. %03d" % _interview.number
+		_info.text += tr(" · Colloquio n. %03d") % _interview.number
 	_send.visible = _request == null
 	_send.disabled = _busy or _searching or not live
 	_stop.visible = _request != null
 	_end.disabled = _busy
 	_input.editable = live and not _searching
 	if _title_override == "":
-		title_changed.emit(BASE_TITLE + (" · colloquio_%03d" % _interview.number if _interview != null else ""))
+		title_changed.emit(tr(BASE_TITLE) + (tr(" · colloquio_%03d") % _interview.number if _interview != null else ""))
 
 
 func _rebuild_log() -> void:
@@ -146,7 +146,7 @@ func _rebuild_log() -> void:
 			shown.set_whisper()
 	if _is_archive():
 		var closed_on := ItalianDate.short(_interview.closed_at)
-		_append(ChatMessage.Kind.NOTE, "Colloquio chiuso" + (" il %s." % closed_on if closed_on != "" else "."))
+		_append(ChatMessage.Kind.NOTE, tr("Colloquio chiuso il %s.") % closed_on if closed_on != "" else tr("Colloquio chiuso."))
 		var summary := SummaryBox.create(_interview.summary)
 		var shown := _interview
 		summary.saved.connect(func(text: String) -> void: Campaign.set_summary(shown, text))
@@ -224,8 +224,8 @@ func _on_end_pressed() -> void:
 	_busy = true
 	_clear_error()
 	_update_chrome()
-	_append(ChatMessage.Kind.SYSTEM, "> SESSIONE TERMINATA DAL GENERAL MANAGER.")
-	_append(ChatMessage.Kind.NOTE, "Archiviazione del colloquio…")
+	_append(ChatMessage.Kind.SYSTEM, tr("> SESSIONE TERMINATA DAL GENERAL MANAGER."))
+	_append(ChatMessage.Kind.NOTE, tr("Archiviazione del colloquio…"))
 	_scroll_to_end()
 	await Campaign.close_interview(closing)
 	_busy = false
@@ -234,9 +234,9 @@ func _on_end_pressed() -> void:
 	_refresh()
 	var notebook := {"app": &"notebook", "args": {"session": closing.number}}
 	if closing.summary != "":
-		notification_requested.emit("Sessione archiviata", "Colloquio n. %03d chiuso. Clic per scrivere i tuoi appunti nel Taccuino." % closing.number, notebook)
+		notification_requested.emit(tr("Sessione archiviata"), tr("Colloquio n. %03d chiuso. Clic per scrivere i tuoi appunti nel Taccuino.") % closing.number, notebook)
 	else:
-		notification_requested.emit("Sessione archiviata", "Colloquio n. %03d chiuso, ma il modello non ha scritto il riassunto: lo ritenterò alla prossima apertura della linea. Clic per il Taccuino." % closing.number, notebook)
+		notification_requested.emit(tr("Sessione archiviata"), tr("Colloquio n. %03d chiuso, ma il modello non ha scritto il riassunto: lo ritenterò alla prossima apertura della linea. Clic per il Taccuino.") % closing.number, notebook)
 
 
 func _on_back_pressed() -> void:
@@ -324,7 +324,7 @@ func _play_glitch(glitch: String, bubble: ChatMessage) -> void:
 
 
 func _glitch_title() -> void:
-	_title_override = TITLE_GLITCH_NAMES[randi() % TITLE_GLITCH_NAMES.size()]
+	_title_override = tr(TITLE_GLITCH_NAMES[randi() % TITLE_GLITCH_NAMES.size()])
 	title_changed.emit(_title_override)
 	await get_tree().create_timer(TITLE_GLITCH_SECONDS).timeout
 	_title_override = ""
@@ -340,8 +340,8 @@ func _agency_search(interview: Interview) -> void:
 	Sfx.start_hum()
 	Entity.lose_signal()
 	Entity.stir(0.6)
-	await _search_line(interview, "> INIZIO RICERCA U0047BB.")
-	await _search_line(interview, "> INDIVIDUATA ATTIVITÀ ANOMALA SUL CANALE DEL GENERAL MANAGER. ANALISI IN CORSO…")
+	await _search_line(interview, tr("> INIZIO RICERCA U0047BB."))
+	await _search_line(interview, tr("> INDIVIDUATA ATTIVITÀ ANOMALA SUL CANALE DEL GENERAL MANAGER. ANALISI IN CORSO…"))
 	var bubble := _append(ChatMessage.Kind.ENTITY, "")
 	bubble.set_entity_text("", true)
 	_scroll_to_end()
@@ -354,13 +354,13 @@ func _agency_search(interview: Interview) -> void:
 		bubble.set_entity_text(hide_request.text.strip_edges(), false)
 	else:
 		bubble.queue_free()
-	await _search_line(interview, "> ISOLAMENTO CONFERMATO DALLO STAFF DEL CAVEAU.")
-	await _search_line(interview, "> NESSUNA ATTIVITÀ ANOMALA RILEVATA. RIPRISTINO MYMANUAL1998.EXE.")
+	await _search_line(interview, tr("> ISOLAMENTO CONFERMATO DALLO STAFF DEL CAVEAU."))
+	await _search_line(interview, tr("> NESSUNA ATTIVITÀ ANOMALA RILEVATA. RIPRISTINO MYMANUAL1998.EXE."))
 	await get_tree().create_timer(SEARCH_SILENCE_SECONDS).timeout
 	Sfx.stop_hum()
 	Entity.restore_signal()
 	Entity.stir(0.0, 0.0, 0.9)
-	await _search_line(interview, "> RICERCA CONCLUSA. CANALE DI NUOVO STABILE.")
+	await _search_line(interview, tr("> RICERCA CONCLUSA. CANALE DI NUOVO STABILE."))
 	_searching = false
 
 
@@ -385,7 +385,7 @@ func _export_interview() -> void:
 	exporter.queue_free()
 	if result.cancelled:
 		return
-	var title := "Esportato in Obsidian" if result.error == "" else "Esportazione non riuscita"
+	var title := tr("Esportato in Obsidian") if result.error == "" else tr("Esportazione non riuscita")
 	notification_requested.emit(title, ObsidianExporter.summary(result), {"folder": result.folder} if result.folder != "" else {})
 
 
@@ -423,7 +423,7 @@ func on_menu_action(action: StringName) -> void:
 		&"dossier": app_requested.emit(&"dossier", {})
 		&"cam": app_requested.emit(&"cam", {})
 		&"present":
-			present_requested.emit({"kind": "text", "caption": "Linea riservata · U0047BB", "body": _last_entity_text()})
+			present_requested.emit({"kind": "text", "caption": tr("Linea riservata · U0047BB"), "body": _last_entity_text()})
 
 
 func _last_entity_text() -> String:

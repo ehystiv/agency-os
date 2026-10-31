@@ -28,7 +28,7 @@ func build(registry: AppRegistry, sound_enabled: bool, fullscreen: bool, players
 		child.queue_free()
 	for app in registry.start_menu_apps():
 		var id := app.id
-		_add_item(app.icon, app.label, func() -> void: app_chosen.emit(id))
+		_add_item(app.icon, tr(app.label), func() -> void: app_chosen.emit(id))
 	_items.add_child(HSeparator.new())
 	_add_command(ICON_PLAYERS, "Chiudi lo schermo giocatori" if players_open else "Schermo giocatori (TV)", &"players_toggle")
 	_add_command(ICON_IMAGE, "Mostra un'immagine ai giocatori…", &"players_image")
@@ -68,6 +68,6 @@ func _add_item(icon: Texture2D, label: String, action: Callable) -> void:
 	button.focus_mode = Control.FOCUS_NONE
 	button.alignment = HORIZONTAL_ALIGNMENT_LEFT
 	button.icon = icon
-	button.text = label
+	button.text = tr(label)
 	button.pressed.connect(action)
 	_items.add_child(button)

@@ -39,7 +39,7 @@ func on_opened(_args: Dictionary = {}) -> void:
 
 func _build() -> void:
 	var level := Campaign.level()
-	_intro.text = "Quello che l'Entità sa e rispetta in ogni risposta. Livello di accesso attuale: %d. Le sezioni oltre il tuo livello l'Entità le conosce ma non te le rivela." % level
+	_intro.text = tr("Quello che l'Entità sa e rispetta in ogni risposta. Livello di accesso attuale: %d. Le sezioni oltre il tuo livello l'Entità le conosce ma non te le rivela.") % level
 	for child in _sections.get_children():
 		_sections.remove_child(child)
 		child.queue_free()
@@ -61,7 +61,7 @@ func _build() -> void:
 			continue
 		found += hits.size()
 		_sections.add_child(_make_result(section, level, hits, query))
-	_count.text = "Nessun risultato" if found == 0 else ("1 risultato" if found == 1 else "%d risultati" % found)
+	_count.text = tr("Nessun risultato") if found == 0 else (tr("1 risultato") if found == 1 else tr("%d risultati") % found)
 
 
 ## A section in the search results: only the matching points, readable even if classified.
@@ -82,7 +82,7 @@ func _make_result(section: Dictionary, level: int, hits: Array[String], query: S
 	var badge := Label.new()
 	badge.theme_type_variation = &"CanonBadge"
 	badge.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	badge.text = "base" if section_level == 0 else ("classificato · " if locked else "") + "livello %d" % section_level
+	badge.text = tr("base") if section_level == 0 else (tr("classificato · ") if locked else "") + tr("livello %d") % section_level
 	header.add_child(badge)
 	for point in hits:
 		box.add_child(_highlighted("•  " + point, query))
@@ -134,9 +134,9 @@ func _make_section(section: Dictionary, level: int) -> Control:
 	badge.theme_type_variation = &"CanonBadge"
 	badge.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	if section_level == 0:
-		badge.text = "base"
+		badge.text = tr("base")
 	else:
-		badge.text = ("classificato · " if locked else "") + "livello %d" % section_level
+		badge.text = (tr("classificato · ") if locked else "") + tr("livello %d") % section_level
 	header.add_child(badge)
 
 	var points := VBoxContainer.new()
@@ -157,10 +157,10 @@ func _make_section(section: Dictionary, level: int) -> Control:
 		reveal.theme_type_variation = &"CanonReveal"
 		reveal.focus_mode = Control.FOCUS_NONE
 		reveal.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
-		reveal.text = "▸ Leggi comunque (vista GM)"
+		reveal.text = tr("▸ Leggi comunque (vista GM)")
 		reveal.pressed.connect(func() -> void:
 			points.visible = not points.visible
-			reveal.text = ("▾ " if points.visible else "▸ ") + "Leggi comunque (vista GM)")
+			reveal.text = ("▾ " if points.visible else "▸ ") + tr("Leggi comunque (vista GM)"))
 		box.add_child(reveal)
 		points.visible = false
 	box.add_child(points)

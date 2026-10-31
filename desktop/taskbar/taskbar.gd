@@ -56,7 +56,7 @@ func show_tasks(entries: Array[Dictionary]) -> void:
 
 func set_sound_enabled(enabled: bool) -> void:
 	_sound.texture_normal = SOUND_ON if enabled else SOUND_OFF
-	_sound.tooltip_text = "Suoni attivi: clic per disattivare" if enabled else "Suoni disattivati: clic per attivare"
+	_sound.tooltip_text = tr("Suoni attivi: clic per disattivare") if enabled else tr("Suoni disattivati: clic per attivare")
 
 
 ## Empty text = hides the next session hint.
@@ -79,11 +79,11 @@ func _fit_tasks() -> void:
 ## "sabotage" glitch: safe mode off and a crazy clock for a few seconds.
 func sabotage(seconds: float = 3.2) -> void:
 	_sabotaged = true
-	_mode.text = "MODALITÀ SICURA ▒▒▒ DISATTIVATA"
+	_mode.text = tr("MODALITÀ SICURA ▒▒▒ DISATTIVATA")
 	_clock.text = "88:88"
 	await get_tree().create_timer(seconds).timeout
 	_sabotaged = false
-	_mode.text = "Modalità Sicura"
+	_mode.text = tr("Modalità Sicura")
 	_update_clock()
 
 

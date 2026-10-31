@@ -25,14 +25,14 @@ static func evaluate(values: Array[int]) -> Dictionary:
 
 ## The outcome as shown on screen, e.g. "SUCCESSO".
 static func outcome_word(result: Dictionary) -> String:
-	return OUTCOME_WORDS[result.outcome]
+	return TranslationServer.translate(OUTCOME_WORDS[result.outcome])
 
 
 ## Result line as in the prototype, e.g. "Due 3 · SUCCESSO · Caos +4".
 static func describe(result: Dictionary) -> String:
-	var text := "%s · %s · Caos +%d" % [COUNT_WORDS[result.threes], outcome_word(result), result.chaos]
+	var text := TranslationServer.translate("{count} · {outcome} · Caos +{chaos}").format({"count": TranslationServer.translate(COUNT_WORDS[result.threes]), "outcome": outcome_word(result), "chaos": result.chaos})
 	if result.stable and result.outcome != TRISCENDENCE:
-		text += " (successo stabile)"
+		text += TranslationServer.translate(" (successo stabile)")
 	if result.outcome == TRISCENDENCE:
-		text += ". Scegli un effetto della Triscendenza."
+		text += TranslationServer.translate(". Scegli un effetto della Triscendenza.")
 	return text

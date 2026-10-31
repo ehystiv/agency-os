@@ -2,7 +2,6 @@ extends AppContent
 ## Agenda: month calendar, scheduled sessions with time, title and preparation
 ## checklist, interviews held on that day.
 
-const DAY_LETTERS: PackedStringArray = ["L", "M", "M", "G", "V", "S", "D"]
 const SESSION_MARK := preload("res://ui/icons/tri_small.svg")
 const INTERVIEW_MARK := Color("2fb8cc")
 const TIME_REGEX := "^([01]?\\d|2[0-3]):[0-5]\\d$"
@@ -60,11 +59,11 @@ func _shift_month(step: int) -> void:
 
 
 func _refresh() -> void:
-	_title.text = "%s %d" % [ItalianDate.MONTH_NAMES[_month - 1], _year]
+	_title.text = "%s %d" % [tr(ItalianDate.MONTH_NAMES[_month - 1]), _year]
 	_build_grid()
 	_build_side()
 	var next := Campaign.next_session()
-	_status.text = "Prossima sessione: %s %s %s" % [ItalianDate.weekday_short(next.date), ItalianDate.numeric(next.date), next.get("time", "")] if not next.is_empty() else "Nessuna sessione programmata"
+	_status.text = tr("Prossima sessione: %s %s %s") % [tr(ItalianDate.WEEKDAYS[ItalianDate.weekday_index(next.date)]).left(3), ItalianDate.numeric(next.date), next.get("time", "")] if not next.is_empty() else tr("Nessuna sessione programmata")
 
 
 # --- Calendar --------------------------------------------------------------
@@ -73,7 +72,9 @@ func _build_grid() -> void:
 	for child in _grid.get_children():
 		_grid.remove_child(child)
 		child.queue_free()
-	for letter in DAY_LETTERS:
+	# Weeks start on Monday: initials of the (translated) weekday names.
+	for i in 7:
+		var letter := tr(ItalianDate.WEEKDAYS[(i + 1) % 7]).left(1).to_upper()
 		var head := Label.new()
 		head.theme_type_variation = &"CalHeader"
 		head.text = letter
@@ -102,7 +103,7 @@ func _make_day(day: String, is_today: bool, has_session: bool, has_interview: bo
 	button.focus_mode = Control.FOCUS_NONE
 	button.custom_minimum_size = Vector2(38, 30)
 	button.text = str(int(day.right(2)))
-	button.tooltip_text = ItalianDate.long_day(day) + (" · sessione programmata" if has_session else "") + (" · colloquio" if has_interview else "")
+	button.tooltip_text = _long_day(day) + (tr(" · sessione programmata") if has_session else "") + (tr(" · colloquio") if has_interview else "")
 	button.pressed.connect(_select.bind(day))
 	if has_session:
 		var mark := TextureRect.new()
@@ -139,12 +140,12 @@ func _build_side() -> void:
 	_rebuilding = false
 	var heading := Label.new()
 	heading.theme_type_variation = &"MailSubject"
-	heading.text = ItalianDate.long_day(_selected_day)
+	heading.text = _long_day(_selected_day)
 	_side.add_child(heading)
 	var held := Campaign.interviews.filter(func(i: Interview) -> bool: return ItalianDate.day(i.opened_at) == _selected_day)
 	if not held.is_empty():
 		var row := HBoxContainer.new()
-		row.add_child(_label("Colloqui:", &"", false))
+		row.add_child(_label(tr("Colloqui:"), &"", false))
 		for interview: Interview in held:
 			var link := LinkButton.new()
 			link.text = "#%03d" % interview.number
@@ -154,16 +155,16 @@ func _build_side() -> void:
 		_side.add_child(row)
 	var session := Campaign.session_on(_selected_day)
 	if session.is_empty():
-		_side.add_child(_label("Nessuna sessione in questo giorno.", &"HintLabel"))
+		_side.add_child(_label(tr("Nessuna sessione in questo giorno."), &"HintLabel"))
 		var schedule := Button.new()
 		schedule.theme_type_variation = &"PrimaryButton"
-		schedule.text = "Programma una sessione"
+		schedule.text = tr("Programma una sessione")
 		schedule.focus_mode = Control.FOCUS_NONE
 		schedule.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 		schedule.pressed.connect(func() -> void: Campaign.schedule_session(_selected_day))
 		_side.add_child(schedule)
 		return
-	_side.add_child(_label("Ora", &"HintLabel"))
+	_side.add_child(_label(tr("Ora"), &"HintLabel"))
 	var time := LineEdit.new()
 	time.text = str(session.get("time", ""))
 	time.placeholder_text = "21:00"
@@ -173,20 +174,20 @@ func _build_side() -> void:
 	time.text_submitted.connect(func(_t: String) -> void: _commit_time(session, time))
 	time.focus_exited.connect(func() -> void: _commit_time(session, time))
 	_side.add_child(time)
-	_side.add_child(_label("Titolo o Incarico", &"HintLabel"))
+	_side.add_child(_label(tr("Titolo o Incarico"), &"HintLabel"))
 	var title := LineEdit.new()
 	title.text = str(session.get("title", ""))
-	title.placeholder_text = "Recupero Anomalia al faro"
+	title.placeholder_text = tr("Recupero Anomalia al faro")
 	title.max_length = 80
 	title.text_submitted.connect(func(_t: String) -> void: _commit_title(session, title))
 	title.focus_exited.connect(func() -> void: _commit_title(session, title))
 	_side.add_child(title)
-	_side.add_child(_label("Preparazione", &"FieldLabel"))
+	_side.add_child(_label(tr("Preparazione"), &"FieldLabel"))
 	for item: Dictionary in session.checklist:
 		_side.add_child(_make_check(session, item))
 	var add_row := HBoxContainer.new()
 	var new_item := LineEdit.new()
-	new_item.placeholder_text = "Aggiungi una voce"
+	new_item.placeholder_text = tr("Aggiungi una voce")
 	new_item.max_length = 80
 	new_item.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	var add := Button.new()
@@ -208,7 +209,7 @@ func _build_side() -> void:
 		new_item.grab_focus.call_deferred()
 	var cancel := LinkButton.new()
 	cancel.theme_type_variation = &"LinkDanger"
-	cancel.text = "Conferma: annulla la sessione" if _cancel_armed else "Annulla la sessione"
+	cancel.text = tr("Conferma: annulla la sessione") if _cancel_armed else tr("Annulla la sessione")
 	cancel.focus_mode = Control.FOCUS_NONE
 	cancel.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	cancel.pressed.connect(func() -> void:
@@ -234,7 +235,7 @@ func _make_check(session: Dictionary, item: Dictionary) -> HBoxContainer:
 	row.add_child(check)
 	var remove := LinkButton.new()
 	remove.text = "×"
-	remove.tooltip_text = "Rimuovi " + str(item.text)
+	remove.tooltip_text = tr("Rimuovi %s") % str(item.text)
 	remove.focus_mode = Control.FOCUS_NONE
 	remove.pressed.connect(func() -> void:
 		session.checklist.erase(item)
@@ -264,6 +265,12 @@ func _commit_title(session: Dictionary, field: LineEdit) -> void:
 	if value != str(session.get("title", "")):
 		session.title = value
 		Campaign.save_agenda()
+
+
+## "sabato 24 ottobre" with localized names (English: "Saturday, October 24").
+func _long_day(day: String) -> String:
+	var parts := day.split("-")
+	return "%s %d %s" % [tr(ItalianDate.WEEKDAYS[ItalianDate.weekday_index(day)]), int(parts[2]), tr(ItalianDate.MONTH_NAMES[int(parts[1]) - 1])]
 
 
 ## wrap = false for labels inside a row, which otherwise would have no width.

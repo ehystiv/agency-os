@@ -30,17 +30,23 @@ layout_mode = 2
 theme_override_constants/separation = 8
 metadata/_tab_index = 1
 
-[node name="Update" type="VBoxContainer" parent="Layout/Tabs"]
+[node name="Language" type="VBoxContainer" parent="Layout/Tabs"]
 visible = false
 layout_mode = 2
 theme_override_constants/separation = 8
 metadata/_tab_index = 2
 
-[node name="System" type="VBoxContainer" parent="Layout/Tabs"]
+[node name="Update" type="VBoxContainer" parent="Layout/Tabs"]
 visible = false
 layout_mode = 2
 theme_override_constants/separation = 8
 metadata/_tab_index = 3
+
+[node name="System" type="VBoxContainer" parent="Layout/Tabs"]
+visible = false
+layout_mode = 2
+theme_override_constants/separation = 8
+metadata/_tab_index = 4
 
 [node name="WallpaperTitle" type="Label" parent="Layout/Tabs/General"]
 layout_mode = 2
@@ -280,6 +286,61 @@ layout_mode = 2
 size_flags_vertical = 4
 focus_mode = 0
 text = "No"
+
+[node name="LanguageTitle" type="Label" parent="Layout/Tabs/Language"]
+layout_mode = 2
+theme_type_variation = &"FieldLabel"
+text = "Lingua dell'interfaccia"
+uppercase = true
+
+[node name="LanguageBox" type="PanelContainer" parent="Layout/Tabs/Language"]
+layout_mode = 2
+theme_type_variation = &"GroupPanel"
+
+[node name="Column" type="VBoxContainer" parent="Layout/Tabs/Language/LanguageBox"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Row" type="HBoxContainer" parent="Layout/Tabs/Language/LanguageBox/Column"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Label" type="Label" parent="Layout/Tabs/Language/LanguageBox/Column/Row"]
+layout_mode = 2
+text = "Lingua"
+
+[node name="Language" type="OptionButton" parent="Layout/Tabs/Language/LanguageBox/Column/Row"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(160, 0)
+layout_mode = 2
+focus_mode = 0
+
+[node name="LanguageHint" type="Label" parent="Layout/Tabs/Language/LanguageBox/Column"]
+custom_minimum_size = Vector2(320, 0)
+layout_mode = 2
+theme_type_variation = &"HintLabel"
+text = "Vale per le finestre, i menu e la voce dell'Entità. Le note, i colloqui e i memo già scritti restano nella lingua in cui sono stati scritti."
+autowrap_mode = 3
+
+[node name="RestartRow" type="HBoxContainer" parent="Layout/Tabs/Language/LanguageBox/Column"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="RestartHint" type="Label" parent="Layout/Tabs/Language/LanguageBox/Column/RestartRow"]
+custom_minimum_size = Vector2(240, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Riavviare AgencyOS per applicare la nuova lingua."
+autowrap_mode = 3
+
+[node name="RestartLanguage" type="Button" parent="Layout/Tabs/Language/LanguageBox/Column/RestartRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 0
+focus_mode = 0
+text = "Riavvia ora"
 
 [node name="UpdateTitle" type="Label" parent="Layout/Tabs/Update"]
 layout_mode = 2

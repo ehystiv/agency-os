@@ -96,7 +96,7 @@ func poll() -> bool:
 				# the refusal only comes when the request is sent.
 				_fail(_unreachable_message())
 			else:
-				_fail("La connessione con il server del modello si è interrotta.")
+				_fail(tr("La connessione con il server del modello si è interrotta."))
 		Phase.READING:
 			_read(now)
 	return _phase == Phase.DONE
@@ -135,7 +135,7 @@ func _read(now: int) -> void:
 		var limit := IDLE_TIMEOUT_MS if _got_first_data else _first_data_limit()
 		if now - _last_data_ms > limit:
 			if _got_first_data:
-				_fail("La linea è caduta a metà risposta.")
+				_fail(tr("La linea è caduta a metà risposta."))
 			else:
 				_fail(_no_answer_message())
 		return
@@ -204,7 +204,7 @@ func _consume_sse_lines() -> void:
 func _finish_json(body: String) -> void:
 	var data: Variant = JSON.parse_string(body)
 	if not data is Dictionary:
-		_fail("Il server del modello ha mandato una risposta che non capisco.")
+		_fail(tr("Il server del modello ha mandato una risposta che non capisco."))
 		return
 	if _on_json.is_valid():
 		request.push_text(str(_on_json.call(data)))
@@ -242,9 +242,9 @@ func _finish_text() -> void:
 	_close()
 	if request.text == "":
 		if request.truncated and _streaming and not _saw_end:
-			request.finish_error("La linea è caduta a metà risposta.")
+			request.finish_error(tr("La linea è caduta a metà risposta."))
 		else:
-			request.finish_error("L'Entità è rimasta in silenzio. Riprova.")
+			request.finish_error(tr("L'Entità è rimasta in silenzio. Riprova."))
 	else:
 		request.finish_ok()
 
@@ -279,25 +279,25 @@ func _first_data_limit() -> int:
 
 
 func _no_answer_message() -> String:
-	return "Il modello non ha risposto entro %d secondi. Forse si sta ancora caricando: riprova tra poco." % (_first_data_limit() / 1000)
+	return tr("Il modello non ha risposto entro %d secondi. Forse si sta ancora caricando: riprova tra poco.") % (_first_data_limit() / 1000)
 
 
 func _unreachable_message() -> String:
 	if _is_local():
-		return "Il server del modello non risponde su %s. È acceso?" % _base_url
-	return "Non riesco a raggiungere %s. Controlla la connessione a internet." % _host
+		return tr("Il server del modello non risponde su %s. È acceso?") % _base_url
+	return tr("Non riesco a raggiungere %s. Controlla la connessione a internet.") % _host
 
 
 func _http_error_message(code: int, body: String) -> String:
 	var detail := body.to_lower()
 	if code == 401 or code == 403:
-		return "Il server ha rifiutato la chiave di accesso (errore %d)." % code
+		return tr("Il server ha rifiutato la chiave di accesso (errore %d).") % code
 	if code == 404 or "not found" in detail or "no models loaded" in detail:
-		return "Il server non trova il modello «%s». Controlla il nome nelle impostazioni della linea." % _model
+		return tr("Il server non trova il modello «%s». Controlla il nome nelle impostazioni della linea.") % _model
 	if "context" in detail and ("length" in detail or "exceed" in detail or "overflow" in detail):
-		return "Il colloquio è diventato troppo lungo per il contesto del modello. Riduci il contesto nelle impostazioni o termina la sessione."
+		return tr("Il colloquio è diventato troppo lungo per il contesto del modello. Riduci il contesto nelle impostazioni o termina la sessione.")
 	var excerpt := body.strip_edges().left(160)
-	return "Il server del modello ha risposto con un errore (%d). %s" % [code, excerpt]
+	return tr("Il server del modello ha risposto con un errore (%d). %s") % [code, excerpt]
 
 
 func _parse_url(url: String) -> void:

@@ -114,7 +114,7 @@ func _make_row(page: Dictionary) -> Button:
 	var top := HBoxContainer.new()
 	top.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	box.add_child(top)
-	var title := _row_label(str(page.title) if str(page.title) != "" else "Senza titolo", selected)
+	var title := _row_label(str(page.title) if str(page.title) != "" else tr("Senza titolo"), selected)
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	title.clip_text = true
 	title.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
@@ -123,7 +123,7 @@ func _make_row(page: Dictionary) -> Button:
 	date.modulate.a = 0.75
 	top.add_child(date)
 	var session := int(page.session)
-	box.add_child(_row_label("Sessione %03d" % session if session > 0 else "Nessuna sessione", selected))
+	box.add_child(_row_label(tr("Sessione %03d") % session if session > 0 else tr("Nessuna sessione"), selected))
 	return row
 
 
@@ -144,7 +144,7 @@ func _refresh_editor() -> void:
 	_empty.visible = not has_page
 	_export.visible = has_page
 	_delete.visible = has_page
-	_delete.text = "Conferma: sposta nel cestino" if _delete_armed else "Sposta nel cestino"
+	_delete.text = tr("Conferma: sposta nel cestino") if _delete_armed else tr("Sposta nel cestino")
 	if not has_page:
 		_status.text = ""
 		return
@@ -154,10 +154,10 @@ func _refresh_editor() -> void:
 	if not _text.has_focus():
 		_text.text = str(page.text)
 	_session.clear()
-	_session.add_item("Nessuna", 0)
+	_session.add_item(tr("Nessuna"), 0)
 	for i in range(Campaign.interviews.size() - 1, -1, -1):
 		var interview := Campaign.interviews[i]
-		_session.add_item("Colloquio %03d · %s" % [interview.number, ItalianDate.short(interview.opened_at)], interview.number)
+		_session.add_item(tr("Colloquio %03d · %s") % [interview.number, ItalianDate.short(interview.opened_at)], interview.number)
 	_session.select(maxi(0, _session.get_item_index(int(page.session))))
 	_loading = false
 
@@ -167,7 +167,7 @@ func _refresh_vault() -> void:
 	var home := OS.get_environment("HOME")
 	if home != "" and folder.begins_with(home):
 		folder = "~" + folder.substr(home.length())
-	_vault.text = "Vault: " + (folder if folder != "" else "non scelto (te lo chiedo al primo export)")
+	_vault.text = tr("Vault: %s") % (folder if folder != "" else tr("non scelto (te lo chiedo al primo export)"))
 
 
 func _select(id: String) -> void:
@@ -214,7 +214,7 @@ func _on_session_selected(index: int) -> void:
 
 func _mark_dirty() -> void:
 	_dirty = true
-	_status.text = "Modifiche non salvate…"
+	_status.text = tr("Modifiche non salvate…")
 	_save_timer.start()
 
 
@@ -227,7 +227,7 @@ func _flush() -> void:
 	if page.is_empty():
 		return
 	Campaign.save_page(page, true)
-	_status.text = "Salvato alle " + ItalianDate.time(str(page.modified))
+	_status.text = tr("Salvato alle %s") % ItalianDate.time(str(page.modified))
 	_refresh_list(Campaign.pages_by_modified())
 
 
@@ -267,7 +267,7 @@ func _export_all() -> void:
 	for page in Campaign.pages:
 		notes.append({"name": ObsidianMarkdown.page_name(page), "text": ObsidianMarkdown.page(page, Campaign.find(int(page.session)))})
 	if notes.is_empty():
-		notification_requested.emit("Niente da esportare", "Non ci sono ancora colloqui né pagine.", {})
+		notification_requested.emit(tr("Niente da esportare"), tr("Non ci sono ancora colloqui né pagine."), {})
 		return
 	await _write_notes(notes)
 
@@ -277,7 +277,7 @@ func _write_notes(notes: Array[Dictionary]) -> void:
 	_refresh_vault()
 	if result.cancelled:
 		return
-	var title := "Esportato in Obsidian" if result.error == "" else "Esportazione non riuscita"
+	var title := tr("Esportato in Obsidian") if result.error == "" else tr("Esportazione non riuscita")
 	notification_requested.emit(title, ObsidianExporter.summary(result), {"folder": result.folder} if result.folder != "" else {})
 
 
@@ -317,7 +317,7 @@ func on_menu_action(action: StringName) -> void:
 		&"present":
 			var page := _page()
 			if not page.is_empty():
-				present_requested.emit({"kind": "text", "caption": "Taccuino", "heading": str(page.title), "body": str(page.text)})
+				present_requested.emit({"kind": "text", "caption": tr("Taccuino"), "heading": str(page.title), "body": str(page.text)})
 		&"delete":
 			# From the menu the choice is already deliberate; the page can come back from the Cestino.
 			_delete_armed = true

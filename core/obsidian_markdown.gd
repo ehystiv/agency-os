@@ -22,7 +22,7 @@ static func safe_name(text: String) -> String:
 		text = text.replace(unsafe, "")
 	var regex := RegEx.create_from_string("\\s+")
 	text = regex.sub(text, " ", true).strip_edges().left(120)
-	return text if text != "" else "Senza titolo"
+	return text if text != "" else TranslationServer.translate("Senza titolo")
 
 
 ## memo: the memo delivered at the start of that session, or {}.
@@ -38,31 +38,31 @@ static func interview(entry: Interview, pages: Array[Dictionary], memo: Dictiona
 		"tags: [triangle-agency, interview, u0047bb]",
 		"---",
 		"",
-		"# Colloquio %03d con U0047BB" % entry.number,
+		TranslationServer.translate("# Colloquio %03d con U0047BB") % entry.number,
 		"",
 	]
-	var info := "> Aperto il %s alle %s" % [ItalianDate.numeric(entry.opened_at), ItalianDate.time(entry.opened_at)]
+	var info := TranslationServer.translate("> Aperto il %s alle %s") % [ItalianDate.numeric(entry.opened_at), ItalianDate.time(entry.opened_at)]
 	if entry.closed_at != "":
-		info += " · chiuso il %s alle %s" % [ItalianDate.numeric(entry.closed_at), ItalianDate.time(entry.closed_at)]
-	info += " · livello di accesso %d/5" % entry.level
-	lines.append_array(["> [!info] Linea riservata", info, ""])
-	lines.append_array(["## Trascrizione", ""])
+		info += TranslationServer.translate(" · chiuso il %s alle %s") % [ItalianDate.numeric(entry.closed_at), ItalianDate.time(entry.closed_at)]
+	info += TranslationServer.translate(" · livello di accesso %d/5") % entry.level
+	lines.append_array([TranslationServer.translate("> [!info] Linea riservata"), info, ""])
+	lines.append_array([TranslationServer.translate("## Trascrizione"), ""])
 	for m in entry.messages:
 		var text := str(m.text)
 		match str(m.who):
 			"system":
 				lines.append_array(["*%s*" % text, ""])
 			"manager":
-				lines.append_array(["**Manager:** " + text.replace("\n", "  \n"), ""])
+				lines.append_array([TranslationServer.translate("**Manager:** ") + text.replace("\n", "  \n"), ""])
 			"entity":
 				var glitch := str(m.get("glitch", ""))
 				lines.append_array(["**U0047BB:**" + (" *(glitch: %s)*" % glitch if glitch != "" else ""), quote(text), ""])
 	if entry.summary != "":
-		lines.append_array(["## Ricordi dell'Entità", "", entry.summary, ""])
+		lines.append_array([TranslationServer.translate("## Ricordi dell'Entità"), "", entry.summary, ""])
 	if not memo.is_empty():
-		lines.append_array(["## Memo dell'Agenzia", "", "**Da:** %s  " % memo.sender, "**Oggetto:** %s" % memo.subject, "", quote(str(memo.body)), ""])
+		lines.append_array([TranslationServer.translate("## Memo dell'Agenzia"), "", TranslationServer.translate("**Da:** %s  ") % memo.sender, TranslationServer.translate("**Oggetto:** %s") % memo.subject, "", quote(str(memo.body)), ""])
 	if not pages.is_empty():
-		lines.append_array(["## Appunti collegati", ""])
+		lines.append_array([TranslationServer.translate("## Appunti collegati"), ""])
 		for page_data in pages:
 			lines.append("- [[%s]]" % page_name(page_data))
 		lines.append("")
@@ -81,11 +81,11 @@ static func page(page_data: Dictionary, linked: Interview) -> String:
 		"tags: [triangle-agency, notes]",
 		"---",
 		"",
-		"# " + (str(page_data.title) if str(page_data.get("title", "")) != "" else "Senza titolo"),
+		"# " + (str(page_data.title) if str(page_data.get("title", "")) != "" else TranslationServer.translate("Senza titolo")),
 		"",
 	])
 	if linked != null:
-		lines.append_array(["Colloquio: [[%s]]" % interview_name(linked), ""])
+		lines.append_array([TranslationServer.translate("Colloquio: [[%s]]") % interview_name(linked), ""])
 	lines.append_array([str(page_data.get("text", "")), ""])
 	return "\n".join(lines)
 

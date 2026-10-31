@@ -81,7 +81,7 @@ func setup(info: AppInfo, app_content: AppContent) -> void:
 	app = info
 	content = app_content
 	name = String(info.id)
-	_title.text = info.window_title if info.window_title != "" else info.label
+	_title.text = tr(info.window_title if info.window_title != "" else info.label)
 	_build_menu_strip(info.menu_strip)
 	content.app = info
 	content.title_changed.connect(func(text: String) -> void: _title.text = text)
@@ -191,7 +191,7 @@ func _desktop_size() -> Vector2:
 
 func _update_max_button() -> void:
 	_max_button.icon = RESTORE_ICON if maximized else MAXIMIZE_ICON
-	_max_button.tooltip_text = "Ripristina" if maximized else "Ingrandisci"
+	_max_button.tooltip_text = tr("Ripristina") if maximized else tr("Ingrandisci")
 
 
 func _input(event: InputEvent) -> void:
@@ -333,7 +333,9 @@ func _build_menu_strip(items: PackedStringArray) -> void:
 		label.autowrap_mode = TextServer.AUTOWRAP_OFF
 		label.scroll_active = false
 		label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		label.text = "[u]%s[/u]%s" % [item.left(1), item.substr(1)]
+		# The titles stay Italian as ids (content.menu(title)); the shown text is translated.
+		var shown := tr(item)
+		label.text = "[u]%s[/u]%s" % [shown.left(1), shown.substr(1)]
 		title.add_child(label)
 		title.gui_input.connect(func(event: InputEvent) -> void:
 			var click := event as InputEventMouseButton
@@ -363,10 +365,10 @@ func _open_menu(title_text: String, title: Control) -> void:
 		var id := _menu_actions.size()
 		_menu_actions.append(StringName(entry.action))
 		if entry.has("checked"):
-			_menu_popup.add_radio_check_item(str(entry.label), id, int(entry.get("accel", 0)) as Key)
+			_menu_popup.add_radio_check_item(tr(str(entry.label)), id, int(entry.get("accel", 0)) as Key)
 			_menu_popup.set_item_checked(_menu_popup.get_item_index(id), bool(entry.checked))
 		else:
-			_menu_popup.add_item(str(entry.label), id, int(entry.get("accel", 0)) as Key)
+			_menu_popup.add_item(tr(str(entry.label)), id, int(entry.get("accel", 0)) as Key)
 		_menu_popup.set_item_disabled(_menu_popup.get_item_index(id), bool(entry.get("disabled", false)))
 	if _menu_popup.item_count == 0:
 		return
@@ -392,7 +394,7 @@ func _common_entries(title_text: String, after_others: bool) -> Array[Dictionary
 			var editable := is_text and bool(field.get("editable"))
 			if after_others:
 				entries.append({})
-			entries.append({"label": "Annulla", "action": "_undo", "accel": KEY_MASK_CMD_OR_CTRL | KEY_Z, "disabled": not editable})
+			entries.append({"label": tr("Annulla", "edit"), "action": "_undo", "accel": KEY_MASK_CMD_OR_CTRL | KEY_Z, "disabled": not editable})
 			entries.append({})
 			entries.append({"label": "Taglia", "action": "_cut", "accel": KEY_MASK_CMD_OR_CTRL | KEY_X, "disabled": not editable})
 			entries.append({"label": "Copia", "action": "_copy", "accel": KEY_MASK_CMD_OR_CTRL | KEY_C, "disabled": not is_text})
@@ -402,7 +404,7 @@ func _common_entries(title_text: String, after_others: bool) -> Array[Dictionary
 		"?":
 			if after_others:
 				entries.append({})
-			entries.append({"label": "Informazioni su %s" % app.label, "action": "_about"})
+			entries.append({"label": tr("Informazioni su %s") % tr(app.label), "action": "_about"})
 	return entries
 
 
@@ -447,8 +449,8 @@ func _edit_field(action: StringName) -> void:
 
 func _show_about() -> void:
 	var dialog := AcceptDialog.new()
-	dialog.title = "Informazioni su %s" % app.label
-	dialog.dialog_text = "AgencyOS 98 · %s\nVersione %s\n\n© 1998 Triangle Agency. Tutti i diritti riservati.\nL'uso non autorizzato verrà annotato." % [app.label, BootPatch.version()]
+	dialog.title = tr("Informazioni su %s") % tr(app.label)
+	dialog.dialog_text = tr("AgencyOS 98 · %s\nVersione %s\n\n© 1998 Triangle Agency. Tutti i diritti riservati.\nL'uso non autorizzato verrà annotato.") % [tr(app.label), BootPatch.version()]
 	dialog.ok_button_text = "OK"
 	dialog.confirmed.connect(dialog.queue_free)
 	dialog.canceled.connect(dialog.queue_free)
@@ -485,7 +487,7 @@ func _unhandled_key_input(event: InputEvent) -> void:
 		return
 	var letter := OS.get_keycode_string(key.physical_keycode).to_upper()
 	for item: String in _menu_titles:
-		if item.left(1).to_upper() == letter:
+		if tr(item).left(1).to_upper() == letter:
 			_open_menu(item, _menu_titles[item])
 			get_viewport().set_input_as_handled()
 			return

@@ -52,7 +52,7 @@ func _start(endpoint: String, method: HTTPClient.Method, body: Dictionary, on_js
 	var request := BrainRequest.new()
 	if missing_key_variable != "":
 		# Otherwise the server's 401 would blame a key that was never sent.
-		request.finish_error("La variabile d'ambiente %s è vuota. Le app aperte dal Finder non vedono le variabili della shell: incolla la chiave nelle impostazioni della linea, o avvia AgencyOS dal Terminale." % missing_key_variable)
+		request.finish_error(tr("La variabile d'ambiente %s è vuota. Le app aperte dal Finder non vedono le variabili della shell: incolla la chiave nelle impostazioni della linea, o avvia AgencyOS dal Terminale.") % missing_key_variable)
 		return request
 	var job := OpenAIJob.new(request, base_url, endpoint, method, _headers(), body, model, on_json)
 	job.dialect = _dialect()

@@ -34,7 +34,7 @@ func export_notes(notes: Array[Dictionary]) -> Dictionary:
 	for note in ready_to_write:
 		var err := Save.write_text(folder.path_join(str(note.name) + ".md"), str(note.text))
 		if err != OK:
-			result.error = "Non riesco a scrivere nella cartella del vault (%s)." % error_string(err)
+			result.error = tr("Non riesco a scrivere nella cartella del vault (%s).") % error_string(err)
 			return result
 		result.written += 1
 	return result
@@ -46,7 +46,7 @@ func choose_folder() -> String:
 	dialog.file_mode = FileDialog.FILE_MODE_OPEN_DIR
 	dialog.access = FileDialog.ACCESS_FILESYSTEM
 	dialog.use_native_dialog = true
-	dialog.title = "Cartella del vault Obsidian"
+	dialog.title = tr("Cartella del vault Obsidian")
 	if Campaign.obsidian_folder != "":
 		dialog.current_dir = Campaign.obsidian_folder
 	dialog.dir_selected.connect(func(path: String) -> void: _dialog_closed.emit(path))
@@ -67,13 +67,12 @@ func _confirm_overwrite(conflicts: Array[Dictionary]) -> bool:
 	for note in conflicts.slice(0, 5):
 		names.append("• " + str(note.name) + ".md")
 	if conflicts.size() > 5:
-		names.append("• …e altri %d" % (conflicts.size() - 5))
-	dialog.dialog_text = "%s nel vault con un contenuto diverso, forse modificat%s in Obsidian:\n\n%s\n\nSovrascrivere?" % [
-		"Esiste già un file" if conflicts.size() == 1 else "Esistono già %d file" % conflicts.size(),
-		"o" if conflicts.size() == 1 else "i",
-		"\n".join(names)]
-	dialog.ok_button_text = "Sovrascrivi"
-	dialog.cancel_button_text = "Lascia com'è" if conflicts.size() == 1 else "Lasciali come sono"
+		names.append(tr("• …e altri %d") % (conflicts.size() - 5))
+	var template := tr("Esiste già un file nel vault con un contenuto diverso, forse modificato in Obsidian:\n\n%s\n\nSovrascrivere?") if conflicts.size() == 1 \
+		else tr("Esistono già %d file nel vault con un contenuto diverso, forse modificati in Obsidian:\n\n%s\n\nSovrascrivere?")
+	dialog.dialog_text = template % (["\n".join(names)] if conflicts.size() == 1 else [conflicts.size(), "\n".join(names)])
+	dialog.ok_button_text = tr("Sovrascrivi")
+	dialog.cancel_button_text = tr("Lascia com'è") if conflicts.size() == 1 else tr("Lasciali come sono")
 	dialog.confirmed.connect(func() -> void: _dialog_closed.emit(true))
 	dialog.canceled.connect(func() -> void: _dialog_closed.emit(false))
 	add_child(dialog)
@@ -87,7 +86,7 @@ func _confirm_overwrite(conflicts: Array[Dictionary]) -> bool:
 static func summary(result: Dictionary) -> String:
 	if result.error != "":
 		return result.error
-	var text := "%d %s nel vault." % [result.written, "nota scritta" if result.written == 1 else "note scritte"]
+	var text: String = (TranslationServer.translate("%d nota scritta nel vault.") if result.written == 1 else TranslationServer.translate("%d note scritte nel vault.")) % result.written
 	if result.skipped > 0:
-		text += " %d lasciat%s com'%s." % [result.skipped, "a" if result.skipped == 1 else "e", "era" if result.skipped == 1 else "erano"]
-	return text + " Clic per aprire la cartella."
+		text += " " + (TranslationServer.translate("%d lasciata com'era.") if result.skipped == 1 else TranslationServer.translate("%d lasciate come erano.")) % result.skipped
+	return text + " " + TranslationServer.translate("Clic per aprire la cartella.")

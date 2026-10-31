@@ -13,9 +13,9 @@ const SEVERITY_NAMES := {"i": "Informazione", "w": "Avviso", "e": "Errore"}
 
 
 func _ready() -> void:
-	_tree.set_column_title(0, "Data e ora")
-	_tree.set_column_title(1, "Origine")
-	_tree.set_column_title(2, "Evento")
+	_tree.set_column_title(0, tr("Data e ora"))
+	_tree.set_column_title(1, tr("Origine"))
+	_tree.set_column_title(2, tr("Evento"))
 	_tree.set_column_expand(0, false)
 	_tree.set_column_custom_minimum_width(0, 118)
 	_tree.set_column_expand(1, false)
@@ -44,7 +44,7 @@ func _refresh() -> void:
 		row.set_text(0, "%s %s" % [ItalianDate.numeric(event.time), ItalianDate.time(event.time)])
 		row.set_icon(1, SEVERITY_ICONS[event.severity])
 		row.set_text(1, event.origin)
-		row.set_tooltip_text(1, SEVERITY_NAMES[event.severity])
+		row.set_tooltip_text(1, tr(SEVERITY_NAMES[event.severity]))
 		row.set_text(2, event.text)
 		row.set_tooltip_text(2, event.text)
-	_count.text = "%d %s" % [events.size(), "evento" if events.size() == 1 else "eventi"]
+	_count.text = "%d %s" % [events.size(), tr("evento") if events.size() == 1 else tr("eventi")]

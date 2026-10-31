@@ -40,7 +40,7 @@ func _ready() -> void:
 	_input.gui_input.connect(_on_input_key)
 	_input.text_changed.connect(func(_t: String) -> void: Sfx.play(&"key"))
 	%Screen.gui_input.connect(_on_screen_input)
-	_print("AgencyOS 98 [Versione 4.98.0047]\n(C) Copyright 1998 Triangle Agency.\n\nDigita AIUTO per l'elenco dei comandi.\n", "text")
+	_print(tr("AgencyOS 98 [Versione 4.98.0047]\n(C) Copyright 1998 Triangle Agency.\n\nDigita AIUTO per l'elenco dei comandi.\n"), "text")
 
 
 func on_opened(_args: Dictionary = {}) -> void:
@@ -141,7 +141,7 @@ func _on_screen_input(event: InputEvent) -> void:
 # --- Commands --------------------------------------------------------------
 
 func _run(raw: String) -> void:
-	_print(PROMPT + raw, "echo")
+	_print(tr(PROMPT) + raw, "echo")
 	var line := raw.strip_edges()
 	if line == "":
 		return
@@ -153,33 +153,33 @@ func _run(raw: String) -> void:
 	var level := Campaign.level()
 	match command:
 		"AIUTO", "HELP", "?":
-			_print(HELP, "text")
+			_print(tr(HELP), "text")
 		"DIR":
 			_dir()
 		"TYPE":
 			_type(argument)
-		"APRI", "START":
+		"APRI", "OPEN", "START":
 			_open(argument)
-		"STATO":
+		"STATO", "STATUS":
 			_status(level)
-		"COLLOQUI":
+		"COLLOQUI", "INTERVIEWS":
 			_list_interviews()
 		"SCAN":
 			await _scan(level)
-		"SUONI":
+		"SUONI", "SOUNDS":
 			var value := argument.to_upper()
 			if value == "ON" or value == "OFF":
 				Sfx.enabled = value == "ON"
-				_print("Suoni " + ("attivati." if value == "ON" else "disattivati."), "ok")
+				_print(tr("Suoni attivati.") if value == "ON" else tr("Suoni disattivati."), "ok")
 			else:
-				_print("Uso: SUONI ON oppure SUONI OFF", "error")
+				_print(tr("Uso: SUONI ON oppure SUONI OFF"), "error")
 		"VER":
-			_print("AgencyOS 98 [Versione 4.98.0047] · Modalità Sicura", "text")
-		"DATA":
+			_print(tr("AgencyOS 98 [Versione 4.98.0047] · Modalità Sicura"), "text")
+		"DATA", "DATE":
 			var d := Time.get_datetime_dict_from_system()
-			_print("La data corrente è: %s %d %s %d" % [WEEKDAYS[d.weekday], d.day, MONTHS[d.month - 1], d.year], "text")
-		"ORA":
-			_print("L'ora corrente è: " + Time.get_time_string_from_system(), "text")
+			_print(tr("La data corrente è: {weekday} {day} {month} {year}").format({"weekday": tr(WEEKDAYS[d.weekday]), "day": d.day, "month": tr(MONTHS[d.month - 1]), "year": d.year}), "text")
+		"ORA", "TIME":
+			_print(tr("L'ora corrente è: %s") % Time.get_time_string_from_system(), "text")
 		"CLS":
 			_lines.clear()
 			_render()
@@ -190,7 +190,7 @@ func _run(raw: String) -> void:
 
 
 func _dir() -> void:
-	var listing := " Volume nell'unità C: FILIALE\n Directory di C:\\FILIALE\n\n"
+	var listing := tr(" Volume nell'unità C: FILIALE\n Directory di C:\\FILIALE\n\n")
 	for entry in SYSTEM_FILES:
 		listing += "%s%s  01/01/98\n" % [str(entry[0]).rpad(18), str(entry[2]).lpad(12)]
 	_print(listing, "text")
@@ -198,29 +198,29 @@ func _dir() -> void:
 	if not files.is_empty():
 		var unregistered := ""
 		for file in files:
-			unregistered += "%s%s  %s  [NON REGISTRATO]\n" % [str(file.name).to_upper().rpad(18), str(str(file.content).length()).lpad(12), ItalianDate.numeric(str(file.created))]
+			unregistered += tr("%s%s  %s  [NON REGISTRATO]\n") % [str(file.name).to_upper().rpad(18), str(str(file.content).length()).lpad(12), ItalianDate.numeric(str(file.created))]
 		_print(unregistered, "error")
-	_print("      %d file" % (SYSTEM_FILES.size() + files.size()), "text")
+	_print(tr("      %d file") % (SYSTEM_FILES.size() + files.size()), "text")
 
 
 func _type(argument: String) -> void:
 	if argument == "":
-		_print("Specifica un file. Esempio: TYPE nome_file.txt", "error")
+		_print(tr("Specifica un file. Esempio: TYPE nome_file.txt"), "error")
 		return
 	var file := Campaign.correspondence.find_file_by_name(argument)
 	if not file.is_empty():
 		_print(str(file.content), "entity")
 		Campaign.correspondence.mark_file_read(file)
 	elif SYSTEM_FILES.any(func(entry: Array) -> bool: return entry[0] == argument.to_upper()):
-		_print("Impossibile visualizzare un file binario.", "error")
+		_print(tr("Impossibile visualizzare un file binario."), "error")
 	else:
-		_print("File non trovato.", "error")
+		_print(tr("File non trovato."), "error")
 
 
 func _open(argument: String) -> void:
 	var wanted := argument.to_upper()
 	if wanted == "":
-		_print("Specifica un programma o un file. Esempio: APRI CALC", "error")
+		_print(tr("Specifica un programma o un file. Esempio: APRI CALC"), "error")
 		return
 	# An exact name wins; otherwise the start of a name, but only if it's not ambiguous
 	# ("APRI C" could be CALC, CAM03, CANONE…).
@@ -240,7 +240,7 @@ func _open(argument: String) -> void:
 		if str(file.name).to_upper().begins_with(wanted):
 			matches.append(file)
 	if matches.is_empty():
-		_print("Programma o file non trovato.", "error")
+		_print(tr("Programma o file non trovato."), "error")
 	elif matches.size() == 1:
 		if matches[0] is Array:
 			_launch(matches[0])
@@ -248,46 +248,46 @@ func _open(argument: String) -> void:
 			_open_file(matches[0])
 	else:
 		var names := matches.map(func(match_: Variant) -> String: return str(match_[0]) if match_ is Array else str(match_.name).to_upper())
-		_print("Più corrispondenze: %s. Specifica meglio il nome." % ", ".join(names), "error")
+		_print(tr("Più corrispondenze: %s. Specifica meglio il nome.") % ", ".join(names), "error")
 
 
 func _launch(entry: Array) -> void:
 	app_requested.emit(entry[1], {})
-	_print("Avvio di %s…" % entry[0], "ok")
+	_print(tr("Avvio di %s…") % entry[0], "ok")
 
 
 func _open_file(file: Dictionary) -> void:
 	app_requested.emit(&"notepad", {"file": file.id})
-	_print("Apertura di %s…" % file.name, "ok")
+	_print(tr("Apertura di %s…") % file.name, "ok")
 
 
 func _status(level: int) -> void:
 	var missing := Campaign.interviews_to_next_level()
-	_print("GENERAL MANAGER · STATO\n  Livello di accesso ....... %d/5\n  Colloqui conclusi ........ %d\n  Prossimo livello ......... %s\n  Memo ricevuti ............ %d\n  File non registrati ...... %d\n  Canale ................... %s" % [
-		level, Campaign.closed_count(), "—" if missing == 0 else "tra %d" % missing,
+	_print(tr("GENERAL MANAGER · STATO\n  Livello di accesso ....... %d/5\n  Colloqui conclusi ........ %d\n  Prossimo livello ......... %s\n  Memo ricevuti ............ %d\n  File non registrati ...... %d\n  Canale ................... %s") % [
+		level, Campaign.closed_count(), "—" if missing == 0 else tr("tra %d") % missing,
 		Campaign.correspondence.delivered_mail().size(), Campaign.correspondence.delivered_files().size(),
-		"APERTO" if Campaign.current() != null else "CHIUSO"], "text")
+		tr("APERTO") if Campaign.current() != null else tr("CHIUSO")], "text")
 
 
 func _list_interviews() -> void:
 	if Campaign.interviews.is_empty():
-		_print("Nessun colloquio registrato.", "text")
+		_print(tr("Nessun colloquio registrato."), "text")
 		return
 	var rows: PackedStringArray = []
 	for interview in Campaign.interviews:
-		rows.append("  #%03d  %s  %s  %d messaggi" % [interview.number, ItalianDate.numeric(interview.opened_at), "IN CORSO" if interview.is_open() else "CHIUSO  ", interview.spoken_count()])
+		rows.append(tr("  #%03d  %s  %s  %d messaggi") % [interview.number, ItalianDate.numeric(interview.opened_at), tr("IN CORSO") if interview.is_open() else tr("CHIUSO") + "  ", interview.spoken_count()])
 	_print("\n".join(rows), "text")
 
 
 func _scan(level: int) -> void:
-	_print("Scansione del canale in corso…", "text")
+	_print(tr("Scansione del canale in corso…"), "text")
 	for i in range(1, SCAN_STEPS + 1):
 		await get_tree().create_timer(SCAN_STEP_SECONDS).timeout
-		_replace_last("Scansione del canale in corso… [%s%s] %d%%" % ["█".repeat(i), "░".repeat(SCAN_STEPS - i), i * 10], "text")
-	_print("Nessuna attività anomala rilevata.", "ok")
+		_replace_last(tr("Scansione del canale in corso… [%s%s] %d%%") % ["█".repeat(i), "░".repeat(SCAN_STEPS - i), i * 10], "text")
+	_print(tr("Nessuna attività anomala rilevata."), "ok")
 	if level >= 2 and randf() < 0.6:
 		await get_tree().create_timer(0.9).timeout
-		_print(SCAN_WHISPERS[randi() % SCAN_WHISPERS.size()], "entity")
+		_print(tr(SCAN_WHISPERS[randi() % SCAN_WHISPERS.size()]), "entity")
 		Entity.stir(0.4)
 
 
@@ -295,7 +295,7 @@ func _secret_or_unknown(command: String, level: int) -> void:
 	for secret: Dictionary in Campaign.correspondence.unlocked_commands(level):
 		if str(secret.command) == command:
 			Entity.stir(0.6)
-			if command == "CAVEAU":
+			if command in ["CAVEAU", "VAULT"]:
 				Entity.widen_eyes(5.0)
 				Entity.glitch("lattice")
 			for row: Array in secret.get("lines", []):
@@ -303,4 +303,4 @@ func _secret_or_unknown(command: String, level: int) -> void:
 				_print(str(row[1]), kind)
 				await get_tree().create_timer(ENTITY_LINE_SECONDS if kind == "entity" else LINE_SECONDS).timeout
 			return
-	_print("Comando o nome file non riconosciuto.", "error")
+	_print(tr("Comando o nome file non riconosciuto."), "error")

@@ -19,7 +19,7 @@ const DOWNLOAD_MIN_SPEED := 20000.0
 var state: State = State.IDLE
 ## The update.json of the latest release (version, base, file, url, sha256, size, notes, page).
 var manifest: Dictionary = {}
-## Italian, shown as is when state is ERROR.
+## Already translated, shown as is when state is ERROR.
 var error: String = ""
 ## Overridable for tests.
 var manifest_url: String = MANIFEST_URL
@@ -53,15 +53,15 @@ func check(is_automatic: bool = false) -> void:
 	_http.download_file = ""
 	_http.timeout = TIMEOUT
 	if _http.request(manifest_url) != OK:
-		_fail("Impossibile contattare il server degli aggiornamenti.")
+		_fail(tr("Impossibile contattare il server degli aggiornamenti."))
 		return
 	var result: Array = await _http.request_completed
 	if result[0] != HTTPRequest.RESULT_SUCCESS or result[1] != 200:
-		_fail("Server degli aggiornamenti non raggiungibile (%s)." % _describe(result))
+		_fail(tr("Server degli aggiornamenti non raggiungibile (%s).") % _describe(result))
 		return
 	var data: Variant = JSON.parse_string((result[3] as PackedByteArray).get_string_from_utf8())
 	if not data is Dictionary or not data.has("version"):
-		_fail("Risposta del server degli aggiornamenti non valida.")
+		_fail(tr("Risposta del server degli aggiornamenti non valida."))
 		return
 	Save.set_ui("update_checked_at", int(Time.get_unix_time_from_system()))
 	manifest = data
@@ -88,18 +88,18 @@ func download() -> void:
 	if file == "" or _http.request(str(manifest.get("url", ""))) != OK:
 		_http.download_file = ""
 		_discard_part()
-		_fail("Impossibile avviare il download dell'aggiornamento.")
+		_fail(tr("Impossibile avviare il download dell'aggiornamento."))
 		return
 	var result: Array = await _http.request_completed
 	_http.download_file = ""
 	if result[0] != HTTPRequest.RESULT_SUCCESS or result[1] != 200:
 		_discard_part()
-		_fail("Download dell'aggiornamento non riuscito (%s)." % _describe(result))
+		_fail(tr("Download dell'aggiornamento non riuscito (%s).") % _describe(result))
 		return
 	if FileAccess.get_size(_part_path) != int(manifest.get("size", -1)) \
 			or FileAccess.get_sha256(_part_path) != str(manifest.get("sha256", "")).to_lower():
 		_discard_part()
-		_fail("L'aggiornamento scaricato è danneggiato. Riprovare più tardi.")
+		_fail(tr("L'aggiornamento scaricato è danneggiato. Riprovare più tardi."))
 		return
 	var previous := BootPatch.read_current()
 	if FileAccess.file_exists(path):
@@ -107,13 +107,13 @@ func download() -> void:
 	if DirAccess.rename_absolute(_part_path, path) != OK:
 		# Without the .pck in place, current.json must not point to it.
 		_discard_part()
-		_fail("Impossibile salvare l'aggiornamento.")
+		_fail(tr("Impossibile salvare l'aggiornamento."))
 		return
 	_part_path = ""
 	var current := {"version": str(manifest.version), "base": BootPatch.base_version, "file": file, "sha256": manifest.sha256}
 	var out := FileAccess.open(BootPatch.CURRENT, FileAccess.WRITE)
 	if out == null:
-		_fail("Impossibile salvare l'aggiornamento.")
+		_fail(tr("Impossibile salvare l'aggiornamento."))
 		return
 	out.store_string(JSON.stringify(current, "\t"))
 	out.close()
@@ -173,4 +173,4 @@ func _discard_part() -> void:
 
 
 func _describe(result: Array) -> String:
-	return "HTTP %d" % result[1] if result[0] == HTTPRequest.RESULT_SUCCESS else "errore %d" % result[0]
+	return "HTTP %d" % result[1] if result[0] == HTTPRequest.RESULT_SUCCESS else tr("errore %d") % result[0]

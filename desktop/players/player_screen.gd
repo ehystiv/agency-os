@@ -34,7 +34,7 @@ func _init() -> void:
 	# (it can only be set while the window is hidden).
 	visible = false
 	force_native = true
-	title = "AgencyOS 98 · Schermo giocatori"
+	title = tr("AgencyOS 98 · Schermo giocatori")
 	size = BASE_SIZE
 	min_size = Vector2i(480, 270)
 	content_scale_mode = Window.CONTENT_SCALE_MODE_CANVAS_ITEMS
@@ -175,7 +175,7 @@ func _make_idle() -> Control:
 	logo.label_settings = _label_settings(64, Color("d9dde7"))
 	column.add_child(logo)
 	var waiting := Label.new()
-	waiting.text = "In attesa di trasmissione dalla Filiale…"
+	waiting.text = tr("In attesa di trasmissione dalla Filiale…")
 	waiting.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	waiting.label_settings = _label_settings(26, Color("7fe1ee"))
 	column.add_child(waiting)

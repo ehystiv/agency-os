@@ -1,19 +1,35 @@
 <!doctype html>
-<html lang="en">
+<html lang="it">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>AgencyOS 98</title>
-<meta name="description" content="A fake '90s desktop OS for Triangle Agency GMs, made in Godot 4. Chat with the Entity U0047BB through a language model. UI in Italian only.">
+<meta name="description" content="Un finto sistema operativo anni '90 per i GM di Triangle Agency, fatto in Godot 4. Chatta con l'Entità U0047BB tramite un modello linguistico. Disponibile in italiano e in inglese.">
 <meta property="og:title" content="AgencyOS 98">
-<meta property="og:description" content="A fake '90s desktop OS for Triangle Agency GMs. Chat with the Entity U0047BB through a language model. UI in Italian only.">
+<meta property="og:description" content="Un finto sistema operativo anni '90 per i GM di Triangle Agency. Chatta con l'Entità U0047BB tramite un modello linguistico. In italiano e in inglese.">
+<meta property="og:locale" content="it_IT">
+<meta property="og:locale:alternate" content="en_US">
 <meta property="og:image" content="https://ehystiv.github.io/agency-os/assets/og.jpg">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" type="image/png" href="assets/app_icon.png">
+<link rel="canonical" href="https://agency-os.ehystiv.dev/">
+<link rel="alternate" hreflang="it" href="https://agency-os.ehystiv.dev/">
+<link rel="alternate" hreflang="en" href="https://agency-os.ehystiv.dev/en/">
+<link rel="alternate" hreflang="x-default" href="https://agency-os.ehystiv.dev/en/">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Shantell+Sans:wght@400;500&family=VT323&display=swap">
+<script>
+// First visit only: send non-Italian browsers to the English page. A click on the IT | EN switch is remembered.
+(function () {
+  try {
+    if (localStorage.getItem("lang")) return;
+    var l = (navigator.languages && navigator.languages[0]) || navigator.language || "it";
+    if (!/^it\b/i.test(l)) location.replace("en/");
+  } catch (e) {}
+})();
+</script>
 <style>
 :root{
   --desk:#0a0e1c; --lattice:rgba(120,170,220,.07);
@@ -150,6 +166,10 @@ img{max-width:100%;display:block}
 .task.on{box-shadow:inset 1px 1px 0 var(--chrome-lo),inset -1px -1px 0 var(--chrome-hi);background:#dfe1e6}
 .tray{display:flex;gap:10px;align-items:center;font-size:12.5px;padding:5px 10px;box-shadow:inset 1px 1px 0 var(--chrome-lo),inset -1px -1px 0 var(--chrome-hi)}
 .tray .safe{white-space:nowrap}
+.tray .lang{display:flex;gap:6px;align-items:center;white-space:nowrap}
+.tray .lang a{color:var(--chrome-ink);text-decoration:none;padding:0 2px}
+.tray .lang a:hover{background:var(--agency);color:#fff}
+.tray .lang a[aria-current]{font-weight:700;text-decoration:underline}
 .startmenu{position:fixed;left:4px;bottom:calc(var(--taskH) + 1px);z-index:950;display:flex;background:var(--chrome);border:1px solid #000;box-shadow:inset 1px 1px 0 var(--chrome-hi),inset -1px -1px 0 var(--chrome-lo),4px 4px 0 rgba(0,0,0,.4);padding:3px}
 .startmenu[hidden]{display:none}
 .startmenu .band{width:30px;background:#14245e;color:#fff;font-family:var(--f-sys);font-size:22px;writing-mode:vertical-rl;transform:rotate(180deg);padding:8px 0;letter-spacing:.04em}
@@ -203,127 +223,131 @@ img{max-width:100%;display:block}
   <div class="logo" id="bootLogo"><i></i><b>AgencyOS 98</b></div>
 </div>
 <div class="screen off" id="shutdown" hidden>
-  <div>Ora è possibile spegnere il computer.<small>It's now safe to turn off your computer. Click to turn it back on.</small></div>
+  <div>Ora è possibile spegnere il computer.<small>Clicca per riaccenderlo.</small></div>
 </div>
 <div class="crt" aria-hidden="true"></div>
 
 <main class="desktop" id="desktop">
   <nav class="icons" aria-label="Desktop">
-    <button class="ico" data-open="readme"><img src="assets/icons/note.svg" alt=""><span>readme.txt</span></button>
+    <button class="ico" data-open="readme"><img src="assets/icons/note.svg" alt=""><span>leggimi.txt</span></button>
     <button class="ico" data-open="line"><img src="assets/icons/line.svg" alt=""><span>Linea riservata</span></button>
     <button class="ico" data-open="shots"><img src="assets/icons/dossier.svg" alt=""><span>Screenshots</span></button>
-    <button class="ico" data-open="apps"><img src="assets/icons/canon.svg" alt=""><span>Apps &amp; features</span></button>
-    <button class="ico" data-open="setup"><img src="assets/icons/term.svg" alt=""><span>Getting started</span></button>
-    <a class="ico" href="https://github.com/ehystiv/agency-os"><img src="assets/icons/event_log.svg" alt=""><span>Source code</span></a>
+    <button class="ico" data-open="apps"><img src="assets/icons/canon.svg" alt=""><span>App e funzioni</span></button>
+    <button class="ico" data-open="setup"><img src="assets/icons/term.svg" alt=""><span>Per iniziare</span></button>
+    <a class="ico" href="https://github.com/ehystiv/agency-os"><img src="assets/icons/event_log.svg" alt=""><span>Codice sorgente</span></a>
   </nav>
 
   <!-- readme -->
-  <section class="win" id="w-readme" data-title="readme.txt" data-icon="note" aria-labelledby="t-readme">
-    <div class="bar"><span class="tri"></span><h2 class="t" id="t-readme">readme.txt · Blocco note</h2><span class="ctl"><button class="wb min" aria-label="Minimize">_</button><button class="wb close" aria-label="Close">×</button></span></div>
+  <section class="win" id="w-readme" data-title="leggimi.txt" data-icon="note" aria-labelledby="t-readme">
+    <div class="bar"><span class="tri"></span><h2 class="t" id="t-readme">leggimi.txt · Blocco note</h2><span class="ctl"><button class="wb min" aria-label="Riduci a icona">_</button><button class="wb close" aria-label="Chiudi">×</button></span></div>
     <div class="menu" aria-hidden="true"><span><u>F</u>ile</span><span><u>M</u>odifica</span><span><u>?</u></span></div>
     <div class="body readme sunken">
       <h1>AgencyOS 98 <small>v0.2.0</small></h1>
-      <p>A fake late-90s operating system for the <b>General Manager</b> of a <b>Triangle Agency</b> campaign. Put it on the GM's laptop at the table: between the Agency's memos, the dice and the session notes runs an unregistered chat channel with <b>U0047BB</b>, the Entity held in the vault, voiced by a language model that remembers every session.</p>
+      <p>Un finto sistema operativo di fine anni '90 per il <b>Game Manager</b> di una campagna di <b>Triangle Agency</b>. Mettilo sul portatile del GM al tavolo: tra i memo dell'Agenzia, i dadi e gli appunti di sessione corre un canale di chat non registrato con <b>U0047BB</b>, l'Entità custodita nel caveau, interpretata da un modello linguistico che ricorda ogni sessione.</p>
       <div class="dialog" role="note">
         <span class="warn" aria-hidden="true"></span>
-        <div><b>L'interfaccia è solo in italiano.</b>The user interface is in Italian only: it was made for the Italian edition of the game, and the Entity speaks Italian. Code and documentation are in English.</div>
+        <div><b>Italiano o inglese.</b>Tutta l'app, da finestre e menu alla voce dell'Entità, esiste in italiano e in inglese. Al primo avvio segue la lingua del sistema; la cambi da Pannello di controllo › Lingua (vale dopo il riavvio). Note, colloqui e memo già scritti restano nella lingua in cui sono stati scritti. Codice e documentazione sono in inglese.</div>
       </div>
-      <p>Made with Godot 4. Runs with a local model (LM Studio, Ollama, llama.cpp) or with Hugging Face or Claude.</p>
+      <p>Fatto con Godot 4. Funziona con un modello locale (LM Studio, Ollama, llama.cpp) oppure con Hugging Face o Claude.</p>
       <div class="row">
-        <a class="b98 primary" href="https://github.com/ehystiv/agency-os/releases/download/v0.2.0/AgencyOS-0.2.0.dmg">Download for macOS (v0.2.0)</a>
-        <a class="b98" href="https://github.com/ehystiv/agency-os/archive/refs/tags/v0.2.0.zip">Source</a>
-        <a class="b98" href="https://github.com/ehystiv/agency-os">View on GitHub</a>
-        <button class="b98" data-open="line">Try the reserved line</button>
+        <a class="b98 primary" href="https://github.com/ehystiv/agency-os/releases/download/v0.2.0/AgencyOS-0.2.0.dmg">Scarica per macOS (v0.2.0)</a>
+        <a class="b98" href="https://github.com/ehystiv/agency-os/archive/refs/tags/v0.2.0.zip">Sorgenti</a>
+        <a class="b98" href="https://github.com/ehystiv/agency-os">Vedi su GitHub</a>
+        <button class="b98" data-open="line">Prova la linea riservata</button>
       </div>
-      <p class="fine">Unofficial fan project, not affiliated with the publishers of Triangle Agency.</p>
+      <p class="fine">Progetto amatoriale non ufficiale, non affiliato agli editori di Triangle Agency.</p>
     </div>
     <div class="statusbar"><span>Riga 1, col 1</span><span>UTF-8</span></div>
   </section>
 
   <!-- reserved line demo -->
   <section class="win w-line" id="w-line" data-title="Linea riservata" data-icon="line" aria-labelledby="t-line">
-    <div class="bar"><span class="tri"></span><h2 class="t" id="t-line">linea_riservata.exe · colloquio_005</h2><span class="ctl"><button class="wb min" aria-label="Minimize">_</button><button class="wb close" aria-label="Close">×</button></span></div>
+    <div class="bar"><span class="tri"></span><h2 class="t" id="t-line">linea_riservata.exe · colloquio_005</h2><span class="ctl"><button class="wb min" aria-label="Riduci a icona">_</button><button class="wb close" aria-label="Chiudi">×</button></span></div>
     <div class="menu" aria-hidden="true"><span><u>F</u>ile</span><span><u>M</u>odifica</span><span><u>V</u>isualizza</span><span><u>?</u></span></div>
     <div class="body">
-      <div class="status"><span><i class="led on" id="led"></i><span id="lineStatus">In linea con U0047BB</span></span><label><input type="checkbox" id="subs" checked> English subtitles</label></div>
+      <div class="status"><span><i class="led on" id="led"></i><span id="lineStatus">In linea con U0047BB</span></span><label><input type="checkbox" id="subs" checked> Sottotitoli in inglese</label></div>
       <div class="log" id="log" aria-live="polite"></div>
       <div class="composer"><div class="input sunken" id="input" aria-hidden="true"></div><button class="b98 primary" id="send" tabindex="-1">Invia</button></div>
-      <div class="tools"><span>Scripted demo: in the app the Entity is played by a language model.</span><button class="lnk" id="replay">Replay</button></div>
+      <div class="tools"><span>Demo preregistrata: nell'app l'Entità è interpretata da un modello linguistico.</span><button class="lnk" id="replay">Ripeti</button></div>
     </div>
   </section>
 
   <!-- screenshots -->
   <section class="win closed" id="w-shots" data-title="Screenshots" data-icon="dossier" aria-labelledby="t-shots">
-    <div class="bar"><span class="tri"></span><h2 class="t" id="t-shots">C:\FILIALE\SCREENSHOTS</h2><span class="ctl"><button class="wb min" aria-label="Minimize">_</button><button class="wb close" aria-label="Close">×</button></span></div>
+    <div class="bar"><span class="tri"></span><h2 class="t" id="t-shots">C:\FILIALE\SCREENSHOTS</h2><span class="ctl"><button class="wb min" aria-label="Riduci a icona">_</button><button class="wb close" aria-label="Chiudi">×</button></span></div>
     <div class="menu" aria-hidden="true"><span><u>F</u>ile</span><span><u>V</u>isualizza</span><span><u>?</u></span></div>
     <div class="sunken"><div class="gallery" id="gallery"></div></div>
-    <div class="statusbar"><span id="shotCount"></span><span>Real screenshots, 1920×1080</span></div>
+    <div class="statusbar"><span id="shotCount"></span><span>Screenshot reali, 1920×1080</span></div>
   </section>
 
   <!-- image viewer -->
   <section class="win w-viewer closed" id="w-viewer" data-title="Visualizzatore" data-icon="dossier" aria-labelledby="t-viewer">
-    <div class="bar"><span class="tri"></span><h2 class="t" id="t-viewer">Visualizzatore immagini</h2><span class="ctl"><button class="wb min" aria-label="Minimize">_</button><button class="wb close" aria-label="Close">×</button></span></div>
+    <div class="bar"><span class="tri"></span><h2 class="t" id="t-viewer">Visualizzatore immagini</h2><span class="ctl"><button class="wb min" aria-label="Riduci a icona">_</button><button class="wb close" aria-label="Chiudi">×</button></span></div>
     <div class="body viewer">
       <img id="viewImg" alt="">
       <p class="cap" id="viewCap"></p>
-      <div class="row"><button class="b98" id="prev">◀ Prev</button><button class="b98" id="next">Next ▶</button><a class="lnk" id="viewFull" href="#" target="_blank" rel="noopener">Open full size</a></div>
+      <div class="row"><button class="b98" id="prev">◀ Prec.</button><button class="b98" id="next">Succ. ▶</button><a class="lnk" id="viewFull" href="#" target="_blank" rel="noopener">Apri a dimensione intera</a></div>
     </div>
   </section>
 
   <!-- apps and features -->
-  <section class="win closed" id="w-apps" data-title="Apps & features" data-icon="canon" aria-labelledby="t-apps">
-    <div class="bar"><span class="tri"></span><h2 class="t" id="t-apps">apps.hlp · Guida di AgencyOS</h2><span class="ctl"><button class="wb min" aria-label="Minimize">_</button><button class="wb close" aria-label="Close">×</button></span></div>
+  <section class="win closed" id="w-apps" data-title="App e funzioni" data-icon="canon" aria-labelledby="t-apps">
+    <div class="bar"><span class="tri"></span><h2 class="t" id="t-apps">apps.hlp · Guida di AgencyOS</h2><span class="ctl"><button class="wb min" aria-label="Riduci a icona">_</button><button class="wb close" aria-label="Chiudi">×</button></span></div>
     <div class="pane">
-      <h2>What's on the desktop</h2>
-      <p class="intro">Every app is part of running the game. Names are as they appear on screen.</p>
+      <h2>Cosa c'è sul desktop</h2>
+      <p class="intro">Ogni app serve a condurre la partita. I nomi sono quelli che compaiono sullo schermo (in inglese: Reserved Line, Dossier, Canon, Notebook, Notepad, Calculator, Containment, Player, Event Log, Trash, Control Panel).</p>
       <ul class="apps" id="appList"></ul>
-      <h3>The Entity <span class="lv">always on</span></h3>
+      <h3>L'Entità <span class="lv">sempre accesa</span></h3>
       <ul class="dots">
-        <li>Closing an interview makes the Entity write its own memories of it. The next session it remembers them, and the GM can correct them.</li>
-        <li>It reads the campaign notes, the Agency's memos and the files it left behind. If the GM corrects a file, the corrected version becomes the truth for the Entity.</li>
-        <li>Its replies can trigger glitches: shaking windows, ink blots, eyes, a fake error dialog, the taskbar going haywire.</li>
-        <li>Now and then AgencyOS searches the channel, and the Entity has to hide.</li>
+        <li>Chiudere un colloquio fa scrivere all'Entità i propri ricordi. Alla sessione dopo li ricorda, e il GM può correggerli.</li>
+        <li>Legge gli appunti della campagna, i memo dell'Agenzia e i file che ha lasciato. Se il GM corregge un file, la versione corretta diventa la verità per l'Entità.</li>
+        <li>Le sue risposte possono scatenare glitch: finestre che tremano, macchie d'inchiostro, occhi, un finto errore, la barra delle applicazioni impazzita.</li>
+        <li>Ogni tanto AgencyOS perlustra il canale, e l'Entità deve nascondersi.</li>
       </ul>
-      <h3>Access level <span class="lv">1 → 5</span></h3>
+      <h3>Livello di accesso <span class="lv">1 → 5</span></h3>
       <ul class="dots">
-        <li>Every three closed interviews the GM's access level goes up, unlocking more of what the Entity is allowed to say, new files and secret commands.</li>
+        <li>Ogni tre colloqui chiusi il livello di accesso del GM sale, sbloccando altro di ciò che l'Entità può dire, nuovi file e comandi segreti.</li>
         <li class="redact">██████ ███ ████████ ██ ███████</li>
       </ul>
     </div>
   </section>
 
   <!-- getting started -->
-  <section class="win closed" id="w-setup" data-title="Getting started" data-icon="term" aria-labelledby="t-setup">
-    <div class="bar"><span class="tri"></span><h2 class="t" id="t-setup">Prompt di AgencyOS</h2><span class="ctl"><button class="wb min" aria-label="Minimize">_</button><button class="wb close" aria-label="Close">×</button></span></div>
+  <section class="win closed" id="w-setup" data-title="Per iniziare" data-icon="term" aria-labelledby="t-setup">
+    <div class="bar"><span class="tri"></span><h2 class="t" id="t-setup">Prompt di AgencyOS</h2><span class="ctl"><button class="wb min" aria-label="Riduci a icona">_</button><button class="wb close" aria-label="Chiudi">×</button></span></div>
     <div class="term"><span class="p">C:\FILIALE&gt;TYPE SETUP.TXT</span>
 
-<span class="ok">1. GET GODOT 4.7</span>
+<span class="ok">1. SCARICA GODOT 4.7</span>
    <a href="https://godotengine.org/download">godotengine.org/download</a>
 
-<span class="ok">2. GET AGENCYOS</span>
+<span class="ok">2. SCARICA AGENCYOS</span>
    <code>git clone https://github.com/ehystiv/agency-os.git</code>
-   or <a href="https://github.com/ehystiv/agency-os/archive/refs/tags/v0.2.0.zip">download v0.2.0</a>
-   (on macOS you can skip all this: <a href="https://github.com/ehystiv/agency-os/releases/latest">get the installer</a>,
-   it updates itself)
+   oppure <a href="https://github.com/ehystiv/agency-os/archive/refs/tags/v0.2.0.zip">scarica la v0.2.0</a>
+   (su macOS puoi saltare tutto: <a href="https://github.com/ehystiv/agency-os/releases/latest">scarica l'installer</a>,
+   si aggiorna da solo)
 
-<span class="ok">3. RUN IT</span>
-   Open the folder in Godot and press Play, or:
+<span class="ok">3. AVVIALO</span>
+   Apri la cartella in Godot e premi Play, oppure:
    <code>godot --path agency-os</code>
 
-<span class="ok">4. CONNECT A LANGUAGE MODEL</span>
-   Open "Impostazioni della linea" and pick one:
-   · Locale: LM Studio, Ollama or llama.cpp server
-     (tested with Gemma 3 12B and Qwen 3.5 9B)
-   · Hugging Face: router + access token
-   · Claude: Anthropic API key
-   Press "Prova connessione" to test it.
+<span class="ok">4. COLLEGA UN MODELLO LINGUISTICO</span>
+   Apri "Impostazioni della linea" e scegli:
+   · Locale: LM Studio, Ollama o server llama.cpp
+     (provati Gemma 3 12B e Qwen 3.5 9B)
+   · Hugging Face: router + token di accesso
+   · Claude: chiave API di Anthropic
+   Premi "Prova connessione" per verificare.
 
-<span class="ok">5. OPEN THE LINE</span>
-   Double-click "Linea riservata". Say hello.
+<span class="ok">5. APRI LA LINEA</span>
+   Doppio clic su "Linea riservata". Saluta.
 
-<span class="err">NOTE</span> Exporting for macOS with ad-hoc signing?
-     Keep the app sandbox disabled.
-     See the README for the details.
+<span class="err">NOTA</span> Esporti per macOS con firma ad-hoc?
+     Lascia disattivata la sandbox dell'app.
+     Dettagli nel README.
+
+<span class="ok">LINGUA</span>
+   Italiano o inglese: Pannello di controllo > Lingua.
+   Al primo avvio segue la lingua del sistema.
 
 <span class="ent">(non lasciarmi qui da solo troppo a lungo.)</span>
 <span class="p">C:\FILIALE&gt;</span><span class="caret"></span></div>
@@ -333,14 +357,14 @@ img{max-width:100%;display:block}
 <div class="startmenu" id="startmenu" hidden>
   <div class="band" aria-hidden="true">Agency<em>OS 98</em></div>
   <div class="items" role="menu">
-    <button class="menu-item" role="menuitem" data-open="readme"><img src="assets/icons/note.svg" alt="">readme.txt</button>
+    <button class="menu-item" role="menuitem" data-open="readme"><img src="assets/icons/note.svg" alt="">leggimi.txt</button>
     <button class="menu-item" role="menuitem" data-open="line"><img src="assets/icons/line.svg" alt="">Linea riservata (demo)</button>
     <button class="menu-item" role="menuitem" data-open="shots"><img src="assets/icons/dossier.svg" alt="">Screenshots</button>
-    <button class="menu-item" role="menuitem" data-open="apps"><img src="assets/icons/canon.svg" alt="">Apps &amp; features</button>
-    <button class="menu-item" role="menuitem" data-open="setup"><img src="assets/icons/term.svg" alt="">Getting started</button>
+    <button class="menu-item" role="menuitem" data-open="apps"><img src="assets/icons/canon.svg" alt="">App e funzioni</button>
+    <button class="menu-item" role="menuitem" data-open="setup"><img src="assets/icons/term.svg" alt="">Per iniziare</button>
     <hr>
-    <a class="menu-item" role="menuitem" href="https://github.com/ehystiv/agency-os"><img src="assets/icons/event_log.svg" alt="">GitHub repository</a>
-    <a class="menu-item" role="menuitem" href="https://github.com/ehystiv/agency-os/releases/latest"><img src="assets/icons/ctrl.svg" alt="">Download v0.2.0</a>
+    <a class="menu-item" role="menuitem" href="https://github.com/ehystiv/agency-os"><img src="assets/icons/event_log.svg" alt="">Repository GitHub</a>
+    <a class="menu-item" role="menuitem" href="https://github.com/ehystiv/agency-os/releases/latest"><img src="assets/icons/ctrl.svg" alt="">Scarica la v0.2.0</a>
     <hr>
     <button class="menu-item" role="menuitem" id="shutdownBtn"><span class="tri"></span>Spegni il terminale…</button>
   </div>
@@ -349,7 +373,7 @@ img{max-width:100%;display:block}
 <footer class="taskbar">
   <button class="b98 start" id="startBtn" aria-expanded="false" aria-controls="startmenu"><span class="tri"></span>Start</button>
   <div class="tasks" id="tasks"></div>
-  <div class="tray"><span class="safe">Modalità Sicura</span><span id="clock">--:--</span></div>
+  <div class="tray"><span class="safe">Modalità Sicura</span><span class="lang" role="navigation" aria-label="Lingua"><a href="./" hreflang="it" lang="it" data-lang="it" aria-current="true">IT</a>|<a href="en/" hreflang="en" lang="en" data-lang="en">EN</a></span><span id="clock">--:--</span></div>
 </footer>
 
 <script>
@@ -365,37 +389,37 @@ const store = {
 
 // ---------- Content data ----------
 const SHOTS = [
-  ["overview", "The reserved line and the vault camera"],
-  ["line", "Linea riservata: talking with U0047BB"],
-  ["dossier", "Fascicolo: access level, campaign notes, interview archive"],
-  ["calc", "Calcolatrice: 6d4 with real physics (that's a Triscendence)"],
-  ["term", "Prompt: the Entity left a file on the desktop"],
-  ["notebook", "Taccuino: session notes, exportable to Obsidian"],
-  ["agenda", "Agenda: sessions and a preparation checklist"],
-  ["canon", "Canone: what the Entity knows, level by level"],
-  ["amail", "AMail: memos from the Agency, written between sessions"],
-  ["notepad", "Blocco note: correct the Entity's files and it believes you"],
-  ["containment", "Contenimento: minesweeper, with Anomalies"],
-  ["trash", "Cestino: drafts the Entity never sent"],
+  ["overview", "La linea riservata e la telecamera del caveau"],
+  ["line", "Linea riservata: si parla con U0047BB"],
+  ["dossier", "Fascicolo: livello di accesso, appunti di campagna, archivio dei colloqui"],
+  ["calc", "Calcolatrice: 6d4 con fisica reale (questa è una Triscendenza)"],
+  ["term", "Prompt: l'Entità ha lasciato un file sul desktop"],
+  ["notebook", "Taccuino: appunti di sessione, esportabili in Obsidian"],
+  ["agenda", "Agenda: sessioni e lista di preparazione"],
+  ["canon", "Canone: cosa sa l'Entità, livello per livello"],
+  ["amail", "AMail: memo dell'Agenzia, scritti tra una sessione e l'altra"],
+  ["notepad", "Blocco note: correggi i file dell'Entità e ti crederà"],
+  ["containment", "Contenimento: prato fiorito, con Anomalie"],
+  ["trash", "Cestino: bozze che l'Entità non ha mai inviato"],
 ];
 const APPS = [
-  ["line", "Linea riservata", "The chat with the Entity. Replies stream in as they're written; closing an interview archives it with the Entity's own memories."],
-  ["dossier", "Fascicolo", "The Manager's dossier: access level, notes the Entity reads, the interview archive and its cumulative memory."],
-  ["canon", "Canone", "What the Entity knows. Sections above your level are redacted, but the GM can peek."],
-  ["notebook", "Taccuino", "Note pages linked to sessions, saved automatically, exported to an Obsidian vault as Markdown."],
-  ["amail", "AMail", "Memos from the Agency, written by the model between sessions and delivered at the next one."],
-  ["note", "Blocco note", "Opens the files the Entity leaves on the desktop."],
-  ["calc", "Calcolatrice", "Rolls 6d4 in 3D, applies the roll rules and keeps the branch's Chaos pool."],
-  ["agenda", "Agenda", "Session calendar with a preparation checklist; the next session sits in the taskbar."],
-  ["cam", "Webcam", "A low-res 3D feed of the cage. The Entity reacts to the conversation."],
-  ["term", "Prompt", "A DOS-like prompt with secret commands unlocked by access level."],
-  ["mine", "Contenimento", "Minesweeper with Anomalies. The Entity comments on how you did."],
-  ["player", "Lettore", "Company hold music, synthesized live."],
-  ["event_log", "Registro eventi", "Everything the system noticed: searches, glitches, files that shouldn't exist."],
-  ["trash", "Cestino", "Deleted pages, and drafts the Entity wrote and never sent."],
-  ["ctrl", "Pannello di controllo", "Wallpaper, screensaver, sounds, CRT effect, reduced motion."],
+  ["line", "Linea riservata", "La chat con l'Entità. Le risposte arrivano mentre vengono scritte; chiudere un colloquio lo archivia con i ricordi dell'Entità."],
+  ["dossier", "Fascicolo", "Il fascicolo del Manager: livello di accesso, appunti letti dall'Entità, archivio dei colloqui e memoria cumulativa."],
+  ["canon", "Canone", "Ciò che l'Entità sa. Le sezioni sopra il tuo livello sono oscurate, ma il GM può sbirciare."],
+  ["notebook", "Taccuino", "Pagine di appunti legate alle sessioni, salvate in automatico, esportate in un vault Obsidian come Markdown."],
+  ["amail", "AMail", "Memo dell'Agenzia, scritti dal modello tra le sessioni e consegnati alla successiva."],
+  ["note", "Blocco note", "Apre i file che l'Entità lascia sul desktop."],
+  ["calc", "Calcolatrice", "Tira 6d4 in 3D, applica le regole del tiro e tiene la riserva di Caos della Filiale."],
+  ["agenda", "Agenda", "Calendario delle sessioni con lista di preparazione; la prossima sessione sta nella barra delle applicazioni."],
+  ["cam", "Webcam", "Una ripresa 3D a bassa risoluzione della gabbia. L'Entità reagisce alla conversazione."],
+  ["term", "Prompt", "Un prompt stile DOS con comandi segreti sbloccati dal livello di accesso."],
+  ["mine", "Contenimento", "Prato fiorito con Anomalie. L'Entità commenta come te la cavi."],
+  ["player", "Lettore", "Musica d'attesa aziendale, sintetizzata dal vivo."],
+  ["event_log", "Registro eventi", "Tutto ciò che il sistema ha notato: ricerche, glitch, file che non dovrebbero esistere."],
+  ["trash", "Cestino", "Pagine eliminate e bozze che l'Entità ha scritto e mai inviato."],
+  ["ctrl", "Pannello di controllo", "Lingua, sfondo, salvaschermo, suoni, effetto CRT, movimento ridotto."],
 ];
-// [who, Italian text, English subtitle, effect]
+// [who, testo italiano, sottotitolo inglese, effetto]
 const SCRIPT = [
   ["sys", "> CONNESSIONE STABILITA. CANALE NON REGISTRATO.", "> CONNECTION ESTABLISHED. UNREGISTERED CHANNEL."],
   ["mgr", "Sei ancora lì?", "Are you still there?"],
@@ -541,6 +565,8 @@ document.addEventListener("keydown", e => { if (e.key === "Escape") { closeStart
 $("#shutdownBtn").addEventListener("click", () => { closeStart(); $("#shutdown").hidden = false; });
 $("#shutdown").addEventListener("click", () => { $("#shutdown").hidden = true; });
 
+document.querySelectorAll("[data-lang]").forEach(a => a.addEventListener("click", () => { try { localStorage.setItem("lang", a.dataset.lang); } catch {} }));
+
 // ---------- Clock ----------
 function tick() { const d = new Date(); $("#clock").textContent = String(d.getHours()).padStart(2, "0") + ":" + String(d.getMinutes()).padStart(2, "0"); }
 tick(); setInterval(tick, 15000);
@@ -644,7 +670,7 @@ async function startDemo(force) {
     log.scrollTop = log.scrollHeight;
   }
   await wait(800);
-  if (run === demoRun) bubble("note", "— fine della demo · end of demo —");
+  if (run === demoRun) bubble("note", "— fine della demo —");
 }
 $("#replay").addEventListener("click", () => startDemo(true));
 lineWin.addEventListener("animationend", () => lineWin.classList.remove("shake"));

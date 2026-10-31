@@ -23,7 +23,7 @@ var _ended := false
 
 func _ready() -> void:
 	for key: String in LEVEL_NAMES:
-		_levels.add_item(LEVEL_NAMES[key])
+		_levels.add_item(tr(LEVEL_NAMES[key]))
 	_level = str(Save.get_ui("containment_level", "easy"))
 	_levels.select(maxi(0, LEVEL_NAMES.keys().find(_level)))
 	_levels.item_selected.connect(func(index: int) -> void:
@@ -33,7 +33,7 @@ func _ready() -> void:
 	_face.pressed.connect(_new_game)
 	_mode.pressed.connect(func() -> void:
 		_board.flag_mode = not _board.flag_mode
-		_mode.text = "Clic: segna" if _board.flag_mode else "Clic: scava")
+		_mode.text = tr("Clic: segna") if _board.flag_mode else tr("Clic: scava"))
 	_board.changed.connect(_on_board_changed)
 	%Tick.timeout.connect(_update_counters)
 	_new_game()
@@ -67,7 +67,7 @@ func _update_counters() -> void:
 		_time.text = "%03d" % _elapsed()
 	_flags.text = "%03d" % maxi(0, _field.mines - _field.flags)
 	var best: int = Save.get_ui("containment_records", {}).get(_level, 0)
-	_record.text = "Record: %d s" % best if best > 0 else "Record: —"
+	_record.text = tr("Record: %d s") % best if best > 0 else tr("Record: —")
 
 
 func _finish(won: bool) -> void:
@@ -83,7 +83,7 @@ func _finish(won: bool) -> void:
 		_update_counters()
 	await get_tree().create_timer(COMMENT_DELAY).timeout
 	var lines := WON_LINES if won else LOST_LINES
-	notification_requested.emit("U0047BB", lines[randi() % lines.size()], {"app": &"line", "args": {}})
+	notification_requested.emit("U0047BB", tr(lines[randi() % lines.size()]), {"app": &"line", "args": {}})
 	Entity.stir(0.5 if won else 0.35, 0.4 if won else 0.0)
 
 

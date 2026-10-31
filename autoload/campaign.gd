@@ -130,9 +130,9 @@ func open_interview() -> Interview:
 	interview.number = 1 if previous == null else previous.number + 1
 	interview.level = level()
 	interview.opened_at = Time.get_datetime_string_from_system()
-	interview.add("system", "> CONNESSIONE STABILITA. CANALE NON REGISTRATO.")
+	interview.add("system", tr("> CONNESSIONE STABILITA. CANALE NON REGISTRATO."))
 	if previous != null and previous.level < interview.level:
-		interview.add("system", "> LIVELLO DI ACCESSO DEL GENERAL MANAGER AGGIORNATO: %d." % interview.level)
+		interview.add("system", tr("> LIVELLO DI ACCESSO DEL GENERAL MANAGER AGGIORNATO: %d.") % interview.level)
 	interviews.append(interview)
 	_current_number = interview.number
 	save_interview(interview)
@@ -159,7 +159,7 @@ func save_interview(interview: Interview) -> void:
 func close_interview(interview: Interview) -> void:
 	var old_level := level()
 	var started := generation
-	add_message(interview, "system", "> SESSIONE TERMINATA DAL GENERAL MANAGER.")
+	add_message(interview, "system", tr("> SESSIONE TERMINATA DAL GENERAL MANAGER."))
 	interview.summary = await summarize(interview)
 	if generation != started:
 		return
@@ -243,7 +243,7 @@ func set_memory(text: String) -> void:
 ## Read-only: the same array is shared by every caller.
 func canon_sections() -> Array:
 	if _canon.is_empty():
-		var data: Variant = Save.read_json(CANON_PATH, {})
+		var data: Variant = Save.read_json(Locale.data_path(CANON_PATH), {})
 		_canon = (data as Dictionary).get("sections", []) if data is Dictionary else []
 	return _canon
 
@@ -278,7 +278,7 @@ func new_page(session: int = -1) -> Dictionary:
 		var open := current()
 		session = open.number if open != null else (interviews.back().number if not interviews.is_empty() else 0)
 	var now := Time.get_datetime_string_from_system()
-	var title := "Sessione %03d · appunti" % session if session > 0 else "Appunti del %s" % ItalianDate.numeric(now)
+	var title := tr("Sessione %03d · appunti") % session if session > 0 else tr("Appunti del %s") % ItalianDate.numeric(now)
 	var same := pages.filter(func(p: Dictionary) -> bool: return p.title == title or str(p.title).begins_with(title + " (")).size()
 	if same > 0:
 		title += " (%d)" % (same + 1)
@@ -353,7 +353,7 @@ func schedule_session(day: String) -> Dictionary:
 		return existing
 	var checklist: Array = []
 	for item in DEFAULT_CHECKLIST:
-		checklist.append({"text": item, "done": false})
+		checklist.append({"text": tr(item), "done": false})
 	var session := {"id": "d-" + day, "date": day, "time": DEFAULT_SESSION_TIME, "title": "", "checklist": checklist}
 	agenda.append(session)
 	save_agenda()
@@ -386,7 +386,7 @@ func next_session() -> Dictionary:
 ## Line effects from the data file: name -> {description, timing, webcam, motion}.
 func glitch_table() -> Dictionary:
 	if _glitch_table.is_empty():
-		var data: Variant = Save.read_json(GLITCH_PATH, {})
+		var data: Variant = Save.read_json(Locale.data_path(GLITCH_PATH), {})
 		if data is Dictionary:
 			_glitch_table = data.get("glitches", {})
 	return _glitch_table
@@ -430,7 +430,7 @@ func choose_glitch(interview: Interview) -> String:
 		lines.append("- %s: %s" % [glitch_name, table[glitch_name].get("description", "")])
 	var prompt := _read_text(PROMPT_GLITCH).format({
 		"list": "\n".join(lines),
-		"manager": manager_text if manager_text != "" else "(niente)",
+		"manager": manager_text if manager_text != "" else tr("(niente)"),
 		"entity": entity_text,
 	})
 	var names: Array = [NO_GLITCH]
@@ -517,11 +517,11 @@ func build_messages(interview: Interview, extra_user: String = "") -> Array[Dict
 		budget -= cost
 		history.push_front({"role": "user" if m.who == "manager" else "assistant", "content": str(m.text)})
 	if not history.is_empty() and history.front().role == "assistant":
-		history.push_front({"role": "user", "content": EARLIER})
+		history.push_front({"role": "user", "content": tr(EARLIER)})
 	if extra_user != "":
 		history.append({"role": "user", "content": extra_user})
 	if history.is_empty() or history.back().role != "user":
-		history.append({"role": "user", "content": SILENCE})
+		history.append({"role": "user", "content": tr(SILENCE)})
 	var messages: Array[Dictionary] = [{"role": "system", "content": system}]
 	# Some models reject two messages in a row with the same role: merge them.
 	for entry in history:
@@ -537,8 +537,8 @@ func entity_prompt(interview: Interview) -> String:
 	return _read_text(PROMPT_ENTITY).format({
 		"level": level(),
 		"canon": _canon_text(level()),
-		"notes": _fit(notes.strip_edges(), NOTES_SHARE, false) if notes.strip_edges() != "" else "(quasi niente: non sai ancora bene chi sia questo Manager. sei curiosa, e un po' diffidente.)",
-		"memory": _fit(memory.strip_edges(), MEMORY_SHARE, true) if memory.strip_edges() != "" else "(nessuno: è la prima volta che riesci a raggiungerlo)",
+		"notes": _fit(notes.strip_edges(), NOTES_SHARE, false) if notes.strip_edges() != "" else tr("(quasi niente: non sai ancora bene chi sia questo Manager. sei curiosa, e un po' diffidente.)"),
+		"memory": _fit(memory.strip_edges(), MEMORY_SHARE, true) if memory.strip_edges() != "" else tr("(nessuno: è la prima volta che riesci a raggiungerlo)"),
 		"summaries": _recent_summaries(interview),
 		"examples": _examples_text(),
 		"number": interview.number,
@@ -556,7 +556,7 @@ func summarize(interview: Interview) -> String:
 	var lines: PackedStringArray = []
 	for m in interview.messages:
 		if m.who != "system":
-			lines.append(("MANAGER: " if m.who == "manager" else "ENTITÀ: ") + str(m.text))
+			lines.append((tr("MANAGER: ") if m.who == "manager" else tr("ENTITÀ: ")) + str(m.text))
 	if lines.is_empty():
 		return ""
 	var max_chars := int((Brain.context_tokens() - int(Brain.get_setting("max_reply")) - 600) * CHARS_PER_TOKEN)
@@ -618,11 +618,11 @@ func _canon_text(current_level: int) -> String:
 		var section_level := int(section.get("level", 0))
 		var head: String
 		if section_level == 0:
-			head = "## %s (sempre valido)" % section.title
+			head = tr("## %s (sempre valido)") % section.title
 		elif section_level <= current_level:
-			head = "## %s (livello %d: puoi parlarne apertamente)" % [section.title, section_level]
+			head = tr("## %s (livello %d: puoi parlarne apertamente)") % [section.title, section_level]
 		else:
-			head = "## %s (livello %d: lo sai, ma il Manager NON ha ancora questo accesso. Non rivelarlo: al massimo un'allusione, una frase troncata, un \"non ancora\")" % [section.title, section_level]
+			head = tr("## %s (livello %d: lo sai, ma il Manager NON ha ancora questo accesso. Non rivelarlo: al massimo un'allusione, una frase troncata, un \"non ancora\")") % [section.title, section_level]
 		var points: PackedStringArray = []
 		for point: String in section.get("points", []):
 			points.append("- " + point)
@@ -634,19 +634,19 @@ func _recent_summaries(interview: Interview) -> String:
 	var parts: PackedStringArray = []
 	for other in interviews:
 		if other != interview and other.summary != "":
-			parts.append("Colloquio %d:\n%s" % [other.number, other.summary])
+			parts.append(tr("Colloquio %d:\n%s") % [other.number, other.summary])
 	if parts.is_empty():
-		return "(nessuno)"
+		return tr("(nessuno)")
 	return "\n\n".join(parts.slice(-RECENT_SUMMARIES))
 
 
 func _next_session_text() -> String:
 	var session := next_session()
 	if session.is_empty():
-		return "(non lo sai)"
+		return tr("(non lo sai)")
 	var text := ItalianDate.weekday_short(str(session.date)) + " " + ItalianDate.numeric(str(session.date))
 	if str(session.get("time", "")) != "":
-		text += " alle " + str(session.time)
+		text += tr(" alle %s") % str(session.time)
 	if str(session.get("title", "")) != "":
 		text += " · " + str(session.title)
 	return text
@@ -655,18 +655,18 @@ func _next_session_text() -> String:
 func _examples_text() -> String:
 	if _texts.has(EXAMPLES_PATH):
 		return _texts[EXAMPLES_PATH]
-	var data: Variant = Save.read_json(EXAMPLES_PATH, {})
+	var data: Variant = Save.read_json(Locale.data_path(EXAMPLES_PATH), {})
 	var parts: PackedStringArray = []
 	for example: Dictionary in (data as Dictionary).get("examples", []):
-		parts.append("MANAGER: %s\nTU: %s" % [example.get("manager", ""), example.get("entity", "")])
-	_texts[EXAMPLES_PATH] = "\n\n".join(parts) if not parts.is_empty() else "(nessuno)"
+		parts.append(tr("MANAGER: %s\nTU: %s") % [example.get("manager", ""), example.get("entity", "")])
+	_texts[EXAMPLES_PATH] = "\n\n".join(parts) if not parts.is_empty() else tr("(nessuno)")
 	return _texts[EXAMPLES_PATH]
 
 
 func _read_text(path: String) -> String:
 	if _texts.has(path):
 		return _texts[path]
-	var text := FileAccess.get_file_as_string(path)
+	var text := FileAccess.get_file_as_string(Locale.data_path(path))
 	if text == "":
 		push_error("Campaign: can't read %s." % path)
 	else:

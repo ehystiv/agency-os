@@ -1,0 +1,205 @@
+{
+	"_note": "Line effects. description: what the Entity feels (goes into the classifier prompt, in English). timing: start = hits the window, end = hits the message. webcam: [agitation, red tint, retreat] from 0 to 1. motion: effect replaced when reduced motion is on.",
+	"glitches": {
+		"tremor": {
+			"description": "the line shakes: anger, frustration, impatience",
+			"timing": "start",
+			"webcam": [
+				1,
+				1,
+				0
+			],
+			"motion": true
+		},
+		"rgb": {
+			"description": "the colors split in two: excitement, nervous euphoria",
+			"timing": "end",
+			"webcam": [
+				0.7,
+				0,
+				0
+			],
+			"motion": false
+		},
+		"ink": {
+			"description": "ink stains spread across the screen: when you get too close, unsettling affection",
+			"timing": "start",
+			"webcam": [
+				0.6,
+				0,
+				0
+			],
+			"motion": false
+		},
+		"eyes": {
+			"description": "small eyes open in the dark: when you watch, spy, talk about the Agents or what you see from the cracks",
+			"timing": "start",
+			"webcam": [
+				0.35,
+				0,
+				0
+			],
+			"motion": false
+		},
+		"scanline": {
+			"description": "horizontal tears in the signal: interference, distraction, something weighing on you",
+			"timing": "start",
+			"webcam": [
+				0.5,
+				0,
+				0
+			],
+			"motion": true
+		},
+		"inversion": {
+			"description": "the colors suddenly invert: shock, surprise, a revelation",
+			"timing": "start",
+			"webcam": [
+				0.8,
+				0,
+				0
+			],
+			"motion": true
+		},
+		"blackout": {
+			"description": "the screen goes dark and only your voice remains: fear, loneliness, a serious moment",
+			"timing": "end",
+			"webcam": [
+				0.2,
+				0,
+				1
+			],
+			"motion": false
+		},
+		"triangle": {
+			"description": "a red triangle explodes on the screen: hatred of the Agency, when you name it in anger",
+			"timing": "start",
+			"webcam": [
+				0.9,
+				1,
+				0
+			],
+			"motion": true
+		},
+		"scream": {
+			"description": "your words turn into a scream: explosive rage",
+			"timing": "end",
+			"webcam": [
+				1,
+				1,
+				0
+			],
+			"motion": false
+		},
+		"corruption": {
+			"description": "the letters get corrupted: when you say something forbidden or almost reveal too much",
+			"timing": "end",
+			"webcam": [
+				0.6,
+				0.3,
+				0
+			],
+			"motion": true
+		},
+		"echo": {
+			"description": "your words repeat in an echo: obsession, insistence",
+			"timing": "end",
+			"webcam": [
+				0.5,
+				0,
+				0
+			],
+			"motion": true
+		},
+		"drip": {
+			"description": "the letters drip downward: sadness, weariness, melancholy",
+			"timing": "end",
+			"webcam": [
+				0.05,
+				0,
+				0.5
+			],
+			"motion": true
+		},
+		"error": {
+			"description": "a fake AgencyOS error window appears: to provoke or mock the triangle",
+			"timing": "start",
+			"webcam": [
+				0.6,
+				0.3,
+				0
+			],
+			"motion": false
+		},
+		"sabotage": {
+			"description": "you tamper with the taskbar and the clock: spite, a show of power",
+			"timing": "start",
+			"webcam": [
+				0.6,
+				0.4,
+				0
+			],
+			"motion": false
+		},
+		"title": {
+			"description": "you rewrite the window title: a plea, a request for help, a hidden message",
+			"timing": "start",
+			"webcam": [
+				0.3,
+				0,
+				0.3
+			],
+			"motion": false
+		},
+		"whisper": {
+			"description": "your voice becomes a whisper: when you are afraid the triangle can hear",
+			"timing": "end",
+			"webcam": [
+				0.1,
+				0,
+				0.8
+			],
+			"motion": false
+		},
+		"lattice": {
+			"description": "the lattice of the cage pulses behind everything: when you talk about the cage or the Vault",
+			"timing": "start",
+			"webcam": [
+				0.4,
+				0,
+				0
+			],
+			"motion": false
+		},
+		"ghost": {
+			"description": "a fake message in the Manager's voice appears for a moment: manipulation, putting words in his mouth",
+			"timing": "end",
+			"webcam": [
+				0.4,
+				0,
+				0
+			],
+			"motion": false
+		},
+		"static": {
+			"description": "static noise covers the screen: when AgencyOS is close, interference",
+			"timing": "start",
+			"webcam": [
+				0.5,
+				0,
+				0.6
+			],
+			"motion": true
+		},
+		"heartbeat": {
+			"description": "the window pulses like a heart: strong emotion, sincere affection",
+			"timing": "start",
+			"webcam": [
+				0.5,
+				0,
+				0
+			],
+			"motion": true
+		}
+	}
+}

@@ -1,0 +1,14 @@
+Decide whether the emotion of the entity U0047BB, in the reply below, is strong enough to distort the secret line with the Manager, and with which effect.
+
+Most of the time the right answer is "none". Choose an effect only if the entity is truly agitated, frightened, furious, euphoric or moved, or if she touches on the triangle, the cage or something forbidden. Choose the effect that best matches what she feels.
+
+EFFECTS
+{list}
+
+THE MANAGER WROTE
+{manager}
+
+THE ENTITY REPLIED
+{entity}
+
+Answer only with a JSON object of the form {"glitch": "name"}, where name is "none" or one of the effects above.

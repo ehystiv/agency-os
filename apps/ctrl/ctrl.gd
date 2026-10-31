@@ -17,7 +17,7 @@ const DEFAULTS := {
 const CONFIRM_SECONDS := 15
 const DEFAULT_VOLUME := 0.8
 ## Tab ids for on_opened({"tab": …}), in the order of the tabs, with their titles.
-const TABS := {"general": "Generale", "screen": "Schermo", "update": "Aggiornamento", "system": "Sistema"}
+const TABS := {"general": "Generale", "screen": "Schermo", "language": "Lingua", "update": "Aggiornamento", "system": "Sistema"}
 
 var _loading := false
 ## The area in use before Applica, while waiting for the confirmation; ZERO otherwise.
@@ -47,11 +47,12 @@ var _confirm_timer: Timer
 @onready var _apply_area: Button = %ApplyArea
 @onready var _confirm_area: PanelContainer = %ConfirmArea
 @onready var _confirm_text: Label = %ConfirmText
+@onready var _language: OptionButton = %Language
 
 
 func _ready() -> void:
 	for i in TABS.size():
-		_tabs.set_tab_title(i, TABS.values()[i])
+		_tabs.set_tab_title(i, tr(TABS.values()[i]))
 	var wallpaper_group := ButtonGroup.new()
 	for i in _wallpapers.size():
 		_wallpapers[i].button_group = wallpaper_group
@@ -61,7 +62,7 @@ func _ready() -> void:
 	_reduced_motion.button_group = motion_group
 	_reduced_motion.toggled.connect(func(on: bool) -> void: _store_setting(&"reduced_motion", on))
 	for minutes in SAVER_CHOICES:
-		_saver.add_item("Mai" if minutes == 0 else "%d %s" % [minutes, "minuto" if minutes == 1 else "minuti"], minutes)
+		_saver.add_item(tr("Mai") if minutes == 0 else "%d %s" % [minutes, tr("minuto") if minutes == 1 else tr("minuti")], minutes)
 	_saver.item_selected.connect(func(index: int) -> void: _store_setting(&"screensaver_minutes", _saver.get_item_id(index)))
 	_volume.value_changed.connect(func(value: float) -> void:
 		if not _loading:
@@ -94,6 +95,11 @@ func _ready() -> void:
 	_confirm_timer.wait_time = 1.0
 	_confirm_timer.timeout.connect(_on_confirm_tick)
 	add_child(_confirm_timer)
+	for code: String in Locale.LANGUAGES:
+		_language.add_item(Locale.LANGUAGES[code])
+		_language.set_item_metadata(_language.item_count - 1, code)
+	_language.item_selected.connect(func(index: int) -> void: _store_setting(&"language", str(_language.get_item_metadata(index))))
+	%RestartLanguage.pressed.connect(func() -> void: Updater.restart())
 	Save.ui_changed.connect(func(_key: String) -> void: _load_if_visible())
 	Sfx.settings_changed.connect(_load_if_visible)
 	_load()
@@ -126,6 +132,9 @@ func _load() -> void:
 	_fullscreen.set_pressed_no_signal(bool(Save.get_ui("fullscreen", false)))
 	_boot.set_pressed_no_signal(bool(Save.get_ui("show_boot", true)))
 	_auto_update.set_pressed_no_signal(bool(Save.get_ui("update_auto", true)))
+	var language := Locale.current()
+	_language.select(maxi(0, Locale.LANGUAGES.keys().find(language)))
+	%RestartRow.visible = language != Locale.active()
 	if _previous_area == Vector2i.ZERO:
 		_area_slider.set_value_no_signal(ScreenArea.SIZES.find(ScreenArea.current()))
 	_refresh_area()
@@ -145,23 +154,23 @@ func _refresh_update() -> void:
 	var action := ""
 	match state:
 		Updater.State.CHECKING:
-			status = "Ricerca di aggiornamenti in corso…"
+			status = tr("Ricerca di aggiornamenti in corso…")
 		Updater.State.UP_TO_DATE:
-			status = "AgencyOS 98 è aggiornato."
+			status = tr("AgencyOS 98 è aggiornato.")
 		Updater.State.AVAILABLE:
-			status = "È disponibile la versione %s (%s)." % [version, _size_text(int(Updater.manifest.get("size", 0)))]
-			action = "Scarica e installa"
+			status = tr("È disponibile la versione %s (%s).") % [version, _size_text(int(Updater.manifest.get("size", 0)))]
+			action = tr("Scarica e installa")
 		Updater.State.NEEDS_INSTALLER:
-			status = "È disponibile la versione %s, che richiede il nuovo programma di installazione." % version
-			action = "Scarica dal sito…"
+			status = tr("È disponibile la versione %s, che richiede il nuovo programma di installazione.") % version
+			action = tr("Scarica dal sito…")
 		Updater.State.DOWNLOADING:
-			status = "Download della versione %s in corso…" % version
+			status = tr("Download della versione %s in corso…") % version
 		Updater.State.READY:
-			status = "Versione %s scaricata. Riavviare AgencyOS per completare l'installazione." % version
-			action = "Riavvia ora"
+			status = tr("Versione %s scaricata. Riavviare AgencyOS per completare l'installazione.") % version
+			action = tr("Riavvia ora")
 		Updater.State.ERROR:
 			status = Updater.error
-	var lines := ["Versione installata: %s" % BootPatch.version()]
+	var lines := [tr("Versione installata: %s") % BootPatch.version()]
 	if status != "":
 		lines.append(status)
 	_update_status.text = "\n".join(lines)
@@ -230,7 +239,7 @@ func _on_confirm_tick() -> void:
 
 
 func _update_confirm_text() -> void:
-	_confirm_text.text = "Le impostazioni dello schermo sono cambiate. Mantenerle? Ripristino tra %d secondi." % _confirm_left
+	_confirm_text.text = tr("Le impostazioni dello schermo sono cambiate. Mantenerle? Ripristino tra %d secondi.") % _confirm_left
 
 
 func _end_confirm(keep: bool) -> void:
@@ -255,9 +264,9 @@ func _restore_defaults() -> void:
 func _system_info() -> String:
 	var mail := Campaign.correspondence
 	return "\n".join([
-		"AgencyOS 98 [Versione 4.98.0047] · Modalità Sicura",
-		"Filiale: %s · livello di accesso %d/5" % [Save.campaign_id, Campaign.level()],
-		"Colloqui: %d · memo: %d · file non registrati: %d" % [Campaign.interviews.size(), mail.delivered_mail().size(), mail.delivered_files().size()],
-		"Linea: %s · %s" % [Brain.get_setting("model"), Brain.get_setting("url")],
-		"Dati: %s" % ProjectSettings.globalize_path("user://"),
+		tr("AgencyOS 98 [Versione 4.98.0047] · Modalità Sicura"),
+		tr("Filiale: %s · livello di accesso %d/5") % [Save.campaign_id, Campaign.level()],
+		tr("Colloqui: %d · memo: %d · file non registrati: %d") % [Campaign.interviews.size(), mail.delivered_mail().size(), mail.delivered_files().size()],
+		tr("Linea: %s · %s") % [Brain.get_setting("model"), Brain.get_setting("url")],
+		tr("Dati: %s") % ProjectSettings.globalize_path("user://"),
 	])

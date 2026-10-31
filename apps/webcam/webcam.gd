@@ -54,7 +54,8 @@ func _render_frame() -> void:
 	_cage.step(_time, _wave_time)
 	_viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
 	var now := Time.get_datetime_dict_from_system()
-	_timestamp.text = "%02d/%02d/%02d %02d:%02d:%02d" % [now.day, now.month, now.year % 100, now.hour, now.minute, now.second]
+	var date := ItalianDate.numeric("%04d-%02d-%02d" % [now.year, now.month, now.day])
+	_timestamp.text = "%s %02d:%02d:%02d" % [date, now.hour, now.minute, now.second]
 	_status.text = Entity.status_text()
 	_status.theme_type_variation = &"CamHot" if Entity.is_hot() else &"CamOverlay"
 	# Signal jolt, more frequent when the subject is agitated.

@@ -260,7 +260,7 @@ func _echo(message: ChatMessage) -> void:
 
 ## A fake message in the Manager's voice, blinking and disappearing.
 func _ghost(log: VBoxContainer) -> void:
-	var ghost := ChatMessage.create(ChatMessage.Kind.MANAGER, GHOST_LINES[randi() % GHOST_LINES.size()])
+	var ghost := ChatMessage.create(ChatMessage.Kind.MANAGER, tr(GHOST_LINES[randi() % GHOST_LINES.size()]))
 	ghost.modulate.a = 0.0
 	log.add_child(ghost)
 	# Stepped opacity, like steps(10) in the prototype: [wait, opacity].
@@ -301,7 +301,7 @@ func _fake_error() -> void:
 	icon.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	body.add_child(icon)
 	var text := Label.new()
-	text.text = "Il processo myManual1998.exe ha eseguito un'operazione non valida e verrà chiuso."
+	text.text = tr("Il processo myManual1998.exe ha eseguito un'operazione non valida e verrà chiuso.")
 	text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	text.custom_minimum_size = Vector2(250, 0)
 	body.add_child(text)
@@ -311,7 +311,7 @@ func _fake_error() -> void:
 	_free_later(dialog, 2.9)
 	await get_tree().create_timer(1.5).timeout
 	if is_instance_valid(text):
-		text.text = "ahahah. no."
+		text.text = tr("ahahah. no.")
 
 
 # --- Helpers ---------------------------------------------------------------

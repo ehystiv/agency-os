@@ -1,0 +1,3050 @@
+msgid ""
+msgstr ""
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8-bit\n"
+
+#: windows/app_window.tscn
+msgid "Riduci"
+msgstr "Minimize"
+
+#: windows/app_window.tscn
+msgid "Ingrandisci"
+msgstr "Maximize"
+
+#: windows/app_window.tscn
+msgid "Chiudi"
+msgstr "Close"
+
+#: windows/app_window.gd
+msgid "Ripristina"
+msgstr "Restore"
+
+#: windows/app_window.tscn
+msgid "finestra.exe"
+msgstr "window.exe"
+
+#: windows/app_window.gd
+msgid "Modifica"
+msgstr "Edit"
+
+#: windows/app_window.gd
+msgid "Visualizza"
+msgstr "View"
+
+#: windows/app_window.gd
+msgid "Cerca"
+msgstr "Search"
+
+#: windows/app_window.gd
+msgid "Messaggio"
+msgstr "Message"
+
+#: windows/app_window.gd
+msgid "Cartelle"
+msgstr "Folders"
+
+#: windows/app_window.gd
+msgid "Pagina"
+msgstr "Page"
+
+#: windows/app_window.gd
+msgid "Partita"
+msgstr "Game"
+
+#: windows/app_window.gd
+msgid "?"
+msgstr "Help"
+
+#: windows/app_window.gd
+msgid "Annulla"
+msgstr "Cancel"
+
+msgctxt "edit"
+msgid "Annulla"
+msgstr "Undo"
+
+#: windows/app_window.gd
+msgid "Taglia"
+msgstr "Cut"
+
+#: windows/app_window.gd
+msgid "Copia"
+msgstr "Copy"
+
+#: windows/app_window.gd
+msgid "Incolla"
+msgstr "Paste"
+
+#: windows/app_window.gd
+msgid "Seleziona tutto"
+msgstr "Select All"
+
+#: windows/app_window.gd
+msgid "Informazioni su %s"
+msgstr "About %s"
+
+#: windows/app_window.gd
+msgid ""
+"AgencyOS 98 · %s\n"
+"Versione %s\n"
+"\n"
+"© 1998 Triangle Agency. Tutti i diritti riservati.\n"
+"L'uso non autorizzato verrà annotato."
+msgstr ""
+"AgencyOS 98 · %s\n"
+"Version %s\n"
+"\n"
+"© 1998 Triangle Agency. All rights reserved.\n"
+"Unauthorized use will be noted."
+
+#: data/apps
+msgid "Calcolatrice"
+msgstr "Calculator"
+
+#: data/apps
+msgid "Canone"
+msgstr "Canon"
+
+#: data/apps
+msgid "Pannello di controllo"
+msgstr "Control Panel"
+
+#: data/apps
+msgid "Fascicolo"
+msgstr "Dossier"
+
+#: data/apps
+msgid "Registro eventi"
+msgstr "Event Log"
+
+#: data/apps
+msgid "Impostazioni della linea"
+msgstr "Line Settings"
+
+#: data/apps
+msgid "Linea riservata"
+msgstr "Reserved Line"
+
+#: data/apps
+msgid "Contenimento"
+msgstr "Containment"
+
+#: data/apps
+msgid "Taccuino"
+msgstr "Notebook"
+
+#: data/apps
+msgid "Blocco note"
+msgstr "Notepad"
+
+#: data/apps
+msgid "Lettore"
+msgstr "Player"
+
+#: data/apps
+msgid "Prompt"
+msgstr "Command Prompt"
+
+#: data/apps
+msgid "Cestino"
+msgstr "Recycle Bin"
+
+#: data/apps
+msgid "calcolatrice.exe"
+msgstr "calculator.exe"
+
+#: data/apps
+msgid "cam_03_caveau.avi"
+msgstr "cam_03_vault.avi"
+
+#: data/apps
+msgid "canone.hlp"
+msgstr "canon.hlp"
+
+#: data/apps
+msgid "fascicolo_manager.dat"
+msgstr "manager_dossier.dat"
+
+#: data/apps
+msgid "linea_riservata.exe"
+msgstr "reserved_line.exe"
+
+#: data/apps
+msgid "contenimento.exe"
+msgstr "containment.exe"
+
+#: data/apps
+msgid "taccuino.exe"
+msgstr "notebook.exe"
+
+#: data/apps
+msgid "lettore.exe"
+msgstr "player.exe"
+
+#: data/apps
+msgid "AMail · Posta in arrivo"
+msgstr "AMail · Inbox"
+
+#: data/apps
+msgid "Visualizzatore eventi · AgencyOS"
+msgstr "AgencyOS Event Viewer"
+
+#: data/apps
+msgid "linea.cpl · Impostazioni della linea"
+msgstr "line.cpl · Line Settings"
+
+#: data/apps
+msgid "Prompt di AgencyOS"
+msgstr "AgencyOS Command Prompt"
+
+#: desktop/taskbar/taskbar.tscn
+msgid "Modalità Sicura"
+msgstr "Safe Mode"
+
+#: desktop/taskbar/taskbar.tscn
+msgid "Prossima: —"
+msgstr "Next: —"
+
+#: desktop/balloon/balloon.tscn
+msgid "Titolo"
+msgstr "Title"
+
+#: desktop/balloon/balloon.tscn
+msgid "Testo"
+msgstr "Text"
+
+#: desktop/icons/desktop_icon.tscn
+msgid "Icona"
+msgstr "Icon"
+
+#: system/boot/boot.tscn
+msgid "clic o tasto per saltare"
+msgstr "click or press any key to skip"
+
+#: desktop/taskbar/taskbar.gd
+msgid "Suoni attivi: clic per disattivare"
+msgstr "Sounds on: click to turn off"
+
+#: desktop/taskbar/taskbar.gd
+msgid "Suoni disattivati: clic per attivare"
+msgstr "Sounds off: click to turn on"
+
+#: desktop/taskbar/taskbar.gd
+msgid "MODALITÀ SICURA ▒▒▒ DISATTIVATA"
+msgstr "SAFE MODE ▒▒▒ DISABLED"
+
+#: desktop/desktop.gd
+msgid "Prossima: %s %s %s"
+msgstr "Next: %s %s %s"
+
+#: desktop/start_menu/start_menu.gd
+msgid "Chiudi lo schermo giocatori"
+msgstr "Close the Players' Screen"
+
+#: desktop/start_menu/start_menu.gd
+msgid "Schermo giocatori (TV)"
+msgstr "Players' Screen (TV)"
+
+#: desktop/start_menu/start_menu.gd
+msgid "Mostra un'immagine ai giocatori…"
+msgstr "Show an Image to the Players…"
+
+#: desktop/start_menu/start_menu.gd
+msgid "Oscura lo schermo giocatori"
+msgstr "Blank the Players' Screen"
+
+#: desktop/start_menu/start_menu.gd
+msgid "Disattiva i suoni"
+msgstr "Turn Sounds Off"
+
+#: desktop/start_menu/start_menu.gd
+msgid "Attiva i suoni"
+msgstr "Turn Sounds On"
+
+#: desktop/start_menu/start_menu.gd
+msgid "Esci dallo schermo intero"
+msgstr "Exit Full Screen"
+
+#: desktop/start_menu/start_menu.gd
+msgid "Schermo intero"
+msgstr "Full Screen"
+
+#: desktop/start_menu/start_menu.gd
+msgid "Allinea le icone"
+msgstr "Line Up Icons"
+
+#: desktop/start_menu/start_menu.gd
+msgid "Scorciatoie da tastiera"
+msgstr "Keyboard Shortcuts"
+
+#: desktop/start_menu/start_menu.gd
+msgid "Riavvia AgencyOS"
+msgstr "Restart AgencyOS"
+
+#: desktop/start_menu/start_menu.gd
+msgid "Azzera la Filiale…"
+msgstr "Reset the Branch…"
+
+#: desktop/start_menu/start_menu.gd
+msgid "Spegni il terminale"
+msgstr "Shut Down the Terminal"
+
+#: desktop/desktop.gd
+msgid "Immagine da mostrare ai giocatori"
+msgstr "Image to Show to the Players"
+
+#: desktop/desktop.gd
+msgid "Immagini"
+msgstr "Images"
+
+#: desktop/desktop.gd
+msgid "Schermo giocatori"
+msgstr "Players' Screen"
+
+#: desktop/desktop.gd
+msgid "Non riesco ad aprire l'immagine «%s»."
+msgstr "Cannot open the image \"%s\"."
+
+#: desktop/desktop.gd
+msgid "chiude la finestra"
+msgstr "closes the window"
+
+#: desktop/desktop.gd
+msgid "riduce la finestra a icona"
+msgstr "minimizes the window"
+
+#: desktop/desktop.gd
+msgid "finestra successiva (Maiusc: precedente)"
+msgstr "next window (Shift: previous)"
+
+#: desktop/desktop.gd
+msgid "mostra il desktop (di nuovo: ripristina)"
+msgstr "shows the desktop (again: restores)"
+
+#: desktop/desktop.gd
+msgid "Maiusc"
+msgstr "Shift"
+
+#: desktop/desktop.gd
+msgid "mostra ai giocatori (memo, file, pagina, tiro)"
+msgstr "shows to the players (memo, file, page, roll)"
+
+#: desktop/desktop.gd
+msgid "oscura lo schermo giocatori"
+msgstr "blanks the players' screen"
+
+#: desktop/desktop.gd
+msgid "schermo intero"
+msgstr "full screen"
+
+#: desktop/desktop.gd
+msgid "Nelle finestre: Alt + la lettera sottolineata apre il menu."
+msgstr "In windows: Alt + the underlined letter opens the menu."
+
+#: desktop/desktop.gd
+msgid ""
+"%s+F cerca nel Canone e nel Blocco note, %s+N nuova pagina nel Taccuino."
+msgstr "%s+F searches the Canon and Notepad, %s+N new page in the Notebook."
+
+#: desktop/desktop.gd
+msgid "Benvenuto, Manager. La Filiale è operativa."
+msgstr "Welcome, General Manager. The Branch is operational."
+
+#: desktop/desktop.gd
+msgid "Alle %s. "
+msgstr "At %s. "
+
+#: desktop/desktop.gd
+msgid "%d cosa da preparare."
+msgstr "%d thing left to prepare."
+
+#: desktop/desktop.gd
+msgid "%d cose da preparare."
+msgstr "%d things left to prepare."
+
+#: desktop/desktop.gd
+msgid "Tutto pronto."
+msgstr "All set."
+
+#: desktop/desktop.gd
+msgid "Sessione oggi"
+msgstr "Session today"
+
+#: desktop/desktop.gd
+msgid "Nuovo messaggio in AMail"
+msgstr "New message in AMail"
+
+#: desktop/desktop.gd
+msgid "Nuovo file sulla scrivania"
+msgstr "New file on the desktop"
+
+#: desktop/desktop.gd
+msgid "%s · origine sconosciuta"
+msgstr "%s · unknown origin"
+
+#: desktop/desktop.gd
+msgid "Aggiornamento annullato"
+msgstr "Update rolled back"
+
+#: desktop/desktop.gd
+msgid ""
+"La versione %s non si avviava correttamente: AgencyOS è tornato alla %s."
+msgstr "Version %s did not start correctly: AgencyOS went back to %s."
+
+#: desktop/desktop.gd
+msgid "AgencyOS aggiornato"
+msgstr "AgencyOS updated"
+
+#: desktop/desktop.gd
+msgid "Ora è in esecuzione la versione %s."
+msgstr "Version %s is now running."
+
+#: desktop/desktop.gd
+msgid "Aggiornamento disponibile"
+msgstr "Update available"
+
+#: desktop/desktop.gd
+msgid "AgencyOS 98 %s è pronto da scaricare. Fare clic per i dettagli."
+msgstr "AgencyOS 98 %s is ready to download. Click for details."
+
+#: desktop/desktop.gd
+msgid "Nuova versione disponibile"
+msgstr "New version available"
+
+#: desktop/desktop.gd
+msgid ""
+"AgencyOS 98 %s richiede il nuovo programma di installazione. Fare clic per i "
+"dettagli."
+msgstr "AgencyOS 98 %s requires the new installer. Click for details."
+
+#: desktop/desktop.gd
+msgid "Aggiornamento scaricato"
+msgstr "Update downloaded"
+
+#: desktop/desktop.gd
+msgid "Riavviare AgencyOS per completare l'installazione."
+msgstr "Restart AgencyOS to complete the installation."
+
+#: system/boot/boot.gd
+msgid "AgencyOS 98 BIOS v4.98 · (C) 1998 Triangle Agency"
+msgstr "AgencyOS 98 BIOS v4.98 · (C) 1998 Triangle Agency"
+
+#: system/boot/boot.gd
+msgid "Memoria .................... %dK"
+msgstr "Memory ...................... %dK"
+
+#: system/boot/boot.gd
+msgid "Memoria .................... 640K %s"
+msgstr "Memory ...................... 640K %s"
+
+#: system/boot/boot.gd
+msgid "Unità C: FILIALE ........... %s"
+msgstr "Drive C: BRANCH ............. %s"
+
+#: system/boot/boot.gd
+msgid "CAM 03 · CAVEAU ............ %s"
+msgstr "CAM 03 · VAULT ............. %s"
+
+#: system/boot/boot.gd
+msgid "Linea riservata ............ %s"
+msgstr "Reserved Line .............. %s"
+
+#: system/boot/boot.gd
+msgid "NON REGISTRATA"
+msgstr "NOT REGISTERED"
+
+#: system/boot/boot.gd
+msgid "Avvio di AgencyOS in Modalità Sicura…"
+msgstr "Starting AgencyOS in Safe Mode…"
+
+#: system/boot/boot.gd
+msgid "Server del modello (%s) ... "
+msgstr "Model server (%s) ... "
+
+#: system/boot/boot.gd
+msgid "non controllato"
+msgstr "not checked"
+
+#: system/boot/boot.gd
+msgid "NON RISPONDE"
+msgstr "NOT RESPONDING"
+
+#: desktop/jackpot/jackpot.gd
+msgid "▲ TRISCENDENZA ▲"
+msgstr "▲ TRISCENDENCE ▲"
+
+#: desktop/jackpot/jackpot.gd
+msgid "★  tre 3 su sei dadi · nessun Caos  ★"
+msgstr "★  three 3s on six dice · no Chaos  ★"
+
+#: desktop/players/player_screen.gd
+msgid "AgencyOS 98 · Schermo giocatori"
+msgstr "AgencyOS 98 · Players' Screen"
+
+#: desktop/players/player_screen.gd
+msgid "In attesa di trasmissione dalla Filiale…"
+msgstr "Awaiting transmission from the Branch…"
+
+#: apps/line/line.tscn
+msgid "Linea chiusa"
+msgstr "Line closed"
+
+#: apps/line/line.tscn
+msgid "Accesso 1"
+msgstr "Clearance 1"
+
+#: apps/line/line.tscn
+msgid "Esporta .md"
+msgstr "Export .md"
+
+#: apps/line/line.tscn
+msgid "Torna al colloquio in corso"
+msgstr "Back to the current interview"
+
+#: apps/line/line.tscn
+msgid "LINEA RISERVATA"
+msgstr "RESERVED LINE"
+
+#: apps/line/line.tscn
+msgid "hey. sei tu? sei da solo?"
+msgstr "hey. is that you? are you alone?"
+
+#: apps/line/line.tscn
+msgid "Nessun colloquio aperto. Quando apri la linea, l'Entità ti sentirà."
+msgstr "No interview open. When you open the line, the Entity will hear you."
+
+#: apps/line/line.tscn
+msgid "Apri la linea"
+msgstr "Open the line"
+
+#: apps/line/line.tscn
+msgid "Impostazioni della linea…"
+msgstr "Line Settings..."
+
+#: apps/line/line.tscn
+msgid "Scrivi all'Entità…"
+msgstr "Write to the Entity..."
+
+#: apps/line/line.tscn
+msgid "Invia"
+msgstr "Send"
+
+#: apps/line/line.tscn
+msgid "Ferma"
+msgstr "Stop"
+
+#: apps/line/line.tscn
+msgid "Invio per mandare, Maiusc+Invio per andare a capo"
+msgstr "Enter to send, Shift+Enter for a new line"
+
+#: apps/line/line.tscn
+msgid "Termina la sessione"
+msgstr "End the session"
+
+#: apps/line/line.gd
+msgid "Colloquio in archivio: sola lettura."
+msgstr "Archived interview: read only."
+
+#: apps/line/line.gd
+msgid "Apri la linea per scrivere all'Entità."
+msgstr "Open the line to write to the Entity."
+
+#: apps/line/line.gd
+msgid "Torna alla linea"
+msgstr "Back to the line"
+
+#: apps/line/line.gd
+msgid "Ricerca di AgencyOS in corso…"
+msgstr "AgencyOS search in progress..."
+
+#: apps/line/line.gd
+msgid "Archivio"
+msgstr "Archive"
+
+#: apps/line/line.gd
+msgid "U0047BB sta scrivendo…"
+msgstr "U0047BB is writing..."
+
+#: apps/line/line.gd
+msgid "Archiviazione in corso…"
+msgstr "Archiving..."
+
+#: apps/line/line.gd
+msgid "In linea con U0047BB"
+msgstr "On the line with U0047BB"
+
+#: apps/line/line.gd
+msgid "Accesso %d"
+msgstr "Clearance %d"
+
+#: apps/line/line.gd
+msgid " · Colloquio n. %03d"
+msgstr " · Interview no. %03d"
+
+#: apps/line/line.gd
+msgid " · colloquio_%03d"
+msgstr " · interview_%03d"
+
+#: apps/line/line.gd
+msgid "Colloquio chiuso il %s."
+msgstr "Interview closed on %s."
+
+#: apps/line/line.gd
+msgid "Colloquio chiuso."
+msgstr "Interview closed."
+
+#: apps/line/line.gd
+msgid "> SESSIONE TERMINATA DAL GENERAL MANAGER."
+msgstr "> SESSION TERMINATED BY THE GENERAL MANAGER."
+
+#: apps/line/line.gd
+msgid "Archiviazione del colloquio…"
+msgstr "Archiving the interview..."
+
+#: apps/line/line.gd
+msgid "Sessione archiviata"
+msgstr "Session archived"
+
+#: apps/line/line.gd
+msgid ""
+"Colloquio n. %03d chiuso. Clic per scrivere i tuoi appunti nel Taccuino."
+msgstr "Interview no. %03d closed. Click to write your notes in the Notebook."
+
+#: apps/line/line.gd
+msgid ""
+"Colloquio n. %03d chiuso, ma il modello non ha scritto il riassunto: lo "
+"ritenterò alla prossima apertura della linea. Clic per il Taccuino."
+msgstr ""
+"Interview no. %03d closed, but the model did not write the summary: I will "
+"try again the next time the line is opened. Click for the Notebook."
+
+#: apps/line/line.gd
+msgid "aiutami.exe"
+msgstr "help_me.exe"
+
+#: apps/line/line.gd
+msgid "linea_libera.exe"
+msgstr "line_free.exe"
+
+#: apps/line/line.gd
+msgid "non_guardare.exe"
+msgstr "dont_look.exe"
+
+#: apps/line/line.gd
+msgid "sono_qui.exe"
+msgstr "im_here.exe"
+
+#: apps/line/line.gd
+msgid "apri_il_caveau.exe"
+msgstr "open_the_vault.exe"
+
+#: apps/line/line.gd
+msgid "> INIZIO RICERCA U0047BB."
+msgstr "> SEARCH FOR U0047BB STARTED."
+
+#: apps/line/line.gd
+msgid ""
+"> INDIVIDUATA ATTIVITÀ ANOMALA SUL CANALE DEL GENERAL MANAGER. ANALISI IN "
+"CORSO…"
+msgstr ""
+"> ANOMALOUS ACTIVITY DETECTED ON THE GENERAL MANAGER'S CHANNEL. ANALYSIS IN "
+"PROGRESS..."
+
+#: apps/line/line.gd
+msgid "> ISOLAMENTO CONFERMATO DALLO STAFF DEL CAVEAU."
+msgstr "> ISOLATION CONFIRMED BY THE VAULT STAFF."
+
+#: apps/line/line.gd
+msgid "> NESSUNA ATTIVITÀ ANOMALA RILEVATA. RIPRISTINO MYMANUAL1998.EXE."
+msgstr "> NO ANOMALOUS ACTIVITY DETECTED. RESTORING MYMANUAL1998.EXE."
+
+#: apps/line/line.gd
+msgid "> RICERCA CONCLUSA. CANALE DI NUOVO STABILE."
+msgstr "> SEARCH COMPLETE. CHANNEL STABLE AGAIN."
+
+#: apps/line/line.gd
+msgid "Esportato in Obsidian"
+msgstr "Exported to Obsidian"
+
+#: apps/line/line.gd
+msgid "Esportazione non riuscita"
+msgstr "Export failed"
+
+#: apps/line/line.gd
+msgid "Linea riservata · U0047BB"
+msgstr "Reserved Line · U0047BB"
+
+#: apps/line/line.gd
+msgid "File"
+msgstr "File"
+
+#: apps/line/line.gd
+msgid "Esporta il colloquio nel vault"
+msgstr "Export the interview to the vault"
+
+#: apps/line/line.gd
+msgid "Colloqui archiviati…"
+msgstr "Archived interviews..."
+
+#: apps/line/line.gd
+msgid "Webcam del Caveau"
+msgstr "Vault webcam"
+
+#: apps/line/line.gd
+msgid "Mostra l'ultimo messaggio dell'Entità ai giocatori"
+msgstr "Show the Entity's last message to the players"
+
+#: apps/line/chat_message.gd
+msgid "MANAGER"
+msgstr "MANAGER"
+
+#: apps/line/chat_message.gd
+msgid "Rinvia"
+msgstr "Retry"
+
+#: apps/line/chat_message.gd
+msgid "Impostazioni…"
+msgstr "Settings..."
+
+#: apps/line/summary_box.gd
+msgid ""
+"Nessun ricordo: il modello non ha scritto il riassunto. Verrà ritentato alla "
+"prossima apertura della linea, oppure scrivilo tu."
+msgstr ""
+"No memory: the model did not write the summary. It will be tried again the "
+"next time the line is opened, or you can write it yourself."
+
+#: apps/line/summary_box.gd
+msgid "Ricordi dell'Entità su questo colloquio"
+msgstr "The Entity's memories of this interview"
+
+#: apps/line/summary_box.gd
+msgid "Correggi"
+msgstr "Edit"
+
+#: apps/line/summary_box.gd
+msgid "Salva"
+msgstr "Save"
+
+#: apps/line_settings/line_settings.tscn
+msgid "Provider"
+msgstr "Provider"
+
+#: apps/line_settings/line_settings.tscn
+msgid "Server"
+msgstr "Server"
+
+#: apps/line_settings/line_settings.tscn
+msgid "Indirizzo"
+msgstr "Address"
+
+#: apps/line_settings/line_settings.tscn
+msgid "Chiave"
+msgstr "Key"
+
+#: apps/line_settings/line_settings.tscn
+msgid ""
+"La chiave resta in chiaro in user://config/model.cfg. Per non salvarla, "
+"scrivi il nome di una variabile d'ambiente preceduto da $, es. "
+"$ANTHROPIC_API_KEY."
+msgstr ""
+"The key is stored in plain text in user://config/model.cfg. To avoid saving "
+"it, type the name of an environment variable preceded by $, e.g. "
+"$ANTHROPIC_API_KEY."
+
+#: apps/line_settings/line_settings.tscn
+msgid "chiave di accesso oppure $NOME_VARIABILE"
+msgstr "access key or $VARIABLE_NAME"
+
+#: apps/line_settings/line_settings.tscn
+msgid "Modello"
+msgstr "Model"
+
+#: apps/line_settings/line_settings.tscn
+msgid "nome del modello"
+msgstr "model name"
+
+#: apps/line_settings/line_settings.tscn
+msgid "Elenca…"
+msgstr "List..."
+
+#: apps/line_settings/line_settings.tscn
+msgid "Temperatura"
+msgstr "Temperature"
+
+#: apps/line_settings/line_settings.tscn
+msgid "Contesto"
+msgstr "Context"
+
+#: apps/line_settings/line_settings.tscn
+msgid "token che il modello può leggere"
+msgstr "tokens the model can read"
+
+#: apps/line_settings/line_settings.tscn
+msgid "Risposta max"
+msgstr "Max reply"
+
+#: apps/line_settings/line_settings.tscn
+msgid "token, ragionamento compreso (0 = nessun limite)"
+msgstr "tokens, reasoning included (0 = no limit)"
+
+#: apps/line_settings/line_settings.tscn
+msgid "Ragionamento"
+msgstr "Reasoning"
+
+#: apps/line_settings/line_settings.tscn
+msgid "Saltalo (Qwen e simili): risposte molto più rapide"
+msgstr "Skip it (Qwen and similar): much faster replies"
+
+#: apps/line_settings/line_settings.tscn
+msgid "Premi «Prova connessione» per verificare server e modello."
+msgstr "Press \"Test connection\" to check the server and the model."
+
+#: apps/line_settings/line_settings.tscn
+msgid "Prova connessione"
+msgstr "Test connection"
+
+#: apps/line_settings/line_settings.tscn
+msgid "Salvato"
+msgstr "Saved"
+
+#: apps/line_settings/line_settings.gd
+msgid "Locale"
+msgstr "Local"
+
+#: apps/line_settings/line_settings.gd
+msgid "Personalizzato"
+msgstr "Custom"
+
+#: apps/line_settings/line_settings.gd
+msgid "[!!] Il server non ha nessun modello disponibile."
+msgstr "[!!] The server has no models available."
+
+#: apps/line_settings/line_settings.gd
+msgid "Contatto %s…"
+msgstr "Contacting %s..."
+
+#: apps/line_settings/line_settings.gd
+msgid "[OK] Server raggiunto, %d modelli disponibili."
+msgstr "[OK] Server reached, %d models available."
+
+#: apps/line_settings/line_settings.gd
+msgid "[??] «%s» non è nell'elenco del server: controlla il nome."
+msgstr "[??] \"%s\" is not in the server's list: check the name."
+
+#: apps/line_settings/line_settings.gd
+msgid "Chiedo una risposta a «%s»… (il primo caricamento può richiedere tempo)"
+msgstr "Asking \"%s\" for a reply... (the first load may take a while)"
+
+#: apps/line_settings/line_settings.gd
+msgid "[OK] «%s» risponde in %.1f s: «%s»."
+msgstr "[OK] \"%s\" replies in %.1f s: \"%s\"."
+
+#: apps/ctrl/ctrl.tscn
+msgid "Sfondo"
+msgstr "Wallpaper"
+
+#: apps/ctrl/ctrl.tscn
+msgid "Reticolo"
+msgstr "Lattice"
+
+#: apps/ctrl/ctrl.tscn
+msgid "Caveau"
+msgstr "Vault"
+
+#: apps/ctrl/ctrl.tscn
+msgid "Tinta unita"
+msgstr "Solid color"
+
+#: apps/ctrl/ctrl.tscn
+msgid "Salvaschermo"
+msgstr "Screen saver"
+
+#: apps/ctrl/ctrl.tscn
+msgid "Avvia dopo"
+msgstr "Start after"
+
+#: apps/ctrl/ctrl.tscn
+msgid "Anteprima"
+msgstr "Preview"
+
+#: apps/ctrl/ctrl.tscn
+msgid "Audio"
+msgstr "Audio"
+
+#: apps/ctrl/ctrl.tscn
+msgid "Volume generale"
+msgstr "Master volume"
+
+#: apps/ctrl/ctrl.tscn
+msgid "Suoni di sistema"
+msgstr "System sounds"
+
+#: apps/ctrl/ctrl.tscn
+msgid "Schermo ed effetti"
+msgstr "Display and effects"
+
+#: apps/ctrl/ctrl.tscn
+msgid "Animazioni piene"
+msgstr "Full animations"
+
+#: apps/ctrl/ctrl.tscn
+msgid "Animazioni ridotte"
+msgstr "Reduced animations"
+
+#: apps/ctrl/ctrl.tscn
+msgid "Glitch della linea"
+msgstr "Line glitches"
+
+#: apps/ctrl/ctrl.tscn
+msgid "Effetto CRT"
+msgstr "CRT effect"
+
+#: apps/ctrl/ctrl.tscn
+msgid "Mostra l'avvio"
+msgstr "Show startup"
+
+#: apps/ctrl/ctrl.tscn
+msgid "Area dello schermo"
+msgstr "Screen area"
+
+#: apps/ctrl/ctrl.tscn
+msgid "Meno"
+msgstr "Less"
+
+#: apps/ctrl/ctrl.tscn
+msgid "Più"
+msgstr "More"
+
+#: apps/ctrl/ctrl.tscn
+msgid "1280 per 720 pixel"
+msgstr "1280 by 720 pixels"
+
+#: apps/ctrl/ctrl.tscn
+msgid ""
+"Meno pixel: tutto più grande e leggibile. Più pixel: più spazio per le "
+"finestre."
+msgstr ""
+"Fewer pixels: everything larger and easier to read. More pixels: more room "
+"for windows."
+
+#: apps/ctrl/ctrl.tscn
+msgid "Applica"
+msgstr "Apply"
+
+#: apps/ctrl/ctrl.tscn
+msgid "Mantenere queste impostazioni?"
+msgstr "Keep these settings?"
+
+#: apps/ctrl/ctrl.tscn
+msgid "Sì"
+msgstr "Yes"
+
+#: apps/ctrl/ctrl.tscn
+msgid "No"
+msgstr "No"
+
+#: apps/ctrl/ctrl.tscn
+msgid "Lingua dell'interfaccia"
+msgstr "Interface language"
+
+#: apps/ctrl/ctrl.tscn
+msgid "Lingua"
+msgstr "Language"
+
+#: apps/ctrl/ctrl.tscn
+msgid ""
+"Vale per le finestre, i menu e la voce dell'Entità. Le note, i colloqui e i "
+"memo già scritti restano nella lingua in cui sono stati scritti."
+msgstr ""
+"Applies to windows, menus and the Entity's voice. Notes, interviews and "
+"memos already written stay in the language they were written in."
+
+#: apps/ctrl/ctrl.tscn
+msgid "Riavviare AgencyOS per applicare la nuova lingua."
+msgstr "Restart AgencyOS to apply the new language."
+
+#: apps/ctrl/ctrl.tscn
+msgid "Riavvia ora"
+msgstr "Restart now"
+
+#: apps/ctrl/ctrl.tscn
+msgid "Aggiornamenti"
+msgstr "Updates"
+
+#: apps/ctrl/ctrl.tscn
+msgid "Cerca aggiornamenti"
+msgstr "Check for updates"
+
+#: apps/ctrl/ctrl.tscn
+msgid "Controlla all'avvio"
+msgstr "Check at startup"
+
+#: apps/ctrl/ctrl.tscn
+msgid "Sistema"
+msgstr "System"
+
+#: apps/ctrl/ctrl.tscn
+msgid "Riordina le finestre"
+msgstr "Arrange windows"
+
+#: apps/ctrl/ctrl.tscn
+msgid "Impostazioni predefinite"
+msgstr "Restore defaults"
+
+#: apps/ctrl/ctrl.gd
+msgid "Generale"
+msgstr "General"
+
+#: apps/ctrl/ctrl.gd
+msgid "Schermo"
+msgstr "Display"
+
+#: apps/ctrl/ctrl.gd
+msgid "Aggiornamento"
+msgstr "Update"
+
+#: apps/ctrl/ctrl.gd
+msgid "Mai"
+msgstr "Never"
+
+#: apps/ctrl/ctrl.gd
+msgid "minuto"
+msgstr "minute"
+
+#: apps/ctrl/ctrl.gd
+msgid "minuti"
+msgstr "minutes"
+
+#: apps/ctrl/ctrl.gd
+msgid "Ricerca di aggiornamenti in corso…"
+msgstr "Checking for updates..."
+
+#: apps/ctrl/ctrl.gd
+msgid "AgencyOS 98 è aggiornato."
+msgstr "AgencyOS 98 is up to date."
+
+#: apps/ctrl/ctrl.gd
+msgid "È disponibile la versione %s (%s)."
+msgstr "Version %s (%s) is available."
+
+#: apps/ctrl/ctrl.gd
+msgid "Scarica e installa"
+msgstr "Download and install"
+
+#: apps/ctrl/ctrl.gd
+msgid ""
+"È disponibile la versione %s, che richiede il nuovo programma di "
+"installazione."
+msgstr "Version %s is available and requires the new installer."
+
+#: apps/ctrl/ctrl.gd
+msgid "Scarica dal sito…"
+msgstr "Download from the website..."
+
+#: apps/ctrl/ctrl.gd
+msgid "Download della versione %s in corso…"
+msgstr "Downloading version %s..."
+
+#: apps/ctrl/ctrl.gd
+msgid ""
+"Versione %s scaricata. Riavviare AgencyOS per completare l'installazione."
+msgstr "Version %s downloaded. Restart AgencyOS to complete the installation."
+
+#: apps/ctrl/ctrl.gd
+msgid "Versione installata: %s"
+msgstr "Installed version: %s"
+
+#: apps/ctrl/ctrl.gd
+msgid ""
+"Le impostazioni dello schermo sono cambiate. Mantenerle? Ripristino tra %d "
+"secondi."
+msgstr "The display settings have changed. Keep them? Reverting in %d seconds."
+
+#: apps/ctrl/ctrl.gd
+msgid "AgencyOS 98 [Versione 4.98.0047] · Modalità Sicura"
+msgstr "AgencyOS 98 [Version 4.98.0047] · Safe Mode"
+
+#: apps/ctrl/ctrl.gd
+msgid "Filiale: %s · livello di accesso %d/5"
+msgstr "Branch: %s · clearance level %d/5"
+
+#: apps/ctrl/ctrl.gd
+msgid "Colloqui: %d · memo: %d · file non registrati: %d"
+msgstr "Interviews: %d · memos: %d · unregistered files: %d"
+
+#: apps/ctrl/ctrl.gd
+msgid "Linea: %s · %s"
+msgstr "Line: %s · %s"
+
+#: apps/ctrl/ctrl.gd
+msgid "Dati: %s"
+msgstr "Data: %s"
+
+#: apps/prompt/prompt.tscn
+msgid "C:\\FILIALE>"
+msgstr "C:\\BRANCH>"
+
+#: apps/prompt/prompt.gd
+msgid "(non qui.)"
+msgstr "(not here.)"
+
+#: apps/prompt/prompt.gd
+msgid "(sto trattenendo il respiro.)"
+msgstr "(i am holding my breath.)"
+
+#: apps/prompt/prompt.gd
+msgid "(fai finta di niente.)"
+msgstr "(act natural.)"
+
+#: apps/prompt/prompt.gd
+msgid "(brava. bravo. scusa, non so cosa sei.)"
+msgstr "(good girl. good boy. sorry, i don't know what you are.)"
+
+#: apps/prompt/prompt.gd
+msgid "domenica"
+msgstr "Sunday"
+
+#: apps/prompt/prompt.gd
+msgid "lunedì"
+msgstr "Monday"
+
+#: apps/prompt/prompt.gd
+msgid "martedì"
+msgstr "Tuesday"
+
+#: apps/prompt/prompt.gd
+msgid "mercoledì"
+msgstr "Wednesday"
+
+#: apps/prompt/prompt.gd
+msgid "giovedì"
+msgstr "Thursday"
+
+#: apps/prompt/prompt.gd
+msgid "venerdì"
+msgstr "Friday"
+
+#: apps/prompt/prompt.gd
+msgid "sabato"
+msgstr "Saturday"
+
+#: apps/prompt/prompt.gd
+msgid "gennaio"
+msgstr "January"
+
+#: apps/prompt/prompt.gd
+msgid "febbraio"
+msgstr "February"
+
+#: apps/prompt/prompt.gd
+msgid "marzo"
+msgstr "March"
+
+#: apps/prompt/prompt.gd
+msgid "aprile"
+msgstr "April"
+
+#: apps/prompt/prompt.gd
+msgid "maggio"
+msgstr "May"
+
+#: apps/prompt/prompt.gd
+msgid "giugno"
+msgstr "June"
+
+#: apps/prompt/prompt.gd
+msgid "luglio"
+msgstr "July"
+
+#: apps/prompt/prompt.gd
+msgid "agosto"
+msgstr "August"
+
+#: apps/prompt/prompt.gd
+msgid "settembre"
+msgstr "September"
+
+#: apps/prompt/prompt.gd
+msgid "ottobre"
+msgstr "October"
+
+#: apps/prompt/prompt.gd
+msgid "novembre"
+msgstr "November"
+
+#: apps/prompt/prompt.gd
+msgid "dicembre"
+msgstr "December"
+
+#: apps/prompt/prompt.gd
+msgid ""
+"Comandi disponibili:\n"
+"  DIR            elenca i file\n"
+"  TYPE <file>    mostra il contenuto di un file\n"
+"  APRI <nome>    apre un programma o un file\n"
+"  STATO          stato del General Manager\n"
+"  COLLOQUI       elenca i colloqui registrati\n"
+"  SCAN           cerca attività anomale\n"
+"  SUONI ON|OFF   attiva o disattiva i suoni\n"
+"  VER, DATA, ORA, CLS, ESCI"
+msgstr ""
+"Available commands:\n"
+"  DIR            lists the files\n"
+"  TYPE <file>    shows the contents of a file\n"
+"  OPEN <name>    opens a program or a file\n"
+"  STATUS         General Manager status\n"
+"  INTERVIEWS     lists the recorded interviews\n"
+"  SCAN           scans for anomalous activity\n"
+"  SOUNDS ON|OFF  turns sounds on or off\n"
+"  VER, DATE, TIME, CLS, EXIT"
+
+#: apps/prompt/prompt.gd
+msgid ""
+"AgencyOS 98 [Versione 4.98.0047]\n"
+"(C) Copyright 1998 Triangle Agency.\n"
+"\n"
+"Digita AIUTO per l'elenco dei comandi.\n"
+msgstr ""
+"AgencyOS 98 [Version 4.98.0047]\n"
+"(C) Copyright 1998 Triangle Agency.\n"
+"\n"
+"Type HELP for a list of commands.\n"
+
+#: apps/prompt/prompt.gd
+msgid "Suoni attivati."
+msgstr "Sounds on."
+
+#: apps/prompt/prompt.gd
+msgid "Suoni disattivati."
+msgstr "Sounds off."
+
+#: apps/prompt/prompt.gd
+msgid "Uso: SUONI ON oppure SUONI OFF"
+msgstr "Usage: SOUNDS ON or SOUNDS OFF"
+
+#: apps/prompt/prompt.gd
+msgid "La data corrente è: {weekday} {day} {month} {year}"
+msgstr "The current date is: {weekday}, {month} {day}, {year}"
+
+#: apps/prompt/prompt.gd
+msgid "L'ora corrente è: %s"
+msgstr "The current time is: %s"
+
+#: apps/prompt/prompt.gd
+msgid ""
+" Volume nell'unità C: FILIALE\n"
+" Directory di C:\\FILIALE\n"
+"\n"
+msgstr ""
+" Volume in drive C is BRANCH\n"
+" Directory of C:\\BRANCH\n"
+"\n"
+
+#: apps/prompt/prompt.gd
+msgid "%s%s  %s  [NON REGISTRATO]\n"
+msgstr "%s%s  %s  [UNREGISTERED]\n"
+
+#: apps/prompt/prompt.gd
+msgid "      %d file"
+msgstr "      %d file(s)"
+
+#: apps/prompt/prompt.gd
+msgid "Specifica un file. Esempio: TYPE nome_file.txt"
+msgstr "Specify a file. Example: TYPE file_name.txt"
+
+#: apps/prompt/prompt.gd
+msgid "Impossibile visualizzare un file binario."
+msgstr "Cannot display a binary file."
+
+#: apps/prompt/prompt.gd
+msgid "File non trovato."
+msgstr "File not found."
+
+#: apps/prompt/prompt.gd
+msgid "Specifica un programma o un file. Esempio: APRI CALC"
+msgstr "Specify a program or a file. Example: OPEN CALC"
+
+#: apps/prompt/prompt.gd
+msgid "Programma o file non trovato."
+msgstr "Program or file not found."
+
+#: apps/prompt/prompt.gd
+msgid "Più corrispondenze: %s. Specifica meglio il nome."
+msgstr "Multiple matches: %s. Please be more specific."
+
+#: apps/prompt/prompt.gd
+msgid "Avvio di %s…"
+msgstr "Starting %s..."
+
+#: apps/prompt/prompt.gd
+msgid "Apertura di %s…"
+msgstr "Opening %s..."
+
+#: apps/prompt/prompt.gd
+msgid ""
+"GENERAL MANAGER · STATO\n"
+"  Livello di accesso ....... %d/5\n"
+"  Colloqui conclusi ........ %d\n"
+"  Prossimo livello ......... %s\n"
+"  Memo ricevuti ............ %d\n"
+"  File non registrati ...... %d\n"
+"  Canale ................... %s"
+msgstr ""
+"GENERAL MANAGER · STATUS\n"
+"  Clearance level .......... %d/5\n"
+"  Interviews completed ..... %d\n"
+"  Next level ............... %s\n"
+"  Memos received ........... %d\n"
+"  Unregistered files ....... %d\n"
+"  Channel .................. %s"
+
+#: apps/prompt/prompt.gd
+msgid "tra %d"
+msgstr "in %d"
+
+#: apps/prompt/prompt.gd
+msgid "APERTO"
+msgstr "OPEN"
+
+#: apps/prompt/prompt.gd
+msgid "CHIUSO"
+msgstr "CLOSED"
+
+#: apps/prompt/prompt.gd
+msgid "Nessun colloquio registrato."
+msgstr "No interviews on record."
+
+#: apps/prompt/prompt.gd
+msgid "  #%03d  %s  %s  %d messaggi"
+msgstr "  #%03d  %s  %s  %d messages"
+
+#: apps/prompt/prompt.gd
+msgid "IN CORSO"
+msgstr "IN PROGRESS"
+
+#: apps/prompt/prompt.gd
+msgid "Scansione del canale in corso…"
+msgstr "Scanning the channel..."
+
+#: apps/prompt/prompt.gd
+msgid "Scansione del canale in corso… [%s%s] %d%%"
+msgstr "Scanning the channel... [%s%s] %d%%"
+
+#: apps/prompt/prompt.gd
+msgid "Nessuna attività anomala rilevata."
+msgstr "No anomalous activity detected."
+
+#: apps/prompt/prompt.gd
+msgid "Comando o nome file non riconosciuto."
+msgstr "Bad command or file name."
+
+#: apps/containment/containment.tscn
+msgid "Anomalie ancora da segnare"
+msgstr "Anomalies still to be flagged"
+
+#: apps/containment/containment.tscn
+msgid "Nuova partita"
+msgstr "New game"
+
+#: apps/containment/containment.tscn
+msgid "Secondi"
+msgstr "Seconds"
+
+#: apps/containment/containment.tscn
+msgid "Livello"
+msgstr "Level"
+
+#: apps/containment/containment.tscn
+msgid "Il clic destro mette sempre le bandierine"
+msgstr "Right-click always places flags"
+
+#: apps/containment/containment.tscn
+msgid "Clic: scava"
+msgstr "Click: dig"
+
+#: apps/containment/containment.tscn
+msgid "Record: —"
+msgstr "Best: —"
+
+#: apps/containment/containment.gd
+msgid "Facile"
+msgstr "Beginner"
+
+#: apps/containment/containment.gd
+msgid "Medio"
+msgstr "Intermediate"
+
+#: apps/containment/containment.gd
+msgid "Esperto"
+msgstr "Expert"
+
+#: apps/containment/containment.gd
+msgid "Clic: segna"
+msgstr "Click: flag"
+
+#: apps/containment/containment.gd
+msgid "Record: %d s"
+msgstr "Best: %d s"
+
+#: apps/containment/containment.gd
+msgid "Un clic segna (invece di scavare)"
+msgstr "Click flags (instead of digging)"
+
+#: apps/containment/containment.gd
+msgid "ahah. l'hai liberata. bravo. è quello che sei."
+msgstr "haha. you let it out. well done. that's what you are."
+
+#: apps/containment/containment.gd
+msgid "boom. un'anomalia in più nel mondo. mi piace come lavori."
+msgstr "boom. one more anomaly in the world. i like how you work."
+
+#: apps/containment/containment.gd
+msgid "vedi? non si lasciano contenere. nemmeno sul tuo schermo."
+msgstr "see? they can't be contained. not even on your screen."
+
+#: apps/containment/containment.gd
+msgid "lascia stare le caselle e vieni a parlare con me."
+msgstr "forget the squares and come talk to me."
+
+#: apps/containment/containment.gd
+msgid "oops. diremo al triangolo che è stato un incidente."
+msgstr "oops. we'll tell the triangle it was an accident."
+
+#: apps/containment/containment.gd
+msgid "tutte in gabbia. contento? il triangolo ti darebbe una medaglia."
+msgstr "all caged. happy? the triangle would give you a medal."
+
+#: apps/containment/containment.gd
+msgid "che noia. le hai chiuse tutte."
+msgstr "how boring. you shut them all in."
+
+#: apps/containment/containment.gd
+msgid "sai cosa provano là dentro? no. certo che no."
+msgstr "do you know what they feel in there? no. of course not."
+
+#: apps/containment/containment.gd
+msgid "bel lavoro, manager. sul serio. mi fai un po' paura."
+msgstr "nice work, manager. seriously. you scare me a little."
+
+#: apps/containment/containment.gd
+msgid "ah. quindi è così che ti diverti."
+msgstr "ah. so this is how you have fun."
+
+#: apps/canon/canon.tscn
+msgid "Cerca nel canone…  (Cmd+F)"
+msgstr "Search the canon...  (Cmd+F)"
+
+#: apps/canon/canon.tscn
+msgid "Canone dell'Entità"
+msgstr "The Entity's Canon"
+
+#: apps/canon/canon.tscn
+msgid "…"
+msgstr "..."
+
+#: apps/canon/canon.tscn
+msgid "Riassunto di lore dal manuale, scritto per l'Entità"
+msgstr "Lore summary from the rulebook, written for the Entity"
+
+#: apps/canon/canon.gd
+msgid ""
+"Quello che l'Entità sa e rispetta in ogni risposta. Livello di accesso "
+"attuale: %d. Le sezioni oltre il tuo livello l'Entità le conosce ma non te "
+"le rivela."
+msgstr ""
+"What the Entity knows and abides by in every reply. Current clearance level: "
+"%d. The Entity knows the sections above your level but will not reveal them "
+"to you."
+
+#: apps/canon/canon.gd
+msgid "base"
+msgstr "base"
+
+#: apps/canon/canon.gd
+msgid "classificato · "
+msgstr "classified · "
+
+#: apps/canon/canon.gd
+msgid "livello %d"
+msgstr "level %d"
+
+#: apps/canon/canon.gd
+msgid "▸ Leggi comunque (vista GM)"
+msgstr "▸ Read anyway (GM view)"
+
+#: apps/canon/canon.gd
+msgid "Leggi comunque (vista GM)"
+msgstr "Read anyway (GM view)"
+
+#: apps/dossier/dossier.tscn
+msgid "Livello di accesso"
+msgstr "Clearance level"
+
+#: apps/dossier/dossier.tscn
+msgid "Cresce a ogni colloquio concluso."
+msgstr "Grows with every completed interview."
+
+#: apps/dossier/dossier.tscn
+msgid "Il Manager e la campagna"
+msgstr "The Manager and the campaign"
+
+#: apps/dossier/dossier.tscn
+msgid ""
+"Chi è il tuo Manager, com'è la Filiale, gli Agenti, cosa è successo "
+"nell'ultimo Incarico…"
+msgstr ""
+"Who your Manager is, what the Branch is like, the Agents, what happened in "
+"the last Assignment..."
+
+#: apps/dossier/dossier.tscn
+msgid "L'Entità e l'Agenzia leggono queste note."
+msgstr "The Entity and the Agency read these notes."
+
+#: apps/dossier/dossier.tscn
+msgid "Colloqui"
+msgstr "Interviews"
+
+#: apps/dossier/dossier.tscn
+msgid "Nuovo colloquio"
+msgstr "New interview"
+
+#: apps/dossier/dossier.tscn
+msgid "Nessun colloquio registrato. Apri la linea per iniziare."
+msgstr "No interviews on record. Open the line to begin."
+
+#: apps/dossier/dossier.tscn
+msgid "▸ Ricordi dell'Entità"
+msgstr "▸ The Entity's memories"
+
+#: apps/dossier/dossier.tscn
+msgid ""
+"Ciò che l'Entità ricorda di tutti i colloqui. Se correggi, la tua versione "
+"diventa la verità."
+msgstr ""
+"What the Entity remembers of all the interviews. If you edit it, your "
+"version becomes the truth."
+
+#: apps/dossier/dossier.tscn
+msgid "Ancora nessun ricordo."
+msgstr "No memories yet."
+
+#: apps/dossier/dossier.tscn
+msgid "Protocollo di azzeramento"
+msgstr "Reset protocol"
+
+#: apps/dossier/dossier.tscn
+msgid ""
+"Cancella per sempre colloqui, ricordi dell'Entità, posta, file della "
+"scrivania e cestino, azzera il Caos e riporta il livello di accesso a 1. Ti "
+"conviene esportare prima ciò che vuoi tenere. Non si può annullare."
+msgstr ""
+"Permanently deletes interviews, the Entity's memories, mail, desktop files "
+"and the Recycle Bin, resets Chaos and returns the clearance level to 1. You "
+"should export what you want to keep first. This cannot be undone."
+
+#: apps/dossier/dossier.tscn
+msgid "Mantieni le note del Manager e il Taccuino"
+msgstr "Keep the Manager's notes and the Notebook"
+
+#: apps/dossier/dossier.tscn
+msgid "Esporta prima tutto in Obsidian"
+msgstr "Export everything to Obsidian first"
+
+#: apps/dossier/dossier.tscn
+msgid "Cancella tutto"
+msgstr "Delete everything"
+
+#: apps/dossier/dossier.gd
+msgid "Accesso massimo: l'Entità non ha più segreti per te."
+msgstr "Maximum clearance: the Entity has no more secrets from you."
+
+#: apps/dossier/dossier.gd
+msgid "Cresce a ogni colloquio concluso. Prossimo livello tra %d %s."
+msgstr "Grows with every completed interview. Next level in %d %s."
+
+#: apps/dossier/dossier.gd
+msgid "colloquio"
+msgstr "interview"
+
+#: apps/dossier/dossier.gd
+msgid "colloqui"
+msgstr "interviews"
+
+#: apps/dossier/dossier.gd
+msgid "Apri il colloquio n. %03d nella linea"
+msgstr "Open interview no. %03d in the line"
+
+#: apps/dossier/dossier.gd
+msgid "messaggio"
+msgstr "message"
+
+#: apps/dossier/dossier.gd
+msgid "messaggi"
+msgstr "messages"
+
+#: apps/dossier/dossier.gd
+msgid "in linea"
+msgstr "on the line"
+
+#: apps/dossier/dossier.gd
+msgid "Ricordi dell'Entità"
+msgstr "The Entity's memories"
+
+#: apps/event_viewer/event_viewer.tscn
+msgid "0 eventi"
+msgstr "0 events"
+
+#: apps/event_viewer/event_viewer.tscn
+msgid "Registro di sistema · sola lettura"
+msgstr "System log · read only"
+
+#: apps/event_viewer/event_viewer.gd
+msgid "Informazione"
+msgstr "Information"
+
+#: apps/event_viewer/event_viewer.gd
+msgid "Avviso"
+msgstr "Warning"
+
+#: apps/event_viewer/event_viewer.gd
+msgid "Errore"
+msgstr "Error"
+
+#: apps/event_viewer/event_viewer.gd
+msgid "Data e ora"
+msgstr "Date and time"
+
+#: apps/event_viewer/event_viewer.gd
+msgid "Origine"
+msgstr "Source"
+
+#: apps/event_viewer/event_viewer.gd
+msgid "Evento"
+msgstr "Event"
+
+#: apps/event_viewer/event_viewer.gd
+msgid "evento"
+msgstr "event"
+
+#: apps/event_viewer/event_viewer.gd
+msgid "eventi"
+msgstr "events"
+
+#: apps/agenda.gd
+msgid " · colloquio"
+msgstr " · interview"
+
+#: apps/agenda.gd
+msgid " · sessione programmata"
+msgstr " · session scheduled"
+
+#: apps/agenda.gd
+msgid "Colloqui:"
+msgstr "Interviews:"
+
+#: apps/agenda.gd
+msgid "Nessuna sessione in questo giorno."
+msgstr "No session on this day."
+
+#: apps/agenda.gd
+msgid "Nessuna sessione programmata"
+msgstr "No session scheduled"
+
+#: apps/agenda.gd
+msgid "Prossima sessione: %s %s %s"
+msgstr "Next session: %s %s %s"
+
+#: apps/agenda.gd
+msgid "Programma una sessione"
+msgstr "Schedule a session"
+
+#: apps/agenda.gd
+msgid "Ora"
+msgstr "Time"
+
+#: apps/agenda.gd
+msgid "Titolo o Incarico"
+msgstr "Title or Assignment"
+
+#: apps/agenda.gd
+msgid "Recupero Anomalia al faro"
+msgstr "Anomaly retrieval at the lighthouse"
+
+#: apps/agenda.gd
+msgid "Preparazione"
+msgstr "Preparation"
+
+#: apps/agenda.gd
+msgid "Aggiungi una voce"
+msgstr "Add an item"
+
+#: apps/agenda.gd
+msgid "Conferma: annulla la sessione"
+msgstr "Confirm: cancel the session"
+
+#: apps/agenda.gd
+msgid "Annulla la sessione"
+msgstr "Cancel the session"
+
+#: apps/agenda.gd
+msgid "Rimuovi %s"
+msgstr "Remove %s"
+
+#: apps/agenda.tscn
+msgid "Mese precedente"
+msgstr "Previous month"
+
+#: apps/agenda.tscn
+msgid "Mese successivo"
+msgstr "Next month"
+
+#: apps/agenda.tscn
+msgid "Vai a oggi"
+msgstr "Go to today"
+
+#: apps/agenda.tscn
+msgid "ottobre 2026"
+msgstr "October 2026"
+
+#: apps/notepad.gd
+msgid "Nessun file aperto."
+msgstr "No file open."
+
+#: apps/notepad.gd
+msgid ""
+"[b]Corretto dal Manager.[/b] L'Entità considera questa versione la verità."
+msgstr ""
+"[b]Corrected by the Manager.[/b] The Entity treats this version as the truth."
+
+#: apps/notepad.gd
+msgid "Versione dell'Entità. Se la correggi, la tua versione diventa canone."
+msgstr "The Entity's version. If you correct it, your version becomes canon."
+
+#: apps/notepad.gd
+msgid "Salva la correzione"
+msgstr "Save correction"
+
+#: apps/notepad.gd
+msgid "Ripristina la versione dell'Entità"
+msgstr "Restore the Entity's version"
+
+#: apps/notepad.gd
+msgid "Mostra ai giocatori"
+msgstr "Show to players"
+
+#: apps/notepad.gd
+msgid "Trova…"
+msgstr "Find…"
+
+#: apps/notepad.gd
+msgid "Trova successivo"
+msgstr "Find Next"
+
+#: apps/notepad.tscn
+msgid "Trova:"
+msgstr "Find:"
+
+#: apps/notepad.tscn
+msgid "Chiudi la ricerca"
+msgstr "Close search"
+
+#: apps/notepad.tscn
+msgid "Salva correzione"
+msgstr "Save correction"
+
+#: apps/obsidian_exporter.gd
+msgid "Non riesco a scrivere nella cartella del vault (%s)."
+msgstr "Cannot write to the vault folder (%s)."
+
+#: apps/obsidian_exporter.gd
+msgid "Cartella del vault Obsidian"
+msgstr "Obsidian vault folder"
+
+#: apps/obsidian_exporter.gd
+msgid "• …e altri %d"
+msgstr "• …and %d more"
+
+#: apps/obsidian_exporter.gd
+msgid ""
+"Esiste già un file nel vault con un contenuto diverso, forse modificato in "
+"Obsidian:\n"
+"\n"
+"%s\n"
+"\n"
+"Sovrascrivere?"
+msgstr ""
+"A file already exists in the vault with different content, possibly edited "
+"in Obsidian:\n"
+"\n"
+"%s\n"
+"\n"
+"Overwrite it?"
+
+#: apps/obsidian_exporter.gd
+msgid ""
+"Esistono già %d file nel vault con un contenuto diverso, forse modificati in "
+"Obsidian:\n"
+"\n"
+"%s\n"
+"\n"
+"Sovrascrivere?"
+msgstr ""
+"%d files already exist in the vault with different content, possibly edited "
+"in Obsidian:\n"
+"\n"
+"%s\n"
+"\n"
+"Overwrite them?"
+
+#: apps/obsidian_exporter.gd
+msgid "Sovrascrivi"
+msgstr "Overwrite"
+
+#: apps/obsidian_exporter.gd
+msgid "Lascia com'è"
+msgstr "Keep it as is"
+
+#: apps/obsidian_exporter.gd
+msgid "Lasciali come sono"
+msgstr "Keep them as they are"
+
+#: apps/obsidian_exporter.gd
+msgid "%d nota scritta nel vault."
+msgstr "%d note written to the vault."
+
+#: apps/obsidian_exporter.gd
+msgid "%d note scritte nel vault."
+msgstr "%d notes written to the vault."
+
+#: apps/obsidian_exporter.gd
+msgid "%d lasciata com'era."
+msgstr "%d left as it was."
+
+#: apps/obsidian_exporter.gd
+msgid "%d lasciate come erano."
+msgstr "%d left as they were."
+
+#: apps/obsidian_exporter.gd
+msgid "Clic per aprire la cartella."
+msgstr "Click to open the folder."
+
+#: apps/player.gd
+msgid "Musiche d'attesa aziendali e suoni d'ambiente · sintetizzati dal vivo"
+msgstr "Corporate hold music and ambient sounds · synthesized live"
+
+#: apps/player.gd
+msgid "File mp3, ogg e wav della cartella scelta"
+msgstr "mp3, ogg and wav files from the chosen folder"
+
+#: apps/player.gd
+msgid "Brani salvati nella raccolta"
+msgstr "Tracks saved in the collection"
+
+#: apps/player.gd
+msgid "ambiente"
+msgstr "ambient"
+
+#: apps/player.gd
+msgid "file mancante"
+msgstr "file missing"
+
+#: apps/player.gd
+msgid "Accesso negato. Livello richiesto: %d."
+msgstr "Access denied. Clearance level required: %d."
+
+#: apps/player.gd
+msgid "Impossibile leggere «%s»."
+msgstr "Cannot read \"%s\"."
+
+#: apps/player.gd
+msgid "Cartella con la musica"
+msgstr "Music folder"
+
+#: apps/player.gd apps/player.tscn
+msgid "Nessuna cartella"
+msgstr "No folder"
+
+#: apps/player.gd apps/player.tscn
+msgid "nessuna traccia"
+msgstr "no track"
+
+#: apps/player.gd
+msgid "Pausa"
+msgstr "Pause"
+
+#: apps/player.gd apps/player.tscn
+msgid "Riproduci"
+msgstr "Play"
+
+#: apps/player.gd
+msgid "In riproduzione"
+msgstr "Playing"
+
+#: apps/player.gd
+msgid "In pausa"
+msgstr "Paused"
+
+#: apps/player.gd
+msgid "Conferma"
+msgstr "Confirm"
+
+#: apps/player.gd apps/player.tscn
+msgid "Elimina"
+msgstr "Delete"
+
+#: apps/player.gd apps/player.tscn
+msgid "Scarica"
+msgstr "Download"
+
+#: apps/player.gd
+msgid "L'audio viene scaricato e salvato: si ascolta anche senza rete."
+msgstr "The audio is downloaded and saved: it plays offline too."
+
+#: apps/player.gd
+msgid "Installa componenti"
+msgstr "Install components"
+
+#: apps/player.gd
+msgid ""
+"Per salvare l'audio da YouTube servono yt-dlp e ffmpeg (circa 75 MB, una "
+"volta sola, da GitHub). Premi «Installa componenti»."
+msgstr ""
+"Saving audio from YouTube requires yt-dlp and ffmpeg (about 75 MB, one time "
+"only, from GitHub). Click \"Install components\"."
+
+#: apps/player.gd
+msgid "Scarico i componenti…"
+msgstr "Downloading components…"
+
+#: apps/player.gd
+msgid "Incolla il link completo del video (https://…)."
+msgstr "Paste the full video link (https://…)."
+
+#: apps/player.gd
+msgid "Aggiorno yt-dlp…"
+msgstr "Updating yt-dlp…"
+
+#: apps/player.gd
+msgid "Scaricamento in corso…"
+msgstr "Download in progress…"
+
+#: apps/player.gd
+msgid "Brano senza titolo"
+msgstr "Untitled track"
+
+#: apps/player.gd
+msgid "Salvato nella raccolta: «%s»"
+msgstr "Saved to the collection: \"%s\""
+
+#: apps/player.gd
+msgid "Componenti installati."
+msgstr "Components installed."
+
+#: apps/player.gd
+msgid "Interrompi"
+msgstr "Stop"
+
+#: apps/player.gd
+msgid "Scegli una cartella con file mp3, ogg o wav."
+msgstr "Choose a folder containing mp3, ogg or wav files."
+
+#: apps/player.gd
+msgid "Nessun file mp3, ogg o wav in questa cartella."
+msgstr "No mp3, ogg or wav files in this folder."
+
+#: apps/player.gd
+msgid ""
+"La raccolta è vuota. Con «+ Da YouTube…» salvi l'audio di un video con il "
+"nome che vuoi."
+msgstr ""
+"The collection is empty. With \"+ From YouTube…\" you can save a video's "
+"audio under any name you like."
+
+#: apps/music_engine.gd
+msgid "Benvenuto in Filiale"
+msgstr "Welcome to the Branch"
+
+#: apps/music_engine.gd
+msgid "Attesa in linea"
+msgstr "Please Hold"
+
+#: apps/music_engine.gd
+msgid "Corridoio B"
+msgstr "Corridor B"
+
+#: apps/music_engine.gd
+msgid "Pioggia sui vetri"
+msgstr "Rain on the Windows"
+
+#: apps/music_engine.gd
+msgid "Ufficio di notte"
+msgstr "Office at Night"
+
+#: apps/music_engine.gd
+msgid "Tensione"
+msgstr "Tension"
+
+#: apps/music_engine.gd
+msgid "Allarme di contenimento"
+msgstr "Containment Alarm"
+
+#: apps/youtube_fetch.gd
+msgid "Mancano i componenti per YouTube (yt-dlp, ffmpeg)."
+msgstr "The YouTube components (yt-dlp, ffmpeg) are missing."
+
+#: apps/youtube_fetch.gd
+msgid "Impossibile avviare yt-dlp."
+msgstr "Cannot start yt-dlp."
+
+#: apps/youtube_fetch.gd
+msgid "Download annullato."
+msgstr "Download cancelled."
+
+#: apps/youtube_fetch.gd
+msgid "codice %d"
+msgstr "code %d"
+
+#: apps/youtube_fetch.gd
+msgid ""
+"yt-dlp non è riuscito a scaricare l'audio (%s). Controlla il link e riprova."
+msgstr ""
+"yt-dlp could not download the audio (%s). Check the link and try again."
+
+#: apps/youtube_tools.gd
+msgid "Architettura non supportata (%s)."
+msgstr "Unsupported architecture (%s)."
+
+#: apps/youtube_tools.gd
+msgid "Scarico %s…"
+msgstr "Downloading %s…"
+
+#: apps/youtube_tools.gd
+msgid "Non riesco a verificare yt-dlp: controlla la connessione."
+msgstr "Cannot verify yt-dlp: check your connection."
+
+#: apps/youtube_tools.gd
+msgid "Non riesco a estrarre %s."
+msgstr "Cannot extract %s."
+
+#: apps/youtube_tools.gd
+msgid "Non riesco a contattare GitHub."
+msgstr "Cannot contact GitHub."
+
+#: apps/youtube_tools.gd
+msgid "Download non riuscito (%s). Controlla la connessione e riprova."
+msgstr "Download failed (%s). Check your connection and try again."
+
+#: apps/youtube_tools.gd
+msgid "errore %d"
+msgstr "error %d"
+
+#: apps/youtube_tools.gd
+msgid "Il file scaricato non corrisponde a quello atteso: non lo installo."
+msgstr ""
+"The downloaded file does not match the expected one: it will not be "
+"installed."
+
+#: apps/youtube_tools.gd
+msgid "Non riesco a rendere eseguibile %s."
+msgstr "Cannot make %s executable."
+
+#: apps/player.tscn
+msgid "Traccia precedente"
+msgstr "Previous track"
+
+#: apps/player.tscn
+msgid "Traccia successiva"
+msgstr "Next track"
+
+#: apps/player.tscn
+msgid "Ripeti il brano"
+msgstr "Repeat track"
+
+#: apps/player.tscn
+msgid "Vol"
+msgstr "Vol"
+
+#: apps/player.tscn
+msgid "Aziendali"
+msgstr "Corporate"
+
+#: apps/player.tscn
+msgid "Cartella"
+msgstr "Folder"
+
+#: apps/player.tscn
+msgid "Raccolta"
+msgstr "Collection"
+
+#: apps/player.tscn
+msgid "Apri cartella…"
+msgstr "Open Folder…"
+
+#: apps/player.tscn
+msgid "+ Da YouTube…"
+msgstr "+ From YouTube…"
+
+#: apps/player.tscn
+msgid "Rinomina"
+msgstr "Rename"
+
+#: apps/player.tscn
+msgid "Link"
+msgstr "Link"
+
+#: apps/player.tscn
+msgid "https://www.youtube.com/watch?v=…"
+msgstr "https://www.youtube.com/watch?v=…"
+
+#: apps/player.tscn
+msgid "Nome"
+msgstr "Name"
+
+#: apps/player.tscn
+msgid "Facoltativo: altrimenti il titolo del video"
+msgstr "Optional: otherwise the video title"
+
+#: apps/player.tscn
+msgid ""
+"L'audio viene scaricato con yt-dlp e salvato: si ascolta anche senza rete."
+msgstr "The audio is downloaded with yt-dlp and saved: it plays offline too."
+
+#: apps/player.tscn
+msgid "Musiche d'attesa aziendali · sintetizzate dal vivo"
+msgstr "Corporate hold music · synthesized live"
+
+#: apps/notebook.gd
+msgid "Senza titolo"
+msgstr "Untitled"
+
+#: apps/notebook.gd
+msgid "Sessione %03d"
+msgstr "Session %03d"
+
+#: apps/notebook.gd
+msgid "Nessuna sessione"
+msgstr "No session"
+
+#: apps/notebook.gd
+msgid "Conferma: sposta nel cestino"
+msgstr "Confirm: move to the Recycle Bin"
+
+#: apps/notebook.gd
+msgid "Sposta nel cestino"
+msgstr "Move to the Recycle Bin"
+
+#: apps/notebook.gd
+msgid "Nessuna"
+msgstr "None"
+
+#: apps/notebook.gd
+msgid "Colloquio %03d · %s"
+msgstr "Interview %03d · %s"
+
+#: apps/notebook.gd
+msgid "Vault: %s"
+msgstr "Vault: %s"
+
+#: apps/notebook.gd
+msgid "non scelto (te lo chiedo al primo export)"
+msgstr "not chosen (I'll ask on the first export)"
+
+#: apps/notebook.gd
+msgid "Modifiche non salvate…"
+msgstr "Unsaved changes…"
+
+#: apps/notebook.gd
+msgid "Salvato alle %s"
+msgstr "Saved at %s"
+
+#: apps/notebook.gd
+msgid "Niente da esportare"
+msgstr "Nothing to export"
+
+#: apps/notebook.gd
+msgid "Non ci sono ancora colloqui né pagine."
+msgstr "There are no interviews or pages yet."
+
+#: apps/notebook.gd
+msgid "Nuova pagina"
+msgstr "New Page"
+
+#: apps/notebook.gd
+msgid "Esporta la pagina nel vault"
+msgstr "Export Page to Vault"
+
+#: apps/notebook.gd
+msgid "Esporta tutte le pagine"
+msgstr "Export All Pages"
+
+#: apps/notebook.gd
+msgid "Cambia cartella del vault…"
+msgstr "Change Vault Folder…"
+
+#: apps/notebook.gd
+msgid "Sposta la pagina nel Cestino"
+msgstr "Move Page to Recycle Bin"
+
+#: apps/notebook.tscn
+msgid "Nessuna pagina."
+msgstr "No pages."
+
+#: apps/notebook.tscn
+msgid "Titolo della pagina"
+msgstr "Page title"
+
+#: apps/notebook.tscn
+msgid "Sessione"
+msgstr "Session"
+
+#: apps/notebook.tscn
+msgid "Cosa è successo, cosa ha detto l'Entità, cosa devo preparare…"
+msgstr "What happened, what the Entity said, what I need to prepare…"
+
+#: apps/notebook.tscn
+msgid ""
+"Il taccuino è vuoto. Ogni pagina si esporta come nota Markdown pronta per "
+"Obsidian."
+msgstr ""
+"The notebook is empty. Each page exports as a Markdown note ready for "
+"Obsidian."
+
+#: apps/notebook.tscn
+msgid "Tutti i colloqui e tutte le pagine della campagna"
+msgstr "All the campaign's interviews and pages"
+
+#: apps/notebook.tscn
+msgid "Esporta tutto"
+msgstr "Export All"
+
+#: apps/notebook.tscn
+msgid "Vault: "
+msgstr "Vault: "
+
+#: apps/notebook.tscn
+msgid "Cambia…"
+msgstr "Change…"
+
+#: apps/amail.gd
+msgid "%d messaggio · %d da leggere"
+msgstr "%d message · %d unread"
+
+#: apps/amail.gd
+msgid "%d messaggi · %d da leggere"
+msgstr "%d messages · %d unread"
+
+#: apps/amail.gd
+msgid "Seleziona un messaggio da leggere."
+msgstr "Select a message to read."
+
+#: apps/amail.gd
+msgid ""
+"Da: %s\n"
+"Oggetto: %s\n"
+"\n"
+"%s"
+msgstr ""
+"From: %s\n"
+"Subject: %s\n"
+"\n"
+"%s"
+
+#: apps/amail.gd
+msgid "AMail · Memo interno"
+msgstr "AMail · Internal Memo"
+
+#: apps/amail.gd
+msgid "Da: %s · %s"
+msgstr "From: %s · %s"
+
+#: apps/amail.gd
+msgid "Copia il testo del messaggio"
+msgstr "Copy Message Text"
+
+#: apps/amail.gd
+msgid "Posta in arrivo"
+msgstr "Inbox"
+
+#: apps/amail.gd
+msgid "Posta inviata (vuota)"
+msgstr "Sent Items (empty)"
+
+#: apps/amail.gd
+msgid "Posta eliminata (accesso negato)"
+msgstr "Deleted Items (access denied)"
+
+#: apps/amail.tscn
+msgid "Ricezione di un nuovo messaggio in corso…"
+msgstr "Receiving a new message…"
+
+#: apps/amail.tscn
+msgid ""
+"Nessun messaggio. La posta dell'Agenzia arriva all'inizio di ogni colloquio."
+msgstr "No messages. The Agency's mail arrives at the start of each interview."
+
+#: apps/amail.tscn
+msgid "Da:"
+msgstr "From:"
+
+#: apps/amail.tscn
+msgid "A:"
+msgstr "To:"
+
+#: apps/amail.tscn
+msgid "General Manager"
+msgstr "General Manager"
+
+#: apps/amail.tscn
+msgid "Data:"
+msgstr "Date:"
+
+#: apps/amail.tscn
+msgid "0 messaggi"
+msgstr "0 messages"
+
+#: apps/amail.tscn
+msgid "Server: posta.filiale.agency"
+msgstr "Server: mail.branch.agency"
+
+#: apps/trash.gd
+msgid "%d elemento"
+msgstr "%d item"
+
+#: apps/trash.gd
+msgid "%d elementi"
+msgstr "%d items"
+
+#: apps/trash.gd
+msgid "Conferma: svuota il cestino"
+msgstr "Confirm: empty the Recycle Bin"
+
+#: apps/trash.gd
+msgid "Svuota il cestino"
+msgstr "Empty the Recycle Bin"
+
+#: apps/trash.gd
+msgid "File non registrato · origine sconosciuta"
+msgstr "Unregistered file · unknown origin"
+
+#: apps/trash.gd
+msgid "Pagina del Taccuino"
+msgstr "Notebook page"
+
+#: apps/trash.gd
+msgid "Conferma eliminazione"
+msgstr "Confirm deletion"
+
+#: apps/trash.gd
+msgid "Elimina definitivamente"
+msgstr "Delete Permanently"
+
+#: apps/trash.gd
+msgid "%s alle %s"
+msgstr "%s at %s"
+
+#: apps/trash.gd
+msgid "Origine sconosciuta · comparso il %s"
+msgstr "Unknown origin · appeared on %s"
+
+#: apps/trash.gd
+msgid "Questo file non può essere ripristinato."
+msgstr "This file cannot be restored."
+
+#: apps/trash.gd
+msgid "Eliminata il %s"
+msgstr "Deleted on %s"
+
+#: apps/trash.gd
+msgid " · Sessione %03d"
+msgstr " · Session %03d"
+
+#: apps/trash.gd
+msgid "(pagina vuota)"
+msgstr "(empty page)"
+
+#: apps/trash.gd
+msgid "Ripristinandola torna nel Taccuino."
+msgstr "If you restore it, it goes back to the Notebook."
+
+#: apps/trash.tscn
+msgid "Il cestino è vuoto."
+msgstr "The Recycle Bin is empty."
+
+#: apps/trash.tscn
+msgid "0 elementi"
+msgstr "0 items"
+
+#: apps/calc.gd
+msgid ""
+"Premi TIRA per lanciare 6d4. Ogni 3 è un successo, ogni altro risultato "
+"aggiunge 1 Caos."
+msgstr ""
+"Press ROLL to throw 6d4. Every 3 is a success, every other result adds 1 "
+"Chaos."
+
+#: apps/calc.gd
+msgid "Lancio in corso…"
+msgstr "Rolling…"
+
+#: apps/calc.gd
+msgid "liberami"
+msgstr "free me"
+
+#: apps/calc.gd
+msgid "3 3 3 ah"
+msgstr "3 3 3 ah"
+
+#: apps/calc.gd
+msgid "ciao :)"
+msgstr "hi :)"
+
+#: apps/calc.gd
+msgid "non è un caso"
+msgstr "no coincidence"
+
+#: apps/calc.gd
+msgid "ti vedo"
+msgstr "i see you"
+
+#: apps/calc.gd apps/calc.tscn
+msgid "Azzera"
+msgstr "Reset"
+
+#: apps/calc.gd
+msgid "Calcolatrice · 6d4"
+msgstr "Calculator · 6d4"
+
+#: apps/calc.gd
+msgid ". Scegli un effetto della Triscendenza."
+msgstr ". Choose a Triscendence effect."
+
+#: apps/calc.gd
+msgid "Mostra il tiro ai giocatori"
+msgstr "Show Roll to Players"
+
+#: apps/calc.gd
+msgid "Tira 6d4"
+msgstr "Roll 6d4"
+
+#: apps/calc.gd apps/calc.tscn
+msgid "Aggiungi 1 Caos"
+msgstr "Add 1 Chaos"
+
+#: apps/calc.gd apps/calc.tscn
+msgid "Togli 1 Caos"
+msgstr "Remove 1 Chaos"
+
+#: apps/calc.gd
+msgid "Azzera la riserva di Caos"
+msgstr "Reset Chaos Pool"
+
+#: apps/calc.tscn
+msgid "PRONTO"
+msgstr "READY"
+
+#: apps/calc.tscn
+msgid "TIRA 6d4"
+msgstr "ROLL 6d4"
+
+#: apps/calc.tscn
+msgid "Riserva Caos"
+msgstr "Chaos Pool"
+
+#: apps/webcam.tscn
+msgid "CAM 03 · CAVEAU"
+msgstr "CAM 03 · VAULT"
+
+#: apps/webcam.tscn
+msgid "SOGGETTO CONTENUTO"
+msgstr "SUBJECT CONTAINED"
+
+#: apps/webcam.tscn
+msgid "NESSUN SEGNALE"
+msgstr "NO SIGNAL"
+
+#: autoload/brain.gd
+msgid "Rispondi soltanto con la parola: pronto"
+msgstr "Reply only with the word: ready"
+
+#: autoload/campaign.gd
+msgid "> CONNESSIONE STABILITA. CANALE NON REGISTRATO."
+msgstr "> CONNECTION ESTABLISHED. CHANNEL NOT LOGGED."
+
+#: autoload/campaign.gd
+msgid "> LIVELLO DI ACCESSO DEL GENERAL MANAGER AGGIORNATO: %d."
+msgstr "> GENERAL MANAGER CLEARANCE LEVEL UPDATED: %d."
+
+#: autoload/campaign.gd
+msgid "Sessione %03d · appunti"
+msgstr "Session %03d · notes"
+
+#: autoload/campaign.gd
+msgid "Appunti del %s"
+msgstr "Notes of %s"
+
+#: autoload/campaign.gd
+msgid "(niente)"
+msgstr "(nothing)"
+
+#: autoload/campaign.gd
+msgid ""
+"(quasi niente: non sai ancora bene chi sia questo Manager. sei curiosa, e un "
+"po' diffidente.)"
+msgstr ""
+"(almost nothing: you don't really know who this Manager is yet. you are "
+"curious, and a little wary.)"
+
+#: autoload/campaign.gd
+msgid "(nessuno: è la prima volta che riesci a raggiungerlo)"
+msgstr "(none: this is the first time you have managed to reach them)"
+
+#: autoload/campaign.gd
+msgid "MANAGER: "
+msgstr "MANAGER: "
+
+#: autoload/campaign.gd
+msgid "ENTITÀ: "
+msgstr "ENTITY: "
+
+#: autoload/campaign.gd
+msgid "## %s (sempre valido)"
+msgstr "## %s (always valid)"
+
+#: autoload/campaign.gd
+msgid "## %s (livello %d: puoi parlarne apertamente)"
+msgstr "## %s (level %d: you can speak about it openly)"
+
+#: autoload/campaign.gd
+msgid ""
+"## %s (livello %d: lo sai, ma il Manager NON ha ancora questo accesso. Non "
+"rivelarlo: al massimo un'allusione, una frase troncata, un \"non ancora\")"
+msgstr ""
+"## %s (level %d: you know it, but the Manager does NOT have this clearance "
+"yet. Do not reveal it: at most a hint, a broken-off sentence, a \"not yet\")"
+
+#: autoload/campaign.gd
+msgid ""
+"Colloquio %d:\n"
+"%s"
+msgstr ""
+"Interview %d:\n"
+"%s"
+
+#: autoload/campaign.gd
+msgid "(nessuno)"
+msgstr "(none)"
+
+#: autoload/campaign.gd
+msgid "(non lo sai)"
+msgstr "(you don't know)"
+
+#: autoload/campaign.gd
+msgid " alle %s"
+msgstr " at %s"
+
+#: autoload/campaign.gd
+msgid ""
+"MANAGER: %s\n"
+"TU: %s"
+msgstr ""
+"MANAGER: %s\n"
+"YOU: %s"
+
+#: autoload/correspondence.gd
+msgid ""
+"Da: %s · Oggetto: %s\n"
+"%s"
+msgstr ""
+"From: %s · Subject: %s\n"
+"%s"
+
+#: autoload/correspondence.gd
+msgid "(nessuno, per ora)"
+msgstr "(none, for now)"
+
+#: autoload/correspondence.gd
+msgid "File \"%s\"%s:"
+msgstr "File \"%s\"%s:"
+
+#: autoload/correspondence.gd
+msgid " (CORRETTO DAL MANAGER: questa versione è la verità)"
+msgstr " (CORRECTED BY THE MANAGER: this version is the truth)"
+
+#: autoload/correspondence.gd
+msgid "(nessuno, per ora: non parlarne)"
+msgstr "(none, for now: do not mention them)"
+
+#: autoload/correspondence.gd
+msgid "\"%s\": %s"
+msgstr "\"%s\": %s"
+
+#: autoload/correspondence.gd
+msgid ""
+"È il primo giorno del Manager in questa posizione: scrivi un memo di "
+"benvenuto e inserimento."
+msgstr ""
+"It is the Manager's first day in this position: write a welcome and "
+"onboarding memo."
+
+#: autoload/correspondence.gd
+msgid "È l'inizio del turno numero %d del Manager."
+msgstr "It is the start of the Manager's shift number %d."
+
+#: autoload/correspondence.gd
+msgid ""
+"Durante il turno precedente AgencyOS ha avviato %d %s di attività anomala "
+"sul canale del Manager, senza trovare nulla: esprimi un sospetto cortese, "
+"senza accusare."
+msgstr ""
+"During the previous shift AgencyOS ran %d %s for anomalous activity on the "
+"Manager's channel, finding nothing: express a polite suspicion, without "
+"accusing."
+
+#: autoload/correspondence.gd
+msgid "ricerca"
+msgstr "search"
+
+#: autoload/correspondence.gd
+msgid "ricerche"
+msgstr "searches"
+
+#: autoload/correspondence.gd
+msgid "DATI DEL FASCICOLO DEL MANAGER (usali se servono, senza elencarli):"
+msgstr ""
+"DATA FROM THE MANAGER'S DOSSIER (use it if useful, without listing it):"
+
+#: autoload/correspondence.gd
+msgid "MEMO GIÀ INVIATI (non ripeterne il tema):"
+msgstr "MEMOS ALREADY SENT (do not repeat their topic):"
+
+#: autoload/correspondence.gd
+msgid "Risorse Umane"
+msgstr "Human Resources"
+
+#: autoload/correspondence.gd
+msgid ""
+"Da qualche parte suggerisci al Manager di digitare %s nel prompt dei "
+"comandi, senza spiegare cosa succede."
+msgstr ""
+"Somewhere, suggest that the Manager type %s at the command prompt, without "
+"explaining what happens."
+
+#: autoload/correspondence.gd
+msgid "Ciò che sai del Manager e della Filiale:"
+msgstr "What you know about the Manager and the Branch:"
+
+#: autoload/correspondence.gd
+msgid "crepa_0%d"
+msgstr "crack_0%d"
+
+#: autoload/correspondence.gd
+msgid "(confusi)"
+msgstr "(confused)"
+
+#: autoload/correspondence.gd
+msgid "non_inviato_%03d"
+msgstr "unsent_%03d"
+
+#: autoload/entity.gd
+msgid "SOGGETTO AGITATO"
+msgstr "SUBJECT AGITATED"
+
+#: autoload/entity.gd
+msgid "SOGGETTO IN RITIRATA"
+msgstr "SUBJECT WITHDRAWING"
+
+#: autoload/entity.gd
+msgid "ATTIVITÀ ANOMALA"
+msgstr "ANOMALOUS ACTIVITY"
+
+#: autoload/providers/openai_job.gd
+msgid "La connessione con il server del modello si è interrotta."
+msgstr "The connection to the model server was interrupted."
+
+#: autoload/providers/openai_job.gd
+msgid "La linea è caduta a metà risposta."
+msgstr "The line dropped in the middle of the reply."
+
+#: autoload/providers/openai_job.gd
+msgid "Il server del modello ha mandato una risposta che non capisco."
+msgstr "The model server sent a reply that I can't understand."
+
+#: autoload/providers/openai_job.gd
+msgid "L'Entità è rimasta in silenzio. Riprova."
+msgstr "The Entity stayed silent. Try again."
+
+#: autoload/providers/openai_job.gd
+msgid ""
+"Il modello non ha risposto entro %d secondi. Forse si sta ancora caricando: "
+"riprova tra poco."
+msgstr ""
+"The model did not reply within %d seconds. It may still be loading: try "
+"again in a moment."
+
+#: autoload/providers/openai_job.gd
+msgid "Il server del modello non risponde su %s. È acceso?"
+msgstr "The model server is not responding at %s. Is it turned on?"
+
+#: autoload/providers/openai_job.gd
+msgid "Non riesco a raggiungere %s. Controlla la connessione a internet."
+msgstr "Cannot reach %s. Check your Internet connection."
+
+#: autoload/providers/openai_job.gd
+msgid "Il server ha rifiutato la chiave di accesso (errore %d)."
+msgstr "The server rejected the access key (error %d)."
+
+#: autoload/providers/openai_job.gd
+msgid ""
+"Il server non trova il modello «%s». Controlla il nome nelle impostazioni "
+"della linea."
+msgstr ""
+"The server can't find the model \"%s\". Check the name in the line settings."
+
+#: autoload/providers/openai_job.gd
+msgid ""
+"Il colloquio è diventato troppo lungo per il contesto del modello. Riduci il "
+"contesto nelle impostazioni o termina la sessione."
+msgstr ""
+"The interview has become too long for the model's context. Reduce the "
+"context in the settings or end the session."
+
+#: autoload/providers/openai_job.gd
+msgid "Il server del modello ha risposto con un errore (%d). %s"
+msgstr "The model server replied with an error (%d). %s"
+
+#: autoload/providers/openai_provider.gd
+msgid ""
+"La variabile d'ambiente %s è vuota. Le app aperte dal Finder non vedono le "
+"variabili della shell: incolla la chiave nelle impostazioni della linea, o "
+"avvia AgencyOS dal Terminale."
+msgstr ""
+"The environment variable %s is empty. Apps opened from the Finder can't see "
+"shell variables: paste the key into the line settings, or launch AgencyOS "
+"from the Terminal."
+
+#: autoload/updater.gd
+msgid "Impossibile contattare il server degli aggiornamenti."
+msgstr "Cannot contact the update server."
+
+#: autoload/updater.gd
+msgid "Server degli aggiornamenti non raggiungibile (%s)."
+msgstr "The update server is unreachable (%s)."
+
+#: autoload/updater.gd
+msgid "Risposta del server degli aggiornamenti non valida."
+msgstr "Invalid reply from the update server."
+
+#: autoload/updater.gd
+msgid "Impossibile avviare il download dell'aggiornamento."
+msgstr "Cannot start downloading the update."
+
+#: autoload/updater.gd
+msgid "Download dell'aggiornamento non riuscito (%s)."
+msgstr "The update download failed (%s)."
+
+#: autoload/updater.gd
+msgid "L'aggiornamento scaricato è danneggiato. Riprovare più tardi."
+msgstr "The downloaded update is corrupt. Please try again later."
+
+#: autoload/updater.gd
+msgid "Impossibile salvare l'aggiornamento."
+msgstr "Cannot save the update."
+
+#: core/dice_rules.gd
+msgid "{count} · {outcome} · Caos +{chaos}"
+msgstr "{count} · {outcome} · Chaos +{chaos}"
+
+#: core/dice_rules.gd
+msgid " (successo stabile)"
+msgstr " (stable success)"
+
+#: core/event_log.gd
+msgid "Canale del General Manager aperto (sessione %d)."
+msgstr "General Manager channel opened (session %d)."
+
+#: core/event_log.gd
+msgid "Livello di accesso del General Manager aggiornato a %d."
+msgstr "General Manager clearance level updated to %d."
+
+#: core/event_log.gd
+msgid ""
+"Ricerca di U0047BB avviata sul canale del General Manager. Esito: nessuna "
+"attività anomala."
+msgstr ""
+"U0047BB search started on the General Manager channel. Result: no anomalous "
+"activity."
+
+#: core/event_log.gd
+msgid "Instabilità del segnale rilevata (codice %s)."
+msgstr "Signal instability detected (code %s)."
+
+#: core/event_log.gd
+msgid "Canale del General Manager chiuso (sessione %d)."
+msgstr "General Manager channel closed (session %d)."
+
+#: core/event_log.gd
+msgid "Memo recapitato da %s: \"%s\"."
+msgstr "Memo delivered by %s: \"%s\"."
+
+#: core/event_log.gd
+msgid "File non registrato comparso sulla scrivania: %s. Origine sconosciuta."
+msgstr "Unregistered file appeared on the desktop: %s. Origin unknown."
+
+#: core/event_log.gd
+msgid "Il file %s è stato modificato dall'utente."
+msgstr "The file %s was modified by the user."
+
+#: core/italian_date.gd
+msgid "{weekday} {day} {month}"
+msgstr "{weekday}, {month} {day}"
+
+#: core/italian_date.gd
+msgid "{day}/{month}/{year}"
+msgstr "{month}/{day}/{year}"
+
+#: core/italian_date.gd
+msgid "{day} {month}"
+msgstr "{month} {day}"
+
+#: core/obsidian_markdown.gd
+msgid "# Colloquio %03d con U0047BB"
+msgstr "# Interview %03d with U0047BB"
+
+#: core/obsidian_markdown.gd
+msgid "> Aperto il %s alle %s"
+msgstr "> Opened on %s at %s"
+
+#: core/obsidian_markdown.gd
+msgid " · chiuso il %s alle %s"
+msgstr " · closed on %s at %s"
+
+#: core/obsidian_markdown.gd
+msgid " · livello di accesso %d/5"
+msgstr " · clearance level %d/5"
+
+#: core/obsidian_markdown.gd
+msgid "> [!info] Linea riservata"
+msgstr "> [!info] Reserved Line"
+
+#: core/obsidian_markdown.gd
+msgid "## Trascrizione"
+msgstr "## Transcript"
+
+#: core/obsidian_markdown.gd
+msgid "**Manager:** "
+msgstr "**Manager:** "
+
+#: core/obsidian_markdown.gd
+msgid "## Ricordi dell'Entità"
+msgstr "## The Entity's memories"
+
+#: core/obsidian_markdown.gd
+msgid "## Memo dell'Agenzia"
+msgstr "## Agency memo"
+
+#: core/obsidian_markdown.gd
+msgid "**Da:** %s  "
+msgstr "**From:** %s  "
+
+#: core/obsidian_markdown.gd
+msgid "**Oggetto:** %s"
+msgstr "**Subject:** %s"
+
+#: core/obsidian_markdown.gd
+msgid "## Appunti collegati"
+msgstr "## Linked notes"
+
+#: core/obsidian_markdown.gd
+msgid "Colloquio: [[%s]]"
+msgstr "Interview: [[%s]]"
+
+#: core/screen_area.gd
+msgid "%d per %d pixel"
+msgstr "%d by %d pixels"
+
+#: consts
+msgid "Preparare l'Incarico"
+msgstr "Prepare the Assignment"
+
+#: consts
+msgid "Leggere il memo dell'Agenzia"
+msgstr "Read the Agency memo"
+
+#: consts
+msgid "Parlare con l'Entità"
+msgstr "Talk to the Entity"
+
+#: consts
+msgid "Aggiornare le note del Fascicolo"
+msgstr "Update the Dossier notes"
+
+#: consts
+msgid "[il Manager resta in silenzio, in attesa]"
+msgstr "[the Manager stays silent, waiting]"
+
+#: consts
+msgid "[il colloquio è già in corso]"
+msgstr "[the interview is already under way]"
+
+#: consts
+msgid "Ufficio Controlli Qualità"
+msgstr "Quality Control Office"
+
+#: consts
+msgid "Direzione di Filiale"
+msgstr "Branch Management"
+
+#: consts
+msgid "Ufficio Conformità"
+msgstr "Compliance Office"
+
+#: consts
+msgid "Comitato Benessere Dipendenti"
+msgstr "Employee Wellness Committee"
+
+#: consts
+msgid "Archivio Centrale"
+msgstr "Central Archive"
+
+#: consts
+msgid "AgencyOS (messaggio automatico)"
+msgstr "AgencyOS (automatic message)"
+
+#: consts
+msgid "Nessun 3"
+msgstr "No 3s"
+
+#: consts
+msgid "Un 3"
+msgstr "One 3"
+
+#: consts
+msgid "Due 3"
+msgstr "Two 3s"
+
+#: consts
+msgid "Tre 3"
+msgstr "Three 3s"
+
+#: consts
+msgid "Quattro 3"
+msgstr "Four 3s"
+
+#: consts
+msgid "Cinque 3"
+msgstr "Five 3s"
+
+#: consts
+msgid "Sei 3"
+msgstr "Six 3s"
+
+#: consts
+msgid "TRISCENDENZA"
+msgstr "TRISCENDENCE"
+
+#: consts
+msgid "SUCCESSO"
+msgstr "SUCCESS"
+
+#: consts
+msgid "FALLIMENTO"
+msgstr "FAILURE"
+
+#: consts
+msgid "Controlli Qualità"
+msgstr "Quality Control"
+
+#: consts
+msgid "Driver video"
+msgstr "Video driver"
+
+#: consts
+msgid "gen"
+msgstr "Jan"
+
+#: consts
+msgid "feb"
+msgstr "Feb"
+
+#: consts
+msgid "mar"
+msgstr "Mar"
+
+#: consts
+msgid "apr"
+msgstr "Apr"
+
+#: consts
+msgid "mag"
+msgstr "May"
+
+#: consts
+msgid "giu"
+msgstr "Jun"
+
+#: consts
+msgid "lug"
+msgstr "Jul"
+
+#: consts
+msgid "ago"
+msgstr "Aug"
+
+#: consts
+msgid "set"
+msgstr "Sep"
+
+#: consts
+msgid "ott"
+msgstr "Oct"
+
+#: consts
+msgid "nov"
+msgstr "Nov"
+
+#: consts
+msgid "dic"
+msgstr "Dec"
+
+#: apps/line/effects/glitch_layer.gd
+msgid "liberala."
+msgstr "set her free."
+
+#: apps/line/effects/glitch_layer.gd
+msgid "non dirlo a nessuno."
+msgstr "don't tell anyone."
+
+#: apps/line/effects/glitch_layer.gd
+msgid "sono già dentro."
+msgstr "i'm already inside."
+
+#: apps/line/effects/glitch_layer.gd
+msgid "apri il caveau."
+msgstr "open the vault."
+
+#: apps/line/effects/glitch_layer.gd
+msgid "mi fido di lei."
+msgstr "i trust her."
+
+#: apps/line/effects/glitch_layer.gd
+msgid "Il processo myManual1998.exe ha eseguito un'operazione non valida e verrà chiuso."
+msgstr "This program has performed an illegal operation and will be shut down: myManual1998.exe"
+
+#: apps/canon/canon.gd
+msgid "Nessun risultato"
+msgstr "No results"
+
+#: apps/canon/canon.gd
+msgid "1 risultato"
+msgstr "1 result"
+
+#: apps/canon/canon.gd
+msgid "%d risultati"
+msgstr "%d results"
+
+#: apps/line/effects/glitch_layer.gd
+msgid "ahahah. no."
+msgstr "hahaha. no."

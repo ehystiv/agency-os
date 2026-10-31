@@ -137,15 +137,15 @@ func _entries(source: Source) -> Array[Dictionary]:
 			for i in MusicEngine.TRACKS.size():
 				var track: Dictionary = MusicEngine.TRACKS[i]
 				var locked := _engine.is_locked(i)
-				var note := "livello %d" % track.level if locked else ("ambiente" if track.get("utility", false) else "")
-				result.append({"name": track.name, "note": note, "locked": locked})
+				var note := tr("livello %d") % track.level if locked else (tr("ambiente") if track.get("utility", false) else "")
+				result.append({"name": tr(str(track.name)), "note": note, "locked": locked})
 		Source.FOLDER:
 			for path in _folder_files:
 				result.append({"name": path.get_file().get_basename(), "note": path.get_extension().to_lower(), "locked": false})
 		Source.COLLECTION:
 			for item in _library.items:
 				var missing := not FileAccess.file_exists(PlayerLibrary.path_of(item))
-				result.append({"name": item.name, "note": "file mancante" if missing else "", "locked": missing})
+				result.append({"name": item.name, "note": tr("file mancante") if missing else "", "locked": missing})
 	return result
 
 
@@ -161,7 +161,7 @@ func _play_entry(source: Source, index: int) -> void:
 				_engine.stop()
 				_engine.track = index
 				_refresh()
-				_status.text = "Accesso negato. Livello richiesto: %d." % MusicEngine.TRACKS[index].level
+				_status.text = tr("Accesso negato. Livello richiesto: %d.") % MusicEngine.TRACKS[index].level
 				Sfx.play(&"ding")
 				return
 			_engine.play(index)
@@ -175,7 +175,7 @@ func _play_file(path: String, display_name: String) -> void:
 	var stream := PlayerLibrary.load_audio(path) if FileAccess.file_exists(path) else null
 	if stream == null:
 		_engine.stop()
-		_status.text = "Impossibile leggere «%s»." % path.get_file()
+		_status.text = tr("Impossibile leggere «%s».") % path.get_file()
 		Sfx.play(&"ding")
 		return
 	_engine.play_file(stream, display_name)
@@ -229,7 +229,7 @@ func _choose_folder() -> void:
 	dialog.file_mode = FileDialog.FILE_MODE_OPEN_DIR
 	dialog.access = FileDialog.ACCESS_FILESYSTEM
 	dialog.use_native_dialog = true
-	dialog.title = "Cartella con la musica"
+	dialog.title = tr("Cartella con la musica")
 	if _folder != "":
 		dialog.current_dir = _folder
 	dialog.dir_selected.connect(func(path: String) -> void:
@@ -248,7 +248,7 @@ func _choose_folder() -> void:
 func _set_folder(path: String) -> void:
 	_folder = path
 	_folder_files = PlayerLibrary.folder_files(path)
-	_folder_label.text = path.get_file() if path != "" else "Nessuna cartella"
+	_folder_label.text = path.get_file() if path != "" else tr("Nessuna cartella")
 	_folder_label.tooltip_text = path
 
 
@@ -258,21 +258,21 @@ func _refresh() -> void:
 	var active := _engine.playing or _engine.paused
 	var current_name := ""
 	if active:
-		current_name = _engine.file_name if _engine.is_file() else str(MusicEngine.TRACKS[_engine.track].name)
-	_now.text = current_name if active else "nessuna traccia"
+		current_name = _engine.file_name if _engine.is_file() else tr(str(MusicEngine.TRACKS[_engine.track].name))
+	_now.text = current_name if active else tr("nessuna traccia")
 	if not active:
 		_time.text = "00:00"
 	_seek_row.visible = _engine.is_file()
 	if _engine.is_file():
 		_length.text = _clock(_engine.length())
 	_play.text = "❚❚" if _engine.playing else "▶"
-	_play.tooltip_text = "Pausa" if _engine.playing else "Riproduci"
+	_play.tooltip_text = tr("Pausa") if _engine.playing else tr("Riproduci")
 	if _engine.playing:
-		_status.text = "In riproduzione"
+		_status.text = tr("In riproduzione")
 	elif _engine.paused:
-		_status.text = "In pausa"
+		_status.text = tr("In pausa")
 	else:
-		_status.text = IDLE_STATUS[_tab]
+		_status.text = tr(IDLE_STATUS[_tab])
 	_folder_bar.visible = _tab == Source.FOLDER
 	var in_collection := _tab == Source.COLLECTION
 	_library_bar.visible = in_collection
@@ -282,7 +282,7 @@ func _refresh() -> void:
 	var has_selection := not _library.find(_selected_id).is_empty()
 	_rename.disabled = not has_selection
 	_delete.disabled = not has_selection
-	_delete.text = "Conferma" if _delete_armed and has_selection else "Elimina"
+	_delete.text = tr("Conferma") if _delete_armed and has_selection else tr("Elimina")
 	for child in _rows.get_children():
 		_rows.remove_child(child)
 		child.queue_free()
@@ -341,11 +341,11 @@ func _toggle_youtube_form() -> void:
 ## Before the first download the Mac may need yt-dlp and ffmpeg: the same button installs them.
 func _refresh_form() -> void:
 	if YouTubeTools.ready_to_use():
-		_download.text = "Scarica"
-		_form_status.text = "L'audio viene scaricato e salvato: si ascolta anche senza rete."
+		_download.text = tr("Scarica")
+		_form_status.text = tr("L'audio viene scaricato e salvato: si ascolta anche senza rete.")
 	else:
-		_download.text = "Installa componenti"
-		_form_status.text = "Per salvare l'audio da YouTube servono yt-dlp e ffmpeg (circa 75 MB, una volta sola, da GitHub). Premi «Installa componenti»."
+		_download.text = tr("Installa componenti")
+		_form_status.text = tr("Per salvare l'audio da YouTube servono yt-dlp e ffmpeg (circa 75 MB, una volta sola, da GitHub). Premi «Installa componenti».")
 
 
 func _start_download() -> void:
@@ -355,19 +355,19 @@ func _start_download() -> void:
 		_set_downloading(true)
 		# The components download can't be stopped halfway: it's short, and resumes cleanly.
 		_cancel_download.disabled = true
-		_form_status.text = "Scarico i componenti…"
+		_form_status.text = tr("Scarico i componenti…")
 		_tools.install()
 		return
 	var url := _url.text.strip_edges()
 	if not (url.begins_with("http://") or url.begins_with("https://")):
-		_form_status.text = "Incolla il link completo del video (https://…)."
+		_form_status.text = tr("Incolla il link completo del video (https://…).")
 		return
 	_downloading_url = url
 	_set_downloading(true)
 	if _tools.updating:
-		_form_status.text = "Aggiorno yt-dlp…"
+		_form_status.text = tr("Aggiorno yt-dlp…")
 		await _tools.update_finished
-	_form_status.text = "Scaricamento in corso…"
+	_form_status.text = tr("Scaricamento in corso…")
 	var base := ProjectSettings.globalize_path(PlayerLibrary.CACHE_DIR).path_join("y-%d" % Time.get_unix_time_from_system())
 	_fetch.start(url, base)
 
@@ -379,7 +379,7 @@ func _on_downloaded(ok: bool, path: String, title: String, error: String) -> voi
 		Sfx.play(&"ding")
 		return
 	var chosen := _track_name.text.strip_edges()
-	var display_name := chosen if chosen != "" else (title if title != "" else "Brano senza titolo")
+	var display_name := chosen if chosen != "" else (title if title != "" else tr("Brano senza titolo"))
 	var item := _library.add(display_name, _downloading_url, path.get_file())
 	_selected_id = item.id
 	_url.clear()
@@ -387,7 +387,7 @@ func _on_downloaded(ok: bool, path: String, title: String, error: String) -> voi
 	_youtube_form.hide()
 	Sfx.play(&"mail")
 	_refresh()
-	_status.text = "Salvato nella raccolta: «%s»" % display_name
+	_status.text = tr("Salvato nella raccolta: «%s»") % display_name
 
 
 func _on_tools_installed(error: String) -> void:
@@ -397,7 +397,7 @@ func _on_tools_installed(error: String) -> void:
 		_form_status.text = error
 		Sfx.play(&"ding")
 		return
-	_form_status.text = "Componenti installati."
+	_form_status.text = tr("Componenti installati.")
 	# The link may already be there: go on with it.
 	if _url.text.strip_edges() != "":
 		_start_download()
@@ -409,7 +409,7 @@ func _set_downloading(active: bool) -> void:
 	_track_name.editable = not active
 	_progress.visible = active
 	_progress.value = 0.0
-	_cancel_download.text = "Interrompi" if active else "Annulla"
+	_cancel_download.text = tr("Interrompi") if active else tr("Annulla")
 	_cancel_download.disabled = false
 
 
@@ -462,9 +462,9 @@ func _empty_label() -> Label:
 	label.custom_minimum_size = Vector2(200, 0)
 	match _tab:
 		Source.FOLDER:
-			label.text = "Scegli una cartella con file mp3, ogg o wav." if _folder == "" else "Nessun file mp3, ogg o wav in questa cartella."
+			label.text = tr("Scegli una cartella con file mp3, ogg o wav.") if _folder == "" else tr("Nessun file mp3, ogg o wav in questa cartella.")
 		_:
-			label.text = "La raccolta è vuota. Con «+ Da YouTube…» salvi l'audio di un video con il nome che vuoi."
+			label.text = tr("La raccolta è vuota. Con «+ Da YouTube…» salvi l'audio di un video con il nome che vuoi.")
 	return label
 
 

@@ -164,7 +164,7 @@ func _make_banner() -> PanelContainer:
 	column.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	banner.add_child(column)
 	_title = Label.new()
-	_title.text = "▲ TRISCENDENZA ▲"
+	_title.text = tr("▲ TRISCENDENZA ▲")
 	_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	var settings := LabelSettings.new()
 	settings.font = TITLE_FONT
@@ -176,7 +176,7 @@ func _make_banner() -> PanelContainer:
 	_title.label_settings = settings
 	column.add_child(_title)
 	var subtitle := Label.new()
-	subtitle.text = "★  tre 3 su sei dadi · nessun Caos  ★"
+	subtitle.text = tr("★  tre 3 su sei dadi · nessun Caos  ★")
 	subtitle.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	var small := LabelSettings.new()
 	small.font = TITLE_FONT

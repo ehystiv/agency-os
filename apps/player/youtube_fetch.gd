@@ -23,7 +23,7 @@ func start(url: String, out_base: String) -> void:
 	var yt_dlp := YouTubeTools.find("yt-dlp")
 	var ffmpeg := YouTubeTools.find("ffmpeg")
 	if yt_dlp == "" or ffmpeg == "":
-		finished.emit(false, "", "", "Mancano i componenti per YouTube (yt-dlp, ffmpeg).")
+		finished.emit(false, "", "", tr("Mancano i componenti per YouTube (yt-dlp, ffmpeg)."))
 		return
 	busy = true
 	_cancelled = false
@@ -50,7 +50,7 @@ func _run(yt_dlp: String, args: PackedStringArray) -> void:
 	command.append_array(args)
 	var process := OS.execute_with_pipe("/bin/sh", command)
 	if process.is_empty():
-		_done.call_deferred(false, "", "", "Impossibile avviare yt-dlp.")
+		_done.call_deferred(false, "", "", tr("Impossibile avviare yt-dlp."))
 		return
 	_pid = int(process.pid)
 	var pipe: FileAccess = process.stdio
@@ -78,10 +78,10 @@ func _run(yt_dlp: String, args: PackedStringArray) -> void:
 	var code := OS.get_process_exit_code(_pid)
 	_pid = -1
 	if _cancelled:
-		_done.call_deferred(false, "", "", "Download annullato.")
+		_done.call_deferred(false, "", "", tr("Download annullato."))
 	elif code != 0 or path == "" or not FileAccess.file_exists(path):
-		var reason := last_error.left(200) if last_error != "" else "codice %d" % code
-		_done.call_deferred(false, "", "", "yt-dlp non è riuscito a scaricare l'audio (%s). Controlla il link e riprova." % reason)
+		var reason := last_error.left(200) if last_error != "" else tr("codice %d") % code
+		_done.call_deferred(false, "", "", tr("yt-dlp non è riuscito a scaricare l'audio (%s). Controlla il link e riprova.") % reason)
 	else:
 		_done.call_deferred(true, path, title, "")
 

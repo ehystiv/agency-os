@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 AgencyOS 98: a fake late-90s desktop OS, written in Godot 4.7 (GDScript), that the General Manager uses at the table when running Triangle Agency (Italian edition). Its core is the "reserved line", a chat with the Entity U0047BB played by an LLM (local through LM Studio/Ollama/llama.cpp, or remote through Hugging Face or Claude). The original brief and the HTML prototype it was ported from are in `reference/`.
 
-**Language rule:** code, identifiers, comments, file names, save-file keys and JSON keys are in English. Everything shown on screen, plus the prompts and game data the model reads (`data/prompt/*.txt`, the content of `data/*.json`), stays in Italian.
+**Language rule:** code, identifiers, comments, file names, save-file keys and JSON keys are in English. The app is localized in Italian (the source language) and English: everything shown on screen is written in Italian in the code and scenes and translated through `locale/en.po`; the prompts and game data the model reads (`data/prompt/*.txt`, the content of `data/*.json`) are in Italian, with English copies under `data/en/`.
 
 ## Running and verifying
 
@@ -69,6 +69,14 @@ Other things to know:
 - The global theme is `ui/theme/agency98.tres`, a large `Theme` that uses the custom `StyleBoxBevel` (`ui/theme/stylebox_bevel.gd`) for '98 bevels. Widgets pick their style by `theme_type_variation` (e.g. `ListRow`, `MsgEntity`, `PrimaryButton`). Check the theme before adding new variations.
 - The desktop's logical resolution is the "Area dello schermo" (`core/screen_area.gd`, UI pref `screen_area`, Control panel › Schermo): it sets `content_scale_size` at runtime, so `project.godot`'s 1280×720 is only the default.
 - 3D views (dice tray, webcam cage) render in a SubViewport at low resolution that is redrawn on demand.
+
+## Localization
+
+- `core/locale.gd` (`Locale`): `Save._ready` calls `Locale.setup()`, which reads the UI pref `language` (on first start: the system language if supported, else English), loads `res://locale/<lang>.po` and sets the `TranslationServer` locale. The language is applied only at startup: Control panel › Lingua saves the pref and offers a restart. No `project.godot` setting is involved, so it all ships in patches.
+- gettext with **the Italian text as msgid**: Italian needs no file. Scene texts are translated automatically (auto_translate); strings built in code go through `tr()` (`TranslationServer.translate()` in static funcs), format templates are translated before `%`/`format()`. Consts keep the Italian and are translated where displayed. Menu titles/items passed to `menu()` are translated by `AppWindow`.
+- Text sent to the model goes through `tr()` too, so the Entity gets a coherent prompt in the active language. Game data is read through `Locale.data_path()`, which picks `data/<lang>/…` when it exists; keep the same keys and ids in both copies (glitch names are ids).
+- When adding a string, add its English entry to `locale/en.po` (`msgfmt --check -o /dev/null locale/en.po`). English follows Windows 98 wording and the original English Triangle Agency terms.
+- Saved content (notes, interviews, memos) stays in the language it was written in.
 
 ## Updates (.pck patches)
 

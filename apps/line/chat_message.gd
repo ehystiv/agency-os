@@ -108,6 +108,8 @@ static func _escape(text: String) -> String:
 
 
 func _build(text: String) -> void:
+	# Chat text is the players' or the model's: never translate it.
+	auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
 	add_theme_constant_override("separation", 8)
 	plain_text = text
 	match kind:
@@ -119,7 +121,7 @@ func _build(text: String) -> void:
 			rich.fit_content = true
 			rich.scroll_active = false
 			rich.selection_enabled = true
-			rich.text = "[font_size=11][color=#8a92a8]MANAGER > [/color][/font_size]" + _escape(text)
+			rich.text = "[font_size=11][color=#8a92a8]%s > [/color][/font_size]" % tr("MANAGER") + _escape(text)
 			_label = rich
 			# Box margins plus a bit of air: the prefix is already in the measured text.
 			_extra_width = 26.0
@@ -151,8 +153,8 @@ func _build(text: String) -> void:
 			if kind == Kind.ERROR:
 				var links := VBoxContainer.new()
 				links.alignment = BoxContainer.ALIGNMENT_CENTER
-				links.add_child(_link("Rinvia", retry_pressed.emit))
-				links.add_child(_link("Impostazioni…", settings_pressed.emit))
+				links.add_child(_link(tr("Rinvia"), retry_pressed.emit))
+				links.add_child(_link(tr("Impostazioni…"), settings_pressed.emit))
 				add_child(links)
 
 

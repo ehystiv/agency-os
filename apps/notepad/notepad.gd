@@ -2,7 +2,7 @@ extends AppContent
 ## Notepad: opens the files the Entity leaves on the desktop.
 ## The Manager can correct them: their version becomes the truth for the Entity.
 
-const BASE_TITLE := "Blocco note"
+const BASE_TITLE := "Blocco note"  # shown through tr()
 const SAVED_SECONDS := 1.6
 
 var _file_id := ""
@@ -59,19 +59,19 @@ func _refresh() -> void:
 	_save.disabled = not has_file
 	if not has_file:
 		_show_text("")
-		_text.placeholder_text = "Nessun file aperto."
+		_text.placeholder_text = tr("Nessun file aperto.")
 		_status.text = ""
 		_restore.visible = false
-		title_changed.emit(BASE_TITLE)
+		title_changed.emit(tr(BASE_TITLE))
 		return
 	# The file is replaced only when there's nothing unsaved to lose.
 	if not _is_dirty() and _text.text != str(file.content):
 		_show_text(str(file.content))
 	_update_title()
 	if file.get("corrected", false):
-		_status.text = "[b]Corretto dal Manager.[/b] L'Entità considera questa versione la verità."
+		_status.text = tr("[b]Corretto dal Manager.[/b] L'Entità considera questa versione la verità.")
 	else:
-		_status.text = "Versione dell'Entità. Se la correggi, la tua versione diventa canone."
+		_status.text = tr("Versione dell'Entità. Se la correggi, la tua versione diventa canone.")
 	_restore.visible = file.get("corrected", false)
 
 
@@ -109,7 +109,7 @@ func _update_title() -> void:
 	var file := _file()
 	if file.is_empty():
 		return
-	title_changed.emit("%s%s · %s" % [file.name, " *" if _is_dirty() else "", BASE_TITLE])
+	title_changed.emit("%s%s · %s" % [file.name, " *" if _is_dirty() else "", tr(BASE_TITLE)])
 
 
 ## Ctrl+S (Cmd+S on Mac) saves, as in the Dossier.
@@ -163,7 +163,7 @@ func on_menu_action(action: StringName) -> void:
 			var file := _file()
 			if not file.is_empty():
 				# What is on screen, unsaved corrections included.
-				present_requested.emit({"kind": "text", "caption": "%s · Blocco note" % file.name, "body": _text.text})
+				present_requested.emit({"kind": "text", "caption": "%s · %s" % [file.name, tr(BASE_TITLE)], "body": _text.text})
 
 
 # --- Find ----------------------------------------------------------------------

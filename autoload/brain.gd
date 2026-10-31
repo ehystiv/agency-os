@@ -109,7 +109,7 @@ func probe(provider: String, url: String, model: String, key: String, skip_reaso
 	var probe_provider := _make_provider(provider, url, model, key)
 	add_child(probe_provider)
 	var request := probe_provider.chat(
-		[{"role": "user", "content": "Rispondi soltanto con la parola: pronto"}],
+		[{"role": "user", "content": tr("Rispondi soltanto con la parola: pronto")}],
 		# Streaming, so a server that hangs fails after FIRST_TOKEN_TIMEOUT_MS and not after minutes.
 		{"stream": true, "temperature": 0.0, "max_tokens": int(get_setting("max_reply", provider)), "skip_reasoning": skip_reasoning})
 	_free_when_done(probe_provider, request)

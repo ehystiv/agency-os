@@ -160,7 +160,7 @@ func entries() -> Array[Dictionary]:
 	for app in _registry.apps:
 		var window: AppWindow = _windows.get(app.id)
 		if window != null and _open.has(app.id):
-			result.append({"id": app.id, "label": app.label, "icon": app.icon, "active": window.active and window.visible})
+			result.append({"id": app.id, "label": tr(app.label), "icon": app.icon, "active": window.active and window.visible})
 	return result
 
 

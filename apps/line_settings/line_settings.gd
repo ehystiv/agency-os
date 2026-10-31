@@ -31,11 +31,11 @@ var _shown_provider := ""
 
 func _ready() -> void:
 	for id in Brain.PROVIDERS:
-		_provider.add_item(Brain.PROVIDER_LABELS[id])
+		_provider.add_item(tr(Brain.PROVIDER_LABELS[id]))
 	_provider.item_selected.connect(func(index: int) -> void: _load(Brain.PROVIDERS[index]))
 	for key in LocalProvider.PRESET_LABELS:
 		_presets.append(key)
-		_server.add_item(LocalProvider.PRESET_LABELS[key])
+		_server.add_item(tr(LocalProvider.PRESET_LABELS[key]))
 	_server.item_selected.connect(_on_server_selected)
 	_url.text_changed.connect(_on_url_changed)
 	_list.pressed.connect(_on_list_pressed)
@@ -118,7 +118,7 @@ func _on_list_pressed() -> void:
 		return
 	var ids := request.text.split("\n", false)
 	if ids.is_empty():
-		_report.text = "[!!] Il server non ha nessun modello disponibile."
+		_report.text = tr("[!!] Il server non ha nessun modello disponibile.")
 		return
 	for id in ids:
 		_models_popup.add_item(id)
@@ -133,7 +133,7 @@ func _on_test_pressed() -> void:
 	_test.disabled = true
 	var url := _url.text.strip_edges()
 	var model := _model.text.strip_edges()
-	var lines: PackedStringArray = ["Contatto %s…" % url]
+	var lines: PackedStringArray = [tr("Contatto %s…") % url]
 	_report.text = "\n".join(lines)
 	var models := Brain.probe_models(_shown_provider, url, _key.text.strip_edges())
 	await models.finished
@@ -143,10 +143,10 @@ func _on_test_pressed() -> void:
 		_finish_test(lines)
 		return
 	var ids := models.text.split("\n", false)
-	lines.append("[OK] Server raggiunto, %d modelli disponibili." % ids.size())
+	lines.append(tr("[OK] Server raggiunto, %d modelli disponibili.") % ids.size())
 	if not ids.is_empty() and not model in ids:
-		lines.append("[??] «%s» non è nell'elenco del server: controlla il nome." % model)
-	lines.append("Chiedo una risposta a «%s»… (il primo caricamento può richiedere tempo)" % model)
+		lines.append(tr("[??] «%s» non è nell'elenco del server: controlla il nome.") % model)
+	lines.append(tr("Chiedo una risposta a «%s»… (il primo caricamento può richiedere tempo)") % model)
 	_report.text = "\n".join(lines)
 	var started := Time.get_ticks_msec()
 	var reply := Brain.probe(_shown_provider, url, model, _key.text.strip_edges(), _skip_reasoning.button_pressed)
@@ -154,7 +154,7 @@ func _on_test_pressed() -> void:
 	lines.remove_at(lines.size() - 1)
 	var seconds := (Time.get_ticks_msec() - started) / 1000.0
 	if reply.ok():
-		lines.append("[OK] «%s» risponde in %.1f s: «%s»." % [model, seconds, reply.text.strip_edges().left(40)])
+		lines.append(tr("[OK] «%s» risponde in %.1f s: «%s».") % [model, seconds, reply.text.strip_edges().left(40)])
 	else:
 		lines.append("[!!] " + reply.error)
 	_finish_test(lines)

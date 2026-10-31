@@ -32,7 +32,7 @@ func _ready() -> void:
 	%Plus.pressed.connect(func() -> void: _change_chaos(1))
 	_reset.pressed.connect(_on_reset_pressed)
 	Campaign.chaos_changed.connect(func(_c: int) -> void: _refresh_chaos())
-	_result.text = IDLE_TEXT
+	_result.text = tr(IDLE_TEXT)
 	_refresh_chaos()
 	# Continuous redraw only while rolling; when still one frame is enough.
 	_tray.rolling_changed.connect(_set_live)
@@ -55,7 +55,7 @@ func _on_roll_pressed() -> void:
 	_refresh_chaos()
 	_roll.disabled = true
 	_lcd.text = "· · · · · ·"
-	_result.text = "Lancio in corso…"
+	_result.text = tr("Lancio in corso…")
 	var values := await _tray.roll()
 	var outcome := DiceRules.evaluate(values)
 	_tray.highlight(DiceRules.TARGET)
@@ -80,7 +80,7 @@ func _on_roll_pressed() -> void:
 	_result.text = line.replace(word, "[b][color=%s]%s[/color][/b]" % [color, word])
 	if not triscendence and Campaign.level() >= 2 and randf() < ENTITY_LCD_CHANCE:
 		# The Entity takes over the display for a moment.
-		_lcd.text = ENTITY_LCD[randi() % ENTITY_LCD.size()]
+		_lcd.text = tr(ENTITY_LCD[randi() % ENTITY_LCD.size()])
 		Entity.stir(0.35)
 		await get_tree().create_timer(ENTITY_LCD_SECONDS).timeout
 	_lcd.text = real
@@ -119,7 +119,7 @@ func _on_reset_pressed() -> void:
 
 func _refresh_chaos() -> void:
 	_chaos.text = "%02d" % Campaign.chaos
-	_reset.text = "Conferma" if _reset_armed else "Azzera"
+	_reset.text = tr("Conferma") if _reset_armed else tr("Azzera")
 
 
 func _set_live(live: bool) -> void:
@@ -149,7 +149,7 @@ func on_menu_action(action: StringName) -> void:
 		&"chaos_minus": _change_chaos(-1)
 		&"present":
 			if not _last_roll.is_empty():
-				present_requested.emit({"kind": "text", "caption": "Calcolatrice · 6d4", "heading": _last_roll.digits, "body": str(_last_roll.line).replace(". Scegli un effetto della Triscendenza.", "")})
+				present_requested.emit({"kind": "text", "caption": tr("Calcolatrice · 6d4"), "heading": _last_roll.digits, "body": str(_last_roll.line).replace(tr(". Scegli un effetto della Triscendenza."), "")})
 		&"chaos_reset":
 			_reset_armed = false
 			Campaign.set_chaos(0)

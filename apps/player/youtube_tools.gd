@@ -82,7 +82,7 @@ func install() -> void:
 	DirAccess.make_dir_recursive_absolute(DIR)
 	var arch := Engine.get_architecture_name()
 	if not FFMPEG_BUILDS.has(arch):
-		_finish_install("Architettura non supportata (%s)." % arch)
+		_finish_install(tr("Architettura non supportata (%s).") % arch)
 		return
 	var steps: Array[Dictionary] = []
 	if find("yt-dlp") == "":
@@ -97,7 +97,7 @@ func install() -> void:
 	for step in steps:
 		var tool: String = step.tool
 		var error := ""
-		var label := "Scarico %s…" % tool
+		var label := tr("Scarico %s…") % tool
 		var tick := func() -> void: progress.emit((done + minf(_http.get_downloaded_bytes(), step.bytes)) / total, label)
 		var timer := Timer.new()
 		timer.wait_time = 0.2
@@ -146,7 +146,7 @@ func _install_yt_dlp() -> String:
 		if parts.size() == 2 and parts[1] == "yt-dlp_macos":
 			expected = parts[0].to_lower()
 	if expected == "":
-		return "Non riesco a verificare yt-dlp: controlla la connessione."
+		return tr("Non riesco a verificare yt-dlp: controlla la connessione.")
 	var target := DIR.path_join("yt-dlp")
 	var error := await _download(YT_DLP_URL, target + ".part", expected)
 	if error != "":
@@ -163,7 +163,7 @@ func _install_gz(tool: String, url: String, expected: String) -> String:
 	# gunzip ships with macOS: it turns tool.gz into tool.
 	var output := []
 	if OS.execute("/usr/bin/gunzip", PackedStringArray(["-f", ProjectSettings.globalize_path(target + ".gz")]), output, true) != 0:
-		return "Non riesco a estrarre %s." % tool
+		return tr("Non riesco a estrarre %s.") % tool
 	return _make_executable(target)
 
 
@@ -171,15 +171,15 @@ func _download(url: String, path: String, sha256: String) -> String:
 	_http.download_file = path
 	if _http.request(url) != OK:
 		_http.download_file = ""
-		return "Non riesco a contattare GitHub."
+		return tr("Non riesco a contattare GitHub.")
 	var result: Array = await _http.request_completed
 	_http.download_file = ""
 	if result[0] != HTTPRequest.RESULT_SUCCESS or result[1] != 200:
 		_remove(path)
-		return "Download non riuscito (%s). Controlla la connessione e riprova." % ("HTTP %d" % result[1] if result[0] == HTTPRequest.RESULT_SUCCESS else "errore %d" % result[0])
+		return tr("Download non riuscito (%s). Controlla la connessione e riprova.") % ("HTTP %d" % result[1] if result[0] == HTTPRequest.RESULT_SUCCESS else tr("errore %d") % result[0])
 	if FileAccess.get_sha256(path) != sha256:
 		_remove(path)
-		return "Il file scaricato non corrisponde a quello atteso: non lo installo."
+		return tr("Il file scaricato non corrisponde a quello atteso: non lo installo.")
 	return ""
 
 
@@ -196,7 +196,7 @@ func _fetch_text(url: String) -> String:
 func _make_executable(path: String) -> String:
 	var global := ProjectSettings.globalize_path(path)
 	if OS.execute("/bin/chmod", PackedStringArray(["755", global])) != 0:
-		return "Non riesco a rendere eseguibile %s." % path.get_file()
+		return tr("Non riesco a rendere eseguibile %s.") % path.get_file()
 	return ""
 
 

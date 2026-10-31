@@ -80,9 +80,9 @@ func _refresh_level() -> void:
 		(_pips.get_child(i) as ColorRect).color = PIP_ON if i < level else PIP_OFF
 	var missing := Campaign.interviews_to_next_level()
 	if missing == 0:
-		_level_hint.text = "Accesso massimo: l'Entità non ha più segreti per te."
+		_level_hint.text = tr("Accesso massimo: l'Entità non ha più segreti per te.")
 	else:
-		_level_hint.text = "Cresce a ogni colloquio concluso. Prossimo livello tra %d %s." % [missing, "colloquio" if missing == 1 else "colloqui"]
+		_level_hint.text = tr("Cresce a ogni colloquio concluso. Prossimo livello tra %d %s.") % [missing, tr("colloquio") if missing == 1 else tr("colloqui")]
 
 
 func _refresh_list() -> void:
@@ -101,7 +101,7 @@ func _make_row(interview: Interview) -> Button:
 	row.button_pressed = interview.number == _selected_number
 	row.focus_mode = Control.FOCUS_NONE
 	row.custom_minimum_size = Vector2(0, 26)
-	row.tooltip_text = "Apri il colloquio n. %03d nella linea" % interview.number
+	row.tooltip_text = tr("Apri il colloquio n. %03d nella linea") % interview.number
 	row.pressed.connect(_on_row_pressed.bind(interview.number))
 
 	var content := HBoxContainer.new()
@@ -112,12 +112,12 @@ func _make_row(interview: Interview) -> Button:
 	var spoken := interview.spoken_count()
 	var labels: Array[Label] = [
 		_row_label(&"ListNum", "#%03d" % interview.number),
-		_row_label(&"ListMeta", "%s · %d %s" % [ItalianDate.short(interview.opened_at), spoken, "messaggio" if spoken == 1 else "messaggi"]),
+		_row_label(&"ListMeta", "%s · %d %s" % [ItalianDate.short(interview.opened_at), spoken, tr("messaggio") if spoken == 1 else tr("messaggi")]),
 	]
 	labels[1].size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	labels[1].clip_text = true
 	if interview.is_open():
-		labels.append(_row_label(&"ListTag", "in linea"))
+		labels.append(_row_label(&"ListTag", tr("in linea")))
 	for label in labels:
 		label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		label.size_flags_vertical = Control.SIZE_SHRINK_CENTER
@@ -146,19 +146,19 @@ func _on_notes_changed() -> void:
 	_notes_saved.hide()
 	if not _notes_dirty:
 		_notes_dirty = true
-		title_changed.emit(BASE_TITLE + " *")
+		title_changed.emit(tr(BASE_TITLE) + " *")
 
 
 func _save_notes() -> void:
 	Campaign.set_notes(_notes.text)
 	_notes_dirty = false
 	_notes_saved.show()
-	title_changed.emit(BASE_TITLE)
+	title_changed.emit(tr(BASE_TITLE))
 
 
 func _toggle_memory() -> void:
 	_memory_box.visible = not _memory_box.visible
-	_memory_toggle.text = ("▾ " if _memory_box.visible else "▸ ") + "Ricordi dell'Entità"
+	_memory_toggle.text = ("▾ " if _memory_box.visible else "▸ ") + tr("Ricordi dell'Entità")
 
 
 func _load_memory() -> void:

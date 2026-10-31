@@ -96,12 +96,12 @@ func is_hot() -> bool:
 ## The camera caption (shown on screen).
 func status_text() -> String:
 	if is_hot():
-		return "SOGGETTO AGITATO"
+		return tr("SOGGETTO AGITATO")
 	if shrink > 0.3:
-		return "SOGGETTO IN RITIRATA"
+		return tr("SOGGETTO IN RITIRATA")
 	if speaking:
-		return "ATTIVITÀ ANOMALA"
-	return "SOGGETTO CONTENUTO"
+		return tr("ATTIVITÀ ANOMALA")
+	return tr("SOGGETTO CONTENUTO")
 
 
 func _set_signal(value: bool) -> void:

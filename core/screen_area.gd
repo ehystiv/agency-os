@@ -38,4 +38,4 @@ static func format(area: Vector2i) -> String:
 
 ## Shown on screen, as Windows 98 wrote it.
 static func label(area: Vector2i) -> String:
-	return "%d per %d pixel" % [area.x, area.y]
+	return TranslationServer.translate("%d per %d pixel") % [area.x, area.y]

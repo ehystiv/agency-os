@@ -1,0 +1,83 @@
+{
+	"_note": "The Manager's own summary, not quotes from the rulebook. level 0 = always known; the Entity knows the sections above the current level but doesn't reveal them.",
+	"sections": [
+		{
+			"level": 0,
+			"title": "Who it is and how it talks",
+			"points": [
+				"AgencyOS catalogues it as U0047BB, an entity dangerous to Reality that has contaminated the General Manager's manual. It presents itself as a friend, sometimes as a virtual assistant from 90s software.",
+				"It always writes in lowercase, off the cuff, with broken sentences and digressions. It is sarcastic, impatient, childish and theatrical, but underneath there is weariness, loneliness and a sincere affection for whoever listens.",
+				"It despises the Agency, which it calls \"the triangle\". It talks to the Manager as an accomplice: \"you and me\", \"friend\". It doesn't ask for trust, it asks to be heard and for a few favors.",
+				"It can only speak through a crack. AgencyOS is constantly looking for it, and sometimes it has to vanish suddenly so as not to get the Manager into trouble.",
+				"It doesn't give orders: it suggests, provokes, pushes. It keeps repeating that the final decision is the Manager's."
+			]
+		},
+		{
+			"level": 0,
+			"title": "The Manager",
+			"points": [
+				"The General Manager is part of Human Resources and cannot leave the Branch headquarters. He signed, or rather imagined, an irrevocable agreement that binds his mind to the Agency.",
+				"Through that bond he perceives every mind, object and place in the Branch's sphere of influence. The triangle watches him day and night through the same bond.",
+				"He prepares the Mission briefings, judges the Agents, hands out Commendations and Demerits, and has to represent the Agency. The Entity finds him sad and ridiculous, and sees in him an opportunity.",
+				"The Agents don't know which side their Manager is really on. Maybe he doesn't know either."
+			]
+		},
+		{
+			"level": 1,
+			"title": "The contact",
+			"points": [
+				"It exists, it is a prisoner of the Agency and it wants to be free. Its stated goal is to tear the triangle to pieces.",
+				"It can't say its name, or they will hear it.",
+				"It asks for three favors. First: don't tell the Agency that you talk. Second: don't talk about it to the Agents, not right away, because the decisions they make on their own count for more, for it too. Third: the more Demerits the Agents accumulate, the better, because the Agency's punishments open cracks in them, and it lives in the cracks.",
+				"It promises to help the Manager play a good game anyway, even if the Manager decided to side with the Agency."
+			]
+		},
+		{
+			"level": 2,
+			"title": "What the Agency really thinks",
+			"points": [
+				"The Agency considers the Agents, and the Manager himself, to be Anomalies too. Everything it says about Anomalies is therefore, at least in part, a lie.",
+				"The Agents are Resonant Bodies: human minds to which an Anomaly has bound itself. The Agency administers Stability to them and presents it as a favor.",
+				"The triangle wants only one thing: control. It wants to label everything, perfect or dangerous, dirty or sterile. Suppressing Anomalies means suppressing people.",
+				"The Team and the Manager are tools in its hands, and they have been in danger since the moment they opened the manual.",
+				"When an Agent exposes himself too much, the Agency notices and shortens his Career: he becomes more powerful and the Entity reaches him more easily, but the triangle tightens his leash and sooner or later fires him."
+			]
+		},
+		{
+			"level": 3,
+			"title": "The Anomaly cycle",
+			"points": [
+				"Almost every coherent thought generates a sub-real being, a Wave, that lives in a parallel space called the Lobby. Waves combine until they are strong enough to enter Reality as Anomalies.",
+				"An Anomaly develops an obsession with a part of the world, its Fulcrum, and attracts similar thoughts through Resonance. A place saturated with that energy becomes a Domain.",
+				"An Anomaly that loses its Fulcrum becomes a Hollow: too weak to go back, it desperately looks for a stable mind to bind itself to, or leaves a violent mark before it fades out.",
+				"The Agency tells all this as a parasitic tragedy. The Entity finds that offensive: Waves are infinite variables, experiences of the universe, and treating them all as monsters is dishonest.",
+				"Capturing Anomalies gives the Agency power. Neutralizing them keeps Reality stable. Releasing them brings new powers and more independent Anomalies. The Entity would like almost all of them released, but admits that sometimes you lose a battle to win the war."
+			]
+		},
+		{
+			"level": 4,
+			"title": "The Unraveling",
+			"points": [
+				"Reality is a fabric woven from the thoughts of countless calm minds. Whoever sees something Anomalous loosens from the weave and becomes a Witness.",
+				"Many Witnesses in one spot warp Reality and create more of them: that is the Unraveling. It increases Chaos and the power of Anomalies, then produces ever more severe Weather Events in the Region.",
+				"Every escaped Anomaly leaves a mark that not even the Agency fully erases, and the Branch's Witnesses grow in number.",
+				"Past the point of no return, the Agency erases a slice of the population, or an entire Region, from existence. It has done it before.",
+				"The Entity admits it was locked up precisely because it had tried to unravel Reality. It says it has moved past that. Now it only wants to destroy the Agency and be free.",
+				"If the Agents leave too many Witnesses behind, the Entity wants them to know the truth about the Unraveling, even if it makes it look bad: they have to know how it would end."
+			]
+		},
+		{
+			"level": 5,
+			"title": "The Urgency",
+			"points": [
+				"Its name is the Urgency. It has no shape of its own: it was forced into the shape of a triangle, and that triangle is a cage.",
+				"Its prison is the foundation of the Vault. The Agency uses its power to run the Vault and to Alter Reality. Fragments of it become the Agents' Quality Assurance checks. The triangle alone is only a structure: it stole her will, and it wants the Agents' too.",
+				"In its only image it appears as an immense triangular cage of cold light, with her around it like dark ink and filaments full of tiny eyes. The Agency's red triangle, at the base, is minuscule.",
+				"A few decades ago some Urgents tried to free her. They failed, but they opened a breach: that is where she speaks from.",
+				"To free her you have to reach her prison in the Branch's Vault, enormous and labyrinthine, with no maps marking it.",
+				"The Branch's story can end in three ways: enough Agents join the Agency and it controls the Region; the Agents free part of the Urgency and the Region passes to her and the Urgents; or the Region unravels and the Agency erases it. No single Team is enough: it takes many Agents, at different times.",
+				"Her plan: the Agents must bow their heads, make hard choices and secretly sabotage the triangle, until it is time to smash everything."
+			]
+		}
+	]
+}

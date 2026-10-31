@@ -45,7 +45,7 @@ func _refresh() -> void:
 	for memo in list:
 		_rows.add_child(_make_row(memo))
 	var unread := mail.unread_count()
-	_count.text = "%d %s · %d da leggere" % [list.size(), "messaggio" if list.size() == 1 else "messaggi", unread]
+	_count.text = (tr("%d messaggio · %d da leggere") if list.size() == 1 else tr("%d messaggi · %d da leggere")) % [list.size(), unread]
 	_show(mail.find_mail(_selected_id), not list.is_empty())
 
 
@@ -106,7 +106,7 @@ func _open(id: String) -> void:
 func _show(memo: Dictionary, has_messages: bool) -> void:
 	_message.visible = not memo.is_empty()
 	_hint.visible = memo.is_empty()
-	_hint.text = "Seleziona un messaggio da leggere." if has_messages else ""
+	_hint.text = tr("Seleziona un messaggio da leggere.") if has_messages else ""
 	if memo.is_empty():
 		return
 	_from.text = "%s <%s>" % [memo.sender, _address(str(memo.sender))]
@@ -128,7 +128,7 @@ func menu(title: String) -> Array[Dictionary]:
 	match title:
 		"Messaggio":
 			return [
-				{"label": "%s" % "Mostra ai giocatori", "action": "present", "accel": KEY_MASK_CMD_OR_CTRL | KEY_MASK_SHIFT | KEY_P, "disabled": memo.is_empty()},
+				{"label": "Mostra ai giocatori", "action": "present", "accel": KEY_MASK_CMD_OR_CTRL | KEY_MASK_SHIFT | KEY_P, "disabled": memo.is_empty()},
 				{},
 				{"label": "Copia il testo del messaggio", "action": "copy", "disabled": memo.is_empty()},
 			]
@@ -146,13 +146,13 @@ func on_menu_action(action: StringName) -> void:
 		&"copy":
 			var memo := Campaign.correspondence.find_mail(_selected_id)
 			if not memo.is_empty():
-				DisplayServer.clipboard_set("Da: %s\nOggetto: %s\n\n%s" % [memo.sender, memo.subject, memo.body])
+				DisplayServer.clipboard_set(tr("Da: %s\nOggetto: %s\n\n%s") % [memo.sender, memo.subject, memo.body])
 		&"inbox":
 			_refresh()
 		&"present":
 			var memo := Campaign.correspondence.find_mail(_selected_id)
 			if not memo.is_empty():
 				present_requested.emit({
-					"kind": "text", "caption": "AMail · Memo interno", "heading": str(memo.subject),
-					"meta": "Da: %s · %s" % [memo.sender, ItalianDate.numeric(str(memo.created))], "body": str(memo.body),
+					"kind": "text", "caption": tr("AMail · Memo interno"), "heading": str(memo.subject),
+					"meta": tr("Da: %s · %s") % [memo.sender, ItalianDate.numeric(str(memo.created))], "body": str(memo.body),
 				})

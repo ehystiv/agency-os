@@ -25,13 +25,17 @@ static func weekday_index(day: String) -> int:
 
 ## "2026-10-24" -> "sab"
 static func weekday_short(day: String) -> String:
-	return WEEKDAYS[weekday_index(day)].left(3)
+	return TranslationServer.translate(WEEKDAYS[weekday_index(day)]).left(3)
 
 
 ## "2026-10-24" -> "sabato 24 ottobre"
 static func long_day(day: String) -> String:
 	var parts := day.split("-")
-	return "%s %d %s" % [WEEKDAYS[weekday_index(day)], int(parts[2]), MONTH_NAMES[int(parts[1]) - 1]]
+	return TranslationServer.translate("{weekday} {day} {month}").format({
+		"weekday": TranslationServer.translate(WEEKDAYS[weekday_index(day)]),
+		"day": int(parts[2]),
+		"month": TranslationServer.translate(MONTH_NAMES[int(parts[1]) - 1]),
+	})
 
 
 ## "2026-10-24T21:15:03" -> "24/10/26"
@@ -39,7 +43,7 @@ static func numeric(iso: String) -> String:
 	var parts := iso.left(10).split("-")
 	if parts.size() != 3:
 		return ""
-	return "%s/%s/%s" % [parts[2], parts[1], parts[0].right(2)]
+	return TranslationServer.translate("{day}/{month}/{year}").format({"day": parts[2], "month": parts[1], "year": parts[0].right(2)})
 
 
 ## "2026-10-24T21:15:03" -> "21:15"
@@ -60,4 +64,4 @@ static func short(iso: String) -> String:
 	var month := int(parts[1])
 	if month < 1 or month > 12:
 		return ""
-	return "%d %s" % [int(parts[2]), MONTHS[month - 1]]
+	return TranslationServer.translate("{day} {month}").format({"day": int(parts[2]), "month": TranslationServer.translate(MONTHS[month - 1])})

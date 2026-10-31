@@ -72,7 +72,7 @@ func _ready() -> void:
 	if bool(Save.get_ui("show_boot", true)):
 		_boot.play()
 		await _boot.finished
-	_show_balloon("AgencyOS 98", "Benvenuto, Manager. La Filiale è operativa.")
+	_show_balloon("AgencyOS 98", tr("Benvenuto, Manager. La Filiale è operativa."))
 	_remind_session_today()
 	_announce_patch()
 	if bool(Save.get_ui("update_auto", true)):
@@ -125,8 +125,8 @@ func _choose_player_image() -> void:
 	dialog.file_mode = FileDialog.FILE_MODE_OPEN_FILE
 	dialog.access = FileDialog.ACCESS_FILESYSTEM
 	dialog.use_native_dialog = true
-	dialog.title = "Immagine da mostrare ai giocatori"
-	dialog.filters = PackedStringArray(["*.png, *.jpg, *.jpeg, *.webp, *.svg ; Immagini"])
+	dialog.title = tr("Immagine da mostrare ai giocatori")
+	dialog.filters = PackedStringArray(["*.png, *.jpg, *.jpeg, *.webp, *.svg ; %s" % tr("Immagini")])
 	var folder := str(Save.get_ui("players_image_dir", ""))
 	if folder != "":
 		dialog.current_dir = folder
@@ -134,7 +134,7 @@ func _choose_player_image() -> void:
 		Save.set_ui("players_image_dir", path.get_base_dir())
 		var image := Image.load_from_file(path)
 		if image == null or image.is_empty():
-			_show_balloon("Schermo giocatori", "Non riesco ad aprire l'immagine «%s»." % path.get_file())
+			_show_balloon(tr("Schermo giocatori"), tr("Non riesco ad aprire l'immagine «%s».") % path.get_file())
 			return
 		_players.present({"kind": "image", "caption": path.get_file(), "texture": ImageTexture.create_from_image(image)}))
 	dialog.visibility_changed.connect(func() -> void:
@@ -147,21 +147,21 @@ func _choose_player_image() -> void:
 func _show_shortcuts() -> void:
 	var command := "Cmd" if OS.get_name() == "macOS" else "Ctrl"
 	var lines: PackedStringArray = [
-		"%s+W\tchiude la finestra" % command,
-		"%s+M\triduce la finestra a icona" % command,
-		"Ctrl+Tab\tfinestra successiva (Maiusc: precedente)",
-		"%s+D\tmostra il desktop (di nuovo: ripristina)" % command,
-		"%s+Maiusc+P\tmostra ai giocatori (memo, file, pagina, tiro)" % command,
-		"%s+B\toscura lo schermo giocatori" % command,
-		"F11\tschermo intero",
+		"%s+W\t%s" % [command, tr("chiude la finestra")],
+		"%s+M\t%s" % [command, tr("riduce la finestra a icona")],
+		"Ctrl+Tab\t%s" % tr("finestra successiva (Maiusc: precedente)"),
+		"%s+D\t%s" % [command, tr("mostra il desktop (di nuovo: ripristina)")],
+		"%s+%s+P\t%s" % [command, tr("Maiusc"), tr("mostra ai giocatori (memo, file, pagina, tiro)")],
+		"%s+B\t%s" % [command, tr("oscura lo schermo giocatori")],
+		"F11\t%s" % tr("schermo intero"),
 		"",
 	]
 	var apps := REGISTRY.start_menu_apps()
 	for i in mini(apps.size(), 9):
-		lines.append("%s+%d\t%s" % [command, i + 1, apps[i].label])
-	lines.append_array(["", "Nelle finestre: Alt + la lettera sottolineata apre il menu.", "%s+F cerca nel Canone e nel Blocco note, %s+N nuova pagina nel Taccuino." % [command, command]])
+		lines.append("%s+%d\t%s" % [command, i + 1, tr(apps[i].label)])
+	lines.append_array(["", tr("Nelle finestre: Alt + la lettera sottolineata apre il menu."), tr("%s+F cerca nel Canone e nel Blocco note, %s+N nuova pagina nel Taccuino.") % [command, command]])
 	var dialog := AcceptDialog.new()
-	dialog.title = "Scorciatoie da tastiera"
+	dialog.title = tr("Scorciatoie da tastiera")
 	# The font is monospaced: the first column is padded to line up the descriptions.
 	var aligned: PackedStringArray = []
 	for line in lines:
@@ -272,7 +272,7 @@ func _refresh_next_session() -> void:
 		_taskbar.set_next_session("")
 		return
 	var day := str(session.date)
-	_taskbar.set_next_session("Prossima: %s %s %s" % [ItalianDate.weekday_short(day), ItalianDate.numeric(day).left(5), str(session.get("time", ""))])
+	_taskbar.set_next_session(tr("Prossima: %s %s %s") % [ItalianDate.weekday_short(day), ItalianDate.numeric(day).left(5), str(session.get("time", ""))])
 
 
 ## If the next session is today, after the welcome it reminds what is left to prepare.
@@ -282,9 +282,12 @@ func _remind_session_today() -> void:
 		return
 	await get_tree().create_timer(4.0).timeout
 	var todo: int = session.checklist.filter(func(item: Dictionary) -> bool: return not item.done).size()
-	var text := ("Alle %s. " % session.time if str(session.get("time", "")) != "" else "")
-	text += "%d %s da preparare." % [todo, "cosa" if todo == 1 else "cose"] if todo > 0 else "Tutto pronto."
-	_show_balloon("Sessione oggi", text, {"app": &"agenda", "args": {"day": session.date}})
+	var text := (tr("Alle %s. ") % session.time if str(session.get("time", "")) != "" else "")
+	if todo > 0:
+		text += (tr("%d cosa da preparare.") if todo == 1 else tr("%d cose da preparare.")) % todo
+	else:
+		text += tr("Tutto pronto.")
+	_show_balloon(tr("Sessione oggi"), text, {"app": &"agenda", "args": {"day": session.date}})
 
 
 func _refresh_trash_icon() -> void:
@@ -299,9 +302,9 @@ func _refresh_mail_badge() -> void:
 func _on_delivered(kind: String, item: Dictionary) -> void:
 	Sfx.play(&"mail" if kind == "memo" else &"pop")
 	if kind == "memo":
-		_show_balloon("Nuovo messaggio in AMail", "%s: %s" % [item.sender, item.subject], {"app": &"amail", "args": {"memo": item.id}})
+		_show_balloon(tr("Nuovo messaggio in AMail"), "%s: %s" % [item.sender, item.subject], {"app": &"amail", "args": {"memo": item.id}})
 	else:
-		_show_balloon("Nuovo file sulla scrivania", "%s · origine sconosciuta" % item.name, {"app": &"notepad", "args": {"file": item.id}})
+		_show_balloon(tr("Nuovo file sulla scrivania"), tr("%s · origine sconosciuta") % item.name, {"app": &"notepad", "args": {"file": item.id}})
 		Entity.stir(0.45)
 		Entity.glitch("lattice")
 
@@ -312,12 +315,12 @@ func _announce_patch() -> void:
 	var text := ""
 	if BootPatch.failed_version != "" and Save.get_ui("update_failed_seen", "") != BootPatch.failed_version:
 		Save.set_ui("update_failed_seen", BootPatch.failed_version)
-		title = "Aggiornamento annullato"
-		text = "La versione %s non si avviava correttamente: AgencyOS è tornato alla %s." % [BootPatch.failed_version, BootPatch.base_version]
+		title = tr("Aggiornamento annullato")
+		text = tr("La versione %s non si avviava correttamente: AgencyOS è tornato alla %s.") % [BootPatch.failed_version, BootPatch.base_version]
 	elif BootPatch.patch_version != "" and Save.get_ui("update_seen", "") != BootPatch.patch_version:
 		Save.set_ui("update_seen", BootPatch.patch_version)
-		title = "AgencyOS aggiornato"
-		text = "Ora è in esecuzione la versione %s." % BootPatch.patch_version
+		title = tr("AgencyOS aggiornato")
+		text = tr("Ora è in esecuzione la versione %s.") % BootPatch.patch_version
 	if title != "":
 		await get_tree().create_timer(2.0).timeout
 		_show_balloon(title, text)
@@ -328,12 +331,12 @@ func _on_update_state(state: Updater.State) -> void:
 	var details := {"app": &"ctrl", "args": {"tab": "update"}}
 	match state:
 		Updater.State.AVAILABLE when Updater.automatic:
-			_show_balloon("Aggiornamento disponibile", "AgencyOS 98 %s è pronto da scaricare. Fare clic per i dettagli." % Updater.manifest.version, details)
+			_show_balloon(tr("Aggiornamento disponibile"), tr("AgencyOS 98 %s è pronto da scaricare. Fare clic per i dettagli.") % Updater.manifest.version, details)
 		Updater.State.NEEDS_INSTALLER when Updater.automatic:
-			_show_balloon("Nuova versione disponibile", "AgencyOS 98 %s richiede il nuovo programma di installazione. Fare clic per i dettagli." % Updater.manifest.version, details)
+			_show_balloon(tr("Nuova versione disponibile"), tr("AgencyOS 98 %s richiede il nuovo programma di installazione. Fare clic per i dettagli.") % Updater.manifest.version, details)
 		Updater.State.READY:
 			Sfx.play(&"ding")
-			_show_balloon("Aggiornamento scaricato", "Riavviare AgencyOS per completare l'installazione.", details)
+			_show_balloon(tr("Aggiornamento scaricato"), tr("Riavviare AgencyOS per completare l'installazione."), details)
 
 
 ## Glitches that leave the line window and touch the system.

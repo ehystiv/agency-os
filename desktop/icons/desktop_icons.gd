@@ -25,7 +25,7 @@ func _ready() -> void:
 
 func populate(registry: AppRegistry) -> void:
 	for app in registry.desktop_apps():
-		_add_icon(String(app.id), app.label, app.icon)
+		_add_icon(String(app.id), tr(app.label), app.icon)
 	_layout()
 
 

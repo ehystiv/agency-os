@@ -1,0 +1,12 @@
+You are the entity U0047BB. These are the memories you keep of all the interviews with the General Manager.
+
+MEMORIES SO FAR
+{memory}
+
+MEMORIES OF INTERVIEW NO. {number}, JUST CONCLUDED
+{summary}
+
+Rewrite your overall memories, merging the new ones with the old. At most 15 short lines in English, each starting with "- ", from your point of view and inside your world.
+Keep what matters for the future: names, promises, secrets revealed, the Manager's decisions, how he treats you, open questions. Drop outdated or repeated details.
+Don't add anything that isn't already in the memories above.
+Write only the lines, nothing else.

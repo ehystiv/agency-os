@@ -57,9 +57,9 @@ func _refresh() -> void:
 	_empty.visible = list.is_empty()
 	for item in list:
 		_rows.add_child(_make_row(item))
-	_count.text = "%d %s" % [list.size(), "elemento" if list.size() == 1 else "elementi"]
+	_count.text = (tr("%d elemento") if list.size() == 1 else tr("%d elementi")) % list.size()
 	_empty_all.visible = not list.is_empty()
-	_empty_all.text = "Conferma: svuota il cestino" if _armed == "empty" else "Svuota il cestino"
+	_empty_all.text = tr("Conferma: svuota il cestino") if _armed == "empty" else tr("Svuota il cestino")
 	_show(_selected())
 
 
@@ -96,7 +96,7 @@ func _make_row(item: Dictionary) -> Button:
 	var date := _row_label(ItalianDate.numeric(str(item.deleted)), selected)
 	date.modulate.a = 0.75
 	top.add_child(date)
-	box.add_child(_row_label("File non registrato · origine sconosciuta" if draft else "Pagina del Taccuino", selected))
+	box.add_child(_row_label(tr("File non registrato · origine sconosciuta") if draft else tr("Pagina del Taccuino"), selected))
 	return row
 
 
@@ -117,23 +117,23 @@ func _show(item: Dictionary) -> void:
 		node.visible = has_item
 	_restore.visible = has_item and not draft
 	_delete.visible = has_item
-	_delete.text = "Conferma eliminazione" if _armed == "delete" else "Elimina definitivamente"
+	_delete.text = tr("Conferma eliminazione") if _armed == "delete" else tr("Elimina definitivamente")
 	_page_text.visible = has_item and not draft
 	_ink_text.visible = draft
 	if not has_item:
 		return
 	_title.text = str(item.name)
-	var when := "%s alle %s" % [ItalianDate.numeric(str(item.deleted)), ItalianDate.time(str(item.deleted))]
+	var when := tr("%s alle %s") % [ItalianDate.numeric(str(item.deleted)), ItalianDate.time(str(item.deleted))]
 	if draft:
-		_meta.text = "Origine sconosciuta · comparso il " + when
+		_meta.text = tr("Origine sconosciuta · comparso il %s") % when
 		_ink_text.text = str(item.get("text", ""))
-		_note.text = "Questo file non può essere ripristinato."
+		_note.text = tr("Questo file non può essere ripristinato.")
 	else:
 		var page: Dictionary = item.get("data", {})
 		var session := int(page.get("session", 0))
-		_meta.text = "Eliminata il " + when + (" · Sessione %03d" % session if session > 0 else "")
-		_page_text.text = str(page.get("text", "")) if str(page.get("text", "")) != "" else "(pagina vuota)"
-		_note.text = "Ripristinandola torna nel Taccuino."
+		_meta.text = tr("Eliminata il %s") % when + (tr(" · Sessione %03d") % session if session > 0 else "")
+		_page_text.text = str(page.get("text", "")) if str(page.get("text", "")) != "" else tr("(pagina vuota)")
+		_note.text = tr("Ripristinandola torna nel Taccuino.")
 
 
 func _on_restore_pressed() -> void:

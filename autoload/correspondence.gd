@@ -158,7 +158,7 @@ func restore_file(file: Dictionary) -> void:
 ## [{command, level, lines: [[kind, text], …]}] from the data file.
 func secret_commands() -> Array:
 	if _secrets.is_empty():
-		var data: Variant = Save.read_json(SECRETS_PATH, {})
+		var data: Variant = Save.read_json(Locale.data_path(SECRETS_PATH), {})
 		if data is Dictionary:
 			_secrets = data.get("commands", [])
 	return _secrets
@@ -175,31 +175,31 @@ func prompt_memos() -> String:
 	var recent := delivered_mail().slice(0, PROMPT_MEMOS)
 	recent.reverse()
 	for memo in recent:
-		parts.append("Da: %s · Oggetto: %s\n%s" % [memo.sender, memo.subject, str(memo.body).left(PROMPT_MEMO_CHARS)])
-	return "\n\n".join(parts) if not parts.is_empty() else "(nessuno, per ora)"
+		parts.append(tr("Da: %s · Oggetto: %s\n%s") % [memo.sender, memo.subject, str(memo.body).left(PROMPT_MEMO_CHARS)])
+	return "\n\n".join(parts) if not parts.is_empty() else tr("(nessuno, per ora)")
 
 
 func prompt_files() -> String:
 	var parts: PackedStringArray = []
 	for file in delivered_files():
-		var head := "File \"%s\"%s:" % [file.name, " (CORRETTO DAL MANAGER: questa versione è la verità)" if file.get("corrected", false) else ""]
+		var head := tr("File \"%s\"%s:") % [file.name, tr(" (CORRETTO DAL MANAGER: questa versione è la verità)") if file.get("corrected", false) else ""]
 		parts.append(head + "\n" + str(file.content).left(PROMPT_FILE_CHARS))
-	return "\n\n".join(parts) if not parts.is_empty() else "(nessuno, per ora)"
+	return "\n\n".join(parts) if not parts.is_empty() else tr("(nessuno, per ora)")
 
 
 func prompt_commands(level: int) -> String:
 	var names: PackedStringArray = []
 	for secret: Dictionary in unlocked_commands(level):
 		names.append(str(secret.command))
-	return ", ".join(names) if not names.is_empty() else "(nessuno, per ora: non parlarne)"
+	return ", ".join(names) if not names.is_empty() else tr("(nessuno, per ora: non parlarne)")
 
 
 func prompt_drafts(trash: Array[Dictionary]) -> String:
 	var parts: PackedStringArray = []
 	for item in trash:
 		if item.get("type", "") == "draft":
-			parts.append("\"%s\": %s" % [item.name, str(item.get("text", "")).left(PROMPT_DRAFT_CHARS)])
-	return "\n".join(parts) if not parts.is_empty() else "(nessuno)"
+			parts.append(tr("\"%s\": %s") % [item.name, str(item.get("text", "")).left(PROMPT_DRAFT_CHARS)])
+	return "\n".join(parts) if not parts.is_empty() else tr("(nessuno)")
 
 
 # --- Session hooks ---------------------------------------------------------
@@ -250,15 +250,15 @@ func _make_memo(session: int, searches: int, deliver_now: bool) -> void:
 		sent.append("- " + str(memo.subject))
 	var notes := Campaign.notes.strip_edges()
 	var prompt := _read(PROMPT_MEMO).format({
-		"shift": "È il primo giorno del Manager in questa posizione: scrivi un memo di benvenuto e inserimento." if session == 1 else "È l'inizio del turno numero %d del Manager." % session,
-		"suspicion": "Durante il turno precedente AgencyOS ha avviato %d %s di attività anomala sul canale del Manager, senza trovare nulla: esprimi un sospetto cortese, senza accusare." % [searches, "ricerca" if searches == 1 else "ricerche"] if searches > 0 else "",
-		"notes": "DATI DEL FASCICOLO DEL MANAGER (usali se servono, senza elencarli):\n" + notes.left(2000) if notes != "" else "",
-		"sent": "MEMO GIÀ INVIATI (non ripeterne il tema):\n" + "\n".join(sent) if not sent.is_empty() else "",
-		"senders": ", ".join(SENDERS),
+		"shift": tr("È il primo giorno del Manager in questa posizione: scrivi un memo di benvenuto e inserimento.") if session == 1 else tr("È l'inizio del turno numero %d del Manager.") % session,
+		"suspicion": tr("Durante il turno precedente AgencyOS ha avviato %d %s di attività anomala sul canale del Manager, senza trovare nulla: esprimi un sospetto cortese, senza accusare.") % [searches, tr("ricerca") if searches == 1 else tr("ricerche")] if searches > 0 else "",
+		"notes": tr("DATI DEL FASCICOLO DEL MANAGER (usali se servono, senza elencarli):") + "\n" + notes.left(2000) if notes != "" else "",
+		"sent": tr("MEMO GIÀ INVIATI (non ripeterne il tema):") + "\n" + "\n".join(sent) if not sent.is_empty() else "",
+		"senders": ", ".join(_senders()),
 	})
 	var started := Campaign.generation
 	var out := await LlmJson.ask(prompt, {
-		"sender": {"type": "string", "enum": SENDERS},
+		"sender": {"type": "string", "enum": _senders()},
 		"subject": {"type": "string"},
 		"body": {"type": "string"},
 	})
@@ -271,7 +271,7 @@ func _make_memo(session: int, searches: int, deliver_now: bool) -> void:
 		"id": "m-%03d" % session,
 		"session": session,
 		"created": Time.get_datetime_string_from_system(),
-		"sender": str(out.get("sender", "Risorse Umane")).left(60),
+		"sender": str(out.get("sender", tr("Risorse Umane"))).left(60),
 		"subject": str(out.subject).strip_edges().left(140),
 		"body": _clean_body(str(out.body)).left(4000),
 		"read": false,
@@ -304,19 +304,19 @@ func _make_file(level: int, deliver_now: bool) -> void:
 	var secret := ""
 	for s: Dictionary in secret_commands():
 		if int(s.level) == level:
-			secret = "Da qualche parte suggerisci al Manager di digitare %s nel prompt dei comandi, senza spiegare cosa succede." % s.command
+			secret = tr("Da qualche parte suggerisci al Manager di digitare %s nel prompt dei comandi, senza spiegare cosa succede.") % s.command
 	var notes := Campaign.notes.strip_edges()
 	var prompt := _read(PROMPT_FILE).format({
 		"title": section.title,
 		"points": "\n".join(points),
 		"command": secret,
-		"notes": "Ciò che sai del Manager e della Filiale:\n" + notes.left(1500) if notes != "" else "",
+		"notes": tr("Ciò che sai del Manager e della Filiale:") + "\n" + notes.left(1500) if notes != "" else "",
 	})
 	var started := Campaign.generation
 	var out := await LlmJson.ask(prompt, {"name": {"type": "string"}, "content": {"type": "string"}})
 	if Campaign.generation != started:
 		return
-	var file_name := _clean_file_name(str(out.get("name", "")), "crepa_0%d" % level, ["txt", "log"])
+	var file_name := _clean_file_name(str(out.get("name", "")), tr("crepa_0%d") % level, ["txt", "log"])
 	var content := str(out.get("content", "")).strip_edges()
 	if content == "":
 		# If the model is silent, the Entity leaves at least its raw notes.
@@ -343,7 +343,7 @@ func _make_draft(interview: Interview) -> void:
 	for item in Campaign.trash:
 		if item.id == id:
 			return
-	var prompt := _read(PROMPT_DRAFT).format({"memories": interview.summary if interview.summary != "" else "(confusi)"})
+	var prompt := _read(PROMPT_DRAFT).format({"memories": interview.summary if interview.summary != "" else tr("(confusi)")})
 	var started := Campaign.generation
 	var out := await LlmJson.ask(prompt, {"name": {"type": "string"}, "text": {"type": "string"}}, 0.9, 500)
 	if Campaign.generation != started:
@@ -354,7 +354,7 @@ func _make_draft(interview: Interview) -> void:
 	Campaign.add_to_trash({
 		"id": id,
 		"type": "draft",
-		"name": _clean_file_name(str(out.get("name", "")), "non_inviato_%03d" % interview.number, ["txt"]),
+		"name": _clean_file_name(str(out.get("name", "")), tr("non_inviato_%03d") % interview.number, ["txt"]),
 		"text": text.left(1500),
 		"session": interview.number,
 		"deleted": Time.get_datetime_string_from_system(),
@@ -415,7 +415,7 @@ static func _clean_body(text: String) -> String:
 	for line in text.replace("**", "").replace("__", "").split("\n"):
 		if kept.is_empty() and _is_heading(line.strip_edges()):
 			continue
-		kept.append(line.replace(", [Nome del Manager]", "").replace(" [Nome del Manager]", "").replace("[Nome del Manager]", ""))
+		kept.append(line.replace(", [Nome del Manager]", "").replace(", [Manager's name]", "").replace(" [Manager's name]", "").replace("[Manager's name]", "").replace("[Manager Name]", "").replace("[Manager name]", "").replace(" [Nome del Manager]", "").replace("[Nome del Manager]", ""))
 	return "\n".join(kept).strip_edges()
 
 
@@ -425,7 +425,7 @@ static func _is_heading(line: String) -> bool:
 		return true
 	# The long words can carry more before the colon ("Oggetto del memo:"); the short ones
 	# only as a field ("A: …", "Da: …"), or "A volte penso: …" would be lost.
-	var header := RegEx.create_from_string("^((memorandum|memo interno|mittente|oggetto|destinatario)\\b.*|a|da|data)\\s*:")
+	var header := RegEx.create_from_string("^((memorandum|memo interno|internal memo|mittente|sender|oggetto|subject|destinatario|recipient)\\b.*|a|da|data|to|from|date|re)\\s*:")
 	if header.search(line.to_lower()) != null:
 		return true
 	# Uppercase titles, and lines without letters (a date, a rule).
@@ -442,5 +442,12 @@ func _save_files() -> void:
 	files_changed.emit()
 
 
+func _senders() -> Array:
+	var result: Array = []
+	for sender in SENDERS:
+		result.append(tr(sender))
+	return result
+
+
 func _read(path: String) -> String:
-	return FileAccess.get_file_as_string(path)
+	return FileAccess.get_file_as_string(Locale.data_path(path))

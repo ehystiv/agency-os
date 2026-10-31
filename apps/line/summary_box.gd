@@ -30,13 +30,13 @@ func _build() -> void:
 	layout.add_child(header)
 	var title := Label.new()
 	title.theme_type_variation = &"SummaryTitle"
-	title.text = "Ricordi dell'Entità su questo colloquio"
+	title.text = tr("Ricordi dell'Entità su questo colloquio")
 	title.uppercase = true
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header.add_child(title)
 	_edit_link = LinkButton.new()
 	_edit_link.theme_type_variation = &"SummaryLink"
-	_edit_link.text = "Correggi"
+	_edit_link.text = tr("Correggi")
 	_edit_link.focus_mode = Control.FOCUS_NONE
 	_edit_link.pressed.connect(_start_editing)
 	header.add_child(_edit_link)
@@ -57,13 +57,13 @@ func _build() -> void:
 	_edit_buttons.visible = false
 	layout.add_child(_edit_buttons)
 	var cancel := Button.new()
-	cancel.text = "Annulla"
+	cancel.text = tr("Annulla")
 	cancel.focus_mode = Control.FOCUS_NONE
 	cancel.pressed.connect(_stop_editing)
 	_edit_buttons.add_child(cancel)
 	var save := Button.new()
 	save.theme_type_variation = &"PrimaryButton"
-	save.text = "Salva"
+	save.text = tr("Salva")
 	save.focus_mode = Control.FOCUS_NONE
 	save.pressed.connect(_on_save_pressed)
 	_edit_buttons.add_child(save)
@@ -71,7 +71,7 @@ func _build() -> void:
 
 
 func _show_text() -> void:
-	_view.text = _text if _text != "" else EMPTY_TEXT
+	_view.text = _text if _text != "" else tr(EMPTY_TEXT)
 	_view.modulate.a = 1.0 if _text != "" else 0.6
 
 

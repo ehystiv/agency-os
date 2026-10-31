@@ -42,21 +42,21 @@ func play() -> void:
 	_hint.show()
 	_lines.clear()
 	_text.text = ""
-	await _line("AgencyOS 98 BIOS v4.98 · (C) 1998 Triangle Agency", DIM_COLOR)
+	await _line(tr("AgencyOS 98 BIOS v4.98 · (C) 1998 Triangle Agency"), DIM_COLOR)
 	await _line("")
-	await _line("Memoria .................... 0K")
+	await _line(tr("Memoria .................... %dK") % 0)
 	for kb in [64, 128, 256, 512, 640]:
 		if _skipped:
 			break
-		_replace_last("Memoria .................... %dK" % kb)
+		_replace_last(tr("Memoria .................... %dK") % kb)
 		await _wait(0.06)
-	_replace_last("Memoria .................... 640K [color=%s]OK[/color]" % OK_COLOR)
-	await _line("Unità C: FILIALE ........... [color=%s]OK[/color]" % OK_COLOR)
-	await _line("CAM 03 · CAVEAU ............ [color=%s]OK[/color]" % OK_COLOR)
+	_replace_last(tr("Memoria .................... 640K %s") % _ok())
+	await _line(tr("Unità C: FILIALE ........... %s") % _ok())
+	await _line(tr("CAM 03 · CAVEAU ............ %s") % _ok())
 	await _check_server()
-	await _line("Linea riservata ............ [color=%s]NON REGISTRATA[/color]" % FAIL_COLOR)
+	await _line(tr("Linea riservata ............ %s") % ("[color=%s]%s[/color]" % [FAIL_COLOR, tr("NON REGISTRATA")]))
 	await _line("")
-	await _line("Avvio di AgencyOS in Modalità Sicura…")
+	await _line(tr("Avvio di AgencyOS in Modalità Sicura…"))
 	await _wait(0.5)
 	if not _skipped:
 		_text.hide()
@@ -84,20 +84,24 @@ func _input(event: InputEvent) -> void:
 ## Really queries the model server: if it's off you know before opening the line.
 func _check_server() -> void:
 	var where := str(Brain.get_setting("url")).trim_prefix("http://").trim_prefix("https://").trim_suffix("/v1")
-	await _line("Server del modello (%s) ... " % where)
+	await _line(tr("Server del modello (%s) ... ") % where)
 	if _skipped:
-		_replace_last("Server del modello (%s) ... [color=%s]non controllato[/color]" % [where, DIM_COLOR])
+		_replace_last(tr("Server del modello (%s) ... ") % where + "[color=%s]%s[/color]" % [DIM_COLOR, tr("non controllato")])
 		return
 	var request := Brain.list_models()
 	var waited := 0.0
 	while not request.is_done and waited < SERVER_TIMEOUT and not _skipped:
 		await get_tree().process_frame
 		waited += get_process_delta_time()
-	var state := "[color=%s]OK[/color]" % OK_COLOR if request.ok() else "[color=%s]NON RISPONDE[/color]" % FAIL_COLOR
+	var state := _ok() if request.ok() else "[color=%s]%s[/color]" % [FAIL_COLOR, tr("NON RISPONDE")]
 	if not request.is_done:
 		request.cancel()
-		state = "[color=%s]%s[/color]" % [DIM_COLOR, "non controllato" if _skipped else "NON RISPONDE"]
-	_replace_last("Server del modello (%s) ... %s" % [where, state])
+		state = "[color=%s]%s[/color]" % [DIM_COLOR, tr("non controllato") if _skipped else tr("NON RISPONDE")]
+	_replace_last(tr("Server del modello (%s) ... ") % where + state)
+
+
+func _ok() -> String:
+	return "[color=%s]OK[/color]" % OK_COLOR
 
 
 func _line(text: String, color: String = "") -> void:

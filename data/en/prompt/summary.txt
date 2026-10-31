@@ -1,0 +1,9 @@
+This is a secret interview between the General Manager of a Branch and the entity U0047BB. Write the memories the entity keeps of this interview, to pick up the thread next time.
+
+4 to 10 short lines in English, each starting with "- ", from the entity's point of view and inside her world (never words like game, player, session).
+Note: names of Agents, people, places and Anomalies mentioned; what the Manager said or decided; what you revealed or asked him; promises made; how he treated you and what you think of it; questions left open.
+Note only what was really said in the interview below: don't invent promises, gestures or reactions that aren't there.
+Write only the lines, nothing else.
+
+INTERVIEW NO. {number}
+{transcript}

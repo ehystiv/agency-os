@@ -31,6 +31,7 @@ func _ready() -> void:
 	_ui_timer.wait_time = WRITE_DELAY
 	_ui_timer.timeout.connect(_write_ui)
 	add_child(_ui_timer)
+	Locale.setup()
 
 
 func _exit_tree() -> void:

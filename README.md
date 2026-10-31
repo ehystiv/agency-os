@@ -1,10 +1,12 @@
 # AgencyOS 98
 
-A fake late-90s operating system for the General Manager of a **Triangle Agency** campaign. It runs on the GM's computer at the table. Its main app is the *Linea riservata* (reserved line), an unregistered chat channel with **U0047BB**, the Entity held in the Agency's vault, voiced by a language model.
+A fake late-90s operating system for the General Manager of a **Triangle Agency** campaign. It runs on the GM's computer at the table. Its main app is the *Reserved Line* (*Linea riservata*), an unregistered chat channel with **U0047BB**, the Entity held in the Agency's vault, voiced by a language model.
 
 **Website:** https://ehystiv.github.io/agency-os/
 
-> **The user interface is in Italian only.** The app was made for the Italian edition of the game: every window, message and prompt the model receives is in Italian. The code and the documentation are in English.
+> **English and Italian.** Every window, menu and message, and the Entity's voice itself (the prompts and game data the model reads), exist in both languages. On first start the app picks your system language (Italian if the system is Italian, otherwise English). Change it in *Control Panel › Language* (*Pannello di controllo › Lingua*); it takes effect after a restart, and the *Restart now* button does it for you. Notes, interviews and memos already written stay in the language they were written in. English uses the original English Triangle Agency terminology. The code and the documentation are in English.
+>
+> App names below are given in English, with the Italian name in parentheses.
 
 Unofficial fan project, not affiliated with the publishers of Triangle Agency.
 
@@ -14,31 +16,31 @@ The desktop looks and behaves like a '98-style OS: icons, draggable windows, a t
 
 | App | What it's for |
 | --- | --- |
-| **Linea riservata** | Chat with the Entity. Replies stream in as they're written. Closing an interview makes the Entity write its own memories of it, and those memories carry over to later sessions. |
-| **Fascicolo** | The Manager's dossier: access level, campaign notes the Entity reads, the interview archive, and the Entity's cumulative memory (editable). |
-| **Canone** | What the Entity knows. Sections above the current access level are redacted, but the GM can still read them. |
-| **Taccuino** | Note pages linked to sessions, saved automatically and exportable to an **Obsidian** vault as Markdown. |
+| **Reserved Line** (Linea riservata) | Chat with the Entity. Replies stream in as they're written. Closing an interview makes the Entity write its own memories of it, and those memories carry over to later sessions. |
+| **Dossier** (Fascicolo) | The Manager's dossier: access level, campaign notes the Entity reads, the interview archive, and the Entity's cumulative memory (editable). |
+| **Canon** (Canone) | What the Entity knows. Sections above the current access level are redacted, but the GM can still read them. |
+| **Notebook** (Taccuino) | Note pages linked to sessions, saved automatically and exportable to an **Obsidian** vault as Markdown. |
 | **AMail** | Memos from the Agency, written by the model between sessions. |
-| **Blocco note** | Opens the files the Entity leaves on the desktop. If the GM corrects a file, the corrected version becomes the truth for the Entity. |
-| **Calcolatrice** | Rolls 6d4 with real physics, applies the roll rules (3s, Chaos, Triscendence) and tracks the branch's Chaos pool. |
+| **Notepad** (Blocco note) | Opens the files the Entity leaves on the desktop. If the GM corrects a file, the corrected version becomes the truth for the Entity. |
+| **Calculator** (Calcolatrice) | Rolls 6d4 with real physics, applies the roll rules (3s, Chaos, Triscendence) and tracks the branch's Chaos pool. |
 | **Agenda** | Session calendar with a preparation checklist. The next session shows in the taskbar. |
 | **Webcam** | Live low-res 3D feed of the Entity's cage. The Entity reacts to the conversation and to glitches. |
 | **Prompt** | A DOS-like command prompt, with secret commands unlocked by access level. |
-| **Registro eventi**, **Cestino**, **Contenimento**, **Lettore**, **Pannello di controllo** | Event viewer, trash (with the Entity's discarded drafts), an Anomaly-themed minesweeper, synthesized hold music, and the settings. |
+| **Event Log** (Registro eventi), **Trash** (Cestino), **Containment** (Contenimento), **Player** (Lettore), **Control Panel** (Pannello di controllo) | Event viewer, trash (with the Entity's discarded drafts), an Anomaly-themed minesweeper, synthesized hold music, and the settings. |
 
 The Entity's access level rises every three closed interviews and unlocks more of the canon, new files and new secret commands. During a conversation the model may trigger visual glitches. The Agency may also run "searches" on the channel, and the Entity has to hide from them.
 
 ## Requirements
 
 - **Godot 4.7** to run or export the project. It has been developed and tested on macOS.
-- **A language model**, which you configure in *Impostazioni della linea*. Each provider remembers its own settings:
-  - **Local:** any OpenAI-compatible server: LM Studio (default, `http://localhost:1234/v1`), Ollama, or llama.cpp server. It has been tested with Gemma 3 12B and Qwen 3.5 9B. For "thinking" models such as Qwen, turn on *Saltalo* to skip reasoning and get much faster replies.
+- **A language model**, which you configure in *Line settings* (*Impostazioni della linea*). Each provider remembers its own settings:
+  - **Local:** any OpenAI-compatible server: LM Studio (default, `http://localhost:1234/v1`), Ollama, or llama.cpp server. It has been tested with Gemma 3 12B and Qwen 3.5 9B. For "thinking" models such as Qwen, turn on *Skip it* (*Saltalo*) to skip reasoning and get much faster replies.
   - **Hugging Face:** Inference Providers router plus an access token.
   - **Claude:** Anthropic API key.
 
   API keys are stored in plain text in the settings file. Instead of the key you can enter the name of an environment variable prefixed with `$`, for example `$ANTHROPIC_API_KEY`.
 
-The boot sequence checks whether the model server is reachable, and *Prova connessione* in the settings runs a full round trip.
+The boot sequence checks whether the model server is reachable, and *Test connection* (*Prova connessione*) in the settings runs a full round trip.
 
 ## Running
 
@@ -70,7 +72,7 @@ All data lives in Godot's user folder. On macOS that's `~/Library/Application Su
 
 Saves from version 0.1 are converted automatically at startup, and the originals are kept in `legacy_0.1/`.
 
-*Azzera la Filiale…* in the Start menu resets the campaign. Settings, the agenda and, optionally, notes and the Notebook are kept.
+*Reset the Branch…* (*Azzera la Filiale…*) in the Start menu resets the campaign. Settings, the agenda and, optionally, notes and the Notebook are kept.
 
 ## Project layout
 
@@ -80,7 +82,8 @@ core/       plain logic classes (interviews, dice rules, minesweeper, Markdown e
 apps/       one folder per app
 desktop/    desktop, windows manager, icons, taskbar, Start menu
 system/     boot screen, screensaver, CRT overlay
-data/       app registry, canon, glitch table, secret commands, prompt templates (Italian)
+data/       app registry, canon, glitch table, secret commands, prompt templates, in Italian (`data/`) and English (`data/en/`)
+locale/     translations of the interface (English)
 ui/         theme, icons, fonts, wallpapers
 reference/  the original brief and the HTML prototype
 tools/      macOS installer script
