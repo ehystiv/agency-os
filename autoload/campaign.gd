@@ -43,10 +43,14 @@ const SEARCH_STEP := 0.05
 const SEARCH_MAX := 0.4
 ## Stage direction sent when the Manager says nothing (the model reads it in Italian).
 const SILENCE := "[il Manager resta in silenzio, in attesa]"
-## Rough estimate that works for local models: one token every 4 characters.
-const CHARS_PER_TOKEN := 4.0
-## Margin for the tokens the server adds by itself (roles, separators).
-const TOKEN_MARGIN := 128
+## Rough estimate on the safe side: Italian on small tokenizers is closer to 3.5 than to 4.
+const CHARS_PER_TOKEN := 3.5
+## Margin for the tokens the server adds by itself (roles, separators) and for the estimate's error.
+const TOKEN_MARGIN := 256
+## Notes and memory may each take at most this share of the context: whatever they grow to,
+## the conversation still fits.
+const NOTES_SHARE := 0.15
+const MEMORY_SHARE := 0.15
 const RECENT_SUMMARIES := 2
 
 var interviews: Array[Interview] = []
@@ -522,8 +526,8 @@ func entity_prompt(interview: Interview) -> String:
 	return _read_text(PROMPT_ENTITY).format({
 		"level": level(),
 		"canon": _canon_text(level()),
-		"notes": notes.strip_edges() if notes.strip_edges() != "" else "(quasi niente: non sai ancora bene chi sia questo Manager. sei curiosa, e un po' diffidente.)",
-		"memory": memory.strip_edges() if memory.strip_edges() != "" else "(nessuno: è la prima volta che riesci a raggiungerlo)",
+		"notes": _fit(notes.strip_edges(), NOTES_SHARE, false) if notes.strip_edges() != "" else "(quasi niente: non sai ancora bene chi sia questo Manager. sei curiosa, e un po' diffidente.)",
+		"memory": _fit(memory.strip_edges(), MEMORY_SHARE, true) if memory.strip_edges() != "" else "(nessuno: è la prima volta che riesci a raggiungerlo)",
 		"summaries": _recent_summaries(interview),
 		"examples": _examples_text(),
 		"number": interview.number,
@@ -554,12 +558,12 @@ func _merge_memory(interview: Interview) -> void:
 	if memory.strip_edges() == "":
 		memory = interview.summary
 	else:
-		var prompt := _read_text(PROMPT_MEMORY).format({"memory": memory, "number": interview.number, "summary": interview.summary})
+		var prompt := _read_text(PROMPT_MEMORY).format({"memory": _fit(memory, MEMORY_SHARE, true), "number": interview.number, "summary": interview.summary})
 		var started := generation
 		var merged := await _ask(prompt)
 		if generation != started:
 			return
-		# If merging fails, append instead, so the memory isn't lost.
+		# If merging fails, append instead, so the memory isn't lost (the prompts only read its end).
 		memory = merged if merged != "" else memory + "\n" + interview.summary
 	_save_state()
 	memory_changed.emit()
@@ -650,6 +654,14 @@ func _read_text(path: String) -> String:
 	if text == "":
 		push_error("Campaign: can't read %s." % path)
 	return text
+
+
+## Cuts text to a share of the model's context; keep_end keeps the most recent part.
+func _fit(text: String, share: float, keep_end: bool) -> String:
+	var max_chars := int(Brain.context_tokens() * share * CHARS_PER_TOKEN)
+	if text.length() <= max_chars:
+		return text
+	return "…" + text.right(max_chars) if keep_end else text.left(max_chars) + "…"
 
 
 func _tokens(text: String) -> int:
