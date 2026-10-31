@@ -73,7 +73,7 @@ func toggle() -> void:
 	enabled = not enabled
 
 
-## Plays a system sound: modem, ding, mail, pop, chime, key, heartbeat (dice: dice_hit()).
+## Plays a system sound: modem, ding, mail, pop, chime, key, heartbeat, jackpot (dice: dice_hit()).
 func play(sound: StringName) -> void:
 	if not enabled:
 		return
@@ -127,7 +127,7 @@ func stop_hum() -> void:
 # --- Prototype sounds ------------------------------------------------------
 
 func _build_all() -> void:
-	for sound: StringName in [&"ding", &"mail", &"pop", &"chime", &"key", &"heartbeat", &"modem"]:
+	for sound: StringName in [&"ding", &"mail", &"pop", &"chime", &"key", &"heartbeat", &"modem", &"jackpot"]:
 		_build(sound)
 	for variant in DICE_VARIANTS:
 		Synth.knock(variant)
@@ -147,6 +147,17 @@ func _build(sound: StringName) -> AudioStreamWAV:
 			parts = [[0.0, _tone(380, 0.16, SINE, 0.07, 980)], [0.12, _tone(1200, 0.08, TRIANGLE, 0.03)]]
 		&"key":
 			parts = [[0.0, Synth.noise(0.012, 0.02, 3200, false)]]
+		&"jackpot":
+			# Slot machine win: a fast rising arpeggio, a bright chord, then coins pouring out.
+			var notes := [523, 659, 784, 1047, 1319, 1568]
+			for i in notes.size():
+				parts.append([i * 0.055, _tone(notes[i], 0.1, SQUARE, 0.03)])
+			for note in [1047, 1319, 1568, 2093]:
+				parts.append([0.34, _tone(note, 0.7, TRIANGLE, 0.035)])
+			for i in 12:
+				var at := 0.42 + i * 0.075 + (0.02 if i % 3 == 1 else 0.0)
+				parts.append([at, _tone(2093 if i % 2 else 2637, 0.07, SINE, 0.03)])
+				parts.append([at + 0.012, _tone(3136, 0.05, SINE, 0.015)])
 		&"heartbeat":
 			parts = [[0.0, _tone(60, 0.18, SINE, 0.12)], [0.28, _tone(55, 0.22, SINE, 0.1)]]
 		&"modem":

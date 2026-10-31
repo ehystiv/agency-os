@@ -100,6 +100,12 @@ func activate_from_taskbar(id: StringName) -> void:
 		focus(window)
 
 
+## Where a window is on the desktop; an empty Rect2 if it isn't shown.
+func rect_of(id: StringName) -> Rect2:
+	var window: AppWindow = _windows.get(id)
+	return window.get_rect() if window != null and window.visible else Rect2()
+
+
 ## Open windows in registry order, for the taskbar.
 func entries() -> Array[Dictionary]:
 	var result: Array[Dictionary] = []

@@ -6,6 +6,10 @@ const ENTITY_LCD: PackedStringArray = ["liberami", "3 3 3 ah", "ciao :)", "non Ã
 const ENTITY_LCD_CHANCE := 0.1
 const ENTITY_LCD_SECONDS := 1.3
 const IDLE_TEXT := "Premi TIRA per lanciare 6d4. Ogni 3 Ã¨ un successo, ogni altro risultato aggiunge 1 Caos."
+## Triscendence: the display spins like slot machine reels, which stop one by one.
+const REEL_STEP := 0.05
+const REEL_FIRST_STOP := 0.35
+const REEL_GAP := 0.14
 
 var _reset_armed := false
 
@@ -59,21 +63,41 @@ func _on_roll_pressed() -> void:
 	var word := DiceRules.outcome_word(outcome)
 	var triscendence: bool = outcome.outcome == DiceRules.TRISCENDENCE
 	var color := "#7a1418" if triscendence else "#14161c"
-	_result.text = line.replace(word, "[b][color=%s]%s[/color][/b]" % [color, word])
-	if triscendence:
-		Sfx.play(&"chime")
-		Entity.stir(0.5)
 	var digits: PackedStringArray = []
 	for value in values:
 		digits.append(str(value))
 	var real := " ".join(digits)
-	if Campaign.level() >= 2 and randf() < ENTITY_LCD_CHANCE:
+	if triscendence:
+		_tray.gild(DiceRules.TARGET)
+		_set_live(true)
+		await _spin_reels(values)
+		_set_live(false)
+		command_requested.emit(&"jackpot")
+		Entity.stir(0.5)
+	_result.text = line.replace(word, "[b][color=%s]%s[/color][/b]" % [color, word])
+	if not triscendence and Campaign.level() >= 2 and randf() < ENTITY_LCD_CHANCE:
 		# The Entity takes over the display for a moment.
 		_lcd.text = ENTITY_LCD[randi() % ENTITY_LCD.size()]
 		Entity.stir(0.35)
 		await get_tree().create_timer(ENTITY_LCD_SECONDS).timeout
 	_lcd.text = real
 	_roll.disabled = false
+
+
+## The digits roll like reels and stop from left to right on the real values, each with a tick.
+func _spin_reels(values: Array[int]) -> void:
+	var elapsed := 0.0
+	var stopped := 0
+	while stopped < values.size():
+		var shown: PackedStringArray = []
+		for i in values.size():
+			shown.append(str(values[i]) if i < stopped else str(randi_range(1, DiceRules.FACES)))
+		_lcd.text = " ".join(shown)
+		await get_tree().create_timer(REEL_STEP).timeout
+		elapsed += REEL_STEP
+		if elapsed >= REEL_FIRST_STOP + stopped * REEL_GAP:
+			stopped += 1
+			Sfx.play(&"key")
 
 
 func _change_chaos(amount: int) -> void:

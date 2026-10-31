@@ -16,6 +16,8 @@ const TRASH_FULL := preload("res://ui/icons/trash_full.svg")
 @onready var _boot: BootScreen = %Boot
 @onready var _saver: ScreenSaver = %Saver
 
+var _jackpot: JackpotOverlay
+
 
 func _ready() -> void:
 	# Before the windows are restored, so they are placed inside the right area.
@@ -49,6 +51,9 @@ func _ready() -> void:
 	_taskbar.sound_toggled.connect(Sfx.toggle)
 	Sfx.settings_changed.connect(_on_sound_changed)
 	_on_sound_changed()
+
+	_jackpot = JackpotOverlay.new()
+	add_child(_jackpot)
 
 	_start_menu.app_chosen.connect(_on_start_app_chosen)
 	_start_menu.command_chosen.connect(_on_start_command)
@@ -257,6 +262,11 @@ func _on_start_command(command: StringName) -> void:
 			_windows.reset_positions()
 		&"screensaver":
 			_saver.start()
+		&"jackpot":
+			# The burst comes out of the calculator, if it's on screen.
+			var calc := _windows.rect_of(&"calc")
+			var origin := calc.position + Vector2(calc.size.x / 2.0, 40.0) if calc.has_area() else Vector2(size.x / 2.0, size.y * 0.6)
+			_jackpot.play(origin)
 		&"reset_branch":
 			_windows.open(&"dossier", {"reset": true})
 		&"fullscreen":

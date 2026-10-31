@@ -11,6 +11,9 @@ const CAP := Color("c4161c")
 const INK := Color("ffffff")
 ## After the roll the dice without a 3 get a bit darker (multiplies the vertex colors).
 const DIM := Color(0.72, 0.72, 0.75)
+## Triscendence: multiplies the vertex colors, plus a warm glow.
+const GOLD := Color(1.0, 0.8, 0.28)
+const GOLD_GLOW := Color(0.45, 0.32, 0.05)
 ## The vertex with the red tip (value 3) and how far the tip goes down the edges.
 const CAP_VERTEX := 2
 const CAP_SIZE := 0.5
@@ -55,6 +58,14 @@ func is_flat() -> bool:
 ## After the roll the dice not showing the good number get darker; null = all normal.
 func highlight(hit: Variant) -> void:
 	_material.albedo_color = DIM if hit == false else Color.WHITE
+	_material.emission_enabled = false
+
+
+## Triscendence: the die turns gold and glows.
+func gild() -> void:
+	_material.albedo_color = GOLD
+	_material.emission_enabled = true
+	_material.emission = GOLD_GLOW
 
 
 func _build() -> void:

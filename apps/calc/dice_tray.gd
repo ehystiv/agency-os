@@ -111,6 +111,15 @@ func roll() -> Array[int]:
 	return values
 
 
+## Triscendence: the dice showing target turn gold, the others are dimmed.
+func gild(target: int) -> void:
+	for die in _dice:
+		if die.top_value() == target:
+			die.gild()
+		else:
+			die.highlight(false)
+
+
 ## Highlights the dice showing target; -1 removes the highlight.
 func highlight(target: int) -> void:
 	for die in _dice:
