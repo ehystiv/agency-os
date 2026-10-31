@@ -84,7 +84,7 @@ The app updates itself by loading a Godot patch `.pck` on top of the files of th
 
 **Versions.** `application/config/version` in `project.godot` is the project version. The installed app's base version is the one its binary was exported with: `project.godot` inside a pack is never applied, so at runtime that setting always reads the base version. `BootPatch.version()` gives the version actually running.
 
-**What a patch can't change**, so it needs a new DMG (a new base): `project.godot` (autoloads, settings, the main scene path), the engine version, `autoload/boot_patch.gd`, and the export preset. Everything else (scripts, scenes, `data/`, prompts, icons, the `Updater` itself) can ship as a patch.
+**What a patch can't change**, so it needs a new DMG (a new base): `project.godot` (autoloads, settings, the main scene path), the engine version, `autoload/boot_patch.gd`, and the export preset. Everything else (scripts, scenes, `data/`, prompts, icons, the `Updater` itself) can ship as a patch. The project theme is a special case: the engine loads `gui/theme/custom` before `BootPatch` runs, so `Save._reload_theme()` loads it again and merges it into the project theme; theme changes ship in patches thanks to that.
 
 **Releasing a patch** (GitHub Actions, `.github/workflows/patch.yml`):
 1. Bump `application/config/version` in `project.godot` (e.g. `0.2.0` → `0.2.1`) and commit.

@@ -32,6 +32,21 @@ func _ready() -> void:
 	_ui_timer.timeout.connect(_write_ui)
 	add_child(_ui_timer)
 	Locale.setup()
+	_reload_theme()
+
+
+## The engine loads the project theme (gui/theme/custom) before BootPatch mounts an update,
+## so an updated app would keep the installer's theme. Loading it again here, past BootPatch,
+## and merging it into the project theme makes theme changes ship in patches too.
+## (A theme on the root window wouldn't do: it doesn't reach the CanvasLayers.)
+func _reload_theme() -> void:
+	var project := ThemeDB.get_project_theme()
+	var path := str(ProjectSettings.get_setting("gui/theme/custom", ""))
+	if project == null or path == "":
+		return
+	var fresh := ResourceLoader.load(path, "Theme", ResourceLoader.CACHE_MODE_IGNORE) as Theme
+	if fresh != null:
+		project.merge_with(fresh)
 
 
 func _exit_tree() -> void:
