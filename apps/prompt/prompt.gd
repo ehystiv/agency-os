@@ -188,18 +188,46 @@ func _type(argument: String) -> void:
 
 func _open(argument: String) -> void:
 	var wanted := argument.to_upper()
-	if wanted != "":
-		for entry in SYSTEM_FILES:
-			if entry[0] == wanted or str(entry[0]).begins_with(wanted) or String(entry[1]).to_upper() == wanted:
-				app_requested.emit(entry[1], {})
-				_print("Avvio di %s…" % entry[0], "ok")
-				return
-	var file := Campaign.correspondence.find_file_by_name(argument)
-	if not file.is_empty():
-		app_requested.emit(&"notepad", {"file": file.id})
-		_print("Apertura di %s…" % file.name, "ok")
+	if wanted == "":
+		_print("Specifica un programma o un file. Esempio: APRI CALC", "error")
 		return
-	_print("Programma o file non trovato.", "error")
+	# An exact name wins; otherwise the start of a name, but only if it's not ambiguous
+	# ("APRI C" could be CALC, CAM03, CANONE…).
+	for entry in SYSTEM_FILES:
+		if entry[0] == wanted or String(entry[1]).to_upper() == wanted:
+			_launch(entry)
+			return
+	for file in Campaign.correspondence.delivered_files():
+		if str(file.name).to_upper() == wanted:
+			_open_file(file)
+			return
+	var matches: Array = []
+	for entry in SYSTEM_FILES:
+		if str(entry[0]).begins_with(wanted):
+			matches.append(entry)
+	for file in Campaign.correspondence.delivered_files():
+		if str(file.name).to_upper().begins_with(wanted):
+			matches.append(file)
+	if matches.is_empty():
+		_print("Programma o file non trovato.", "error")
+	elif matches.size() == 1:
+		if matches[0] is Array:
+			_launch(matches[0])
+		else:
+			_open_file(matches[0])
+	else:
+		var names := matches.map(func(match_: Variant) -> String: return str(match_[0]) if match_ is Array else str(match_.name).to_upper())
+		_print("Più corrispondenze: %s. Specifica meglio il nome." % ", ".join(names), "error")
+
+
+func _launch(entry: Array) -> void:
+	app_requested.emit(entry[1], {})
+	_print("Avvio di %s…" % entry[0], "ok")
+
+
+func _open_file(file: Dictionary) -> void:
+	app_requested.emit(&"notepad", {"file": file.id})
+	_print("Apertura di %s…" % file.name, "ok")
 
 
 func _status(level: int) -> void:
