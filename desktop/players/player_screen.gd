@@ -96,10 +96,14 @@ func present(item: Dictionary) -> void:
 		var body := str(item.get("body", ""))
 		_body.text = body
 		_body.add_theme_font_size_override(&"font_size", BODY_SIZE_LONG if body.length() > LONG_TEXT else BODY_SIZE)
-	_place_frame.call_deferred()
 	var tween := create_tween()
 	_frame.modulate.a = 0.0
 	tween.tween_property(_frame, "modulate:a", 1.0, 0.25)
+	# Wrapped labels know their height only after a layout pass at the frame's width:
+	# place it once that pass is done (the first time it would come out much too tall).
+	_place_frame.call_deferred()
+	await get_tree().process_frame
+	_place_frame()
 
 
 ## Back to the waiting screen: nothing for the players to read.
