@@ -69,7 +69,7 @@
 				"Obsidian",
 				"esporta"
 			],
-			"body": "Il Taccuino tiene le pagine di appunti del Manager, collegate alle sessioni. Si salva da solo. Le pagine si possono esportare in Obsidian, una alla volta o tutte insieme. Le pagine eliminate finiscono nel Cestino."
+			"body": "Il Taccuino tiene le pagine di appunti del Manager, collegate alle sessioni. Si salva da solo. Le pagine si possono esportare in Obsidian, una alla volta o tutte insieme. Le pagine eliminate finiscono nel Cestino. Con File › Scrivi il riepilogo per i giocatori il modello riassume le pagine dell'ultima sessione in un memo dell'Agenzia: diventa una nuova pagina da rileggere e mostrare sulla TV."
 		},
 		{
 			"id": "amail",

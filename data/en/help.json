@@ -69,7 +69,7 @@
 				"Obsidian",
 				"export"
 			],
-			"body": "The Notebook keeps the Manager's note pages, linked to the sessions. It saves by itself. Pages can be exported to Obsidian, one at a time or all together. Deleted pages go to the Recycle Bin."
+			"body": "The Notebook keeps the Manager's note pages, linked to the sessions. It saves by itself. Pages can be exported to Obsidian, one at a time or all together. Deleted pages go to the Recycle Bin. File › Write the recap for the players has the model sum up the last session's pages as an Agency memo: it becomes a new page to read over and show on the TV."
 		},
 		{
 			"id": "amail",

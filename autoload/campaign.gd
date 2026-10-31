@@ -34,6 +34,9 @@ const PROMPT_SUMMARY := "res://data/prompt/summary.txt"
 const PROMPT_MEMORY := "res://data/prompt/memory.txt"
 const PROMPT_GLITCH := "res://data/prompt/glitch.txt"
 const PROMPT_SEARCH := "res://data/prompt/search.txt"
+const PROMPT_RECAP := "res://data/prompt/recap.txt"
+## The recap reads at most this share of the context from the Notebook.
+const RECAP_NOTES_SHARE := 0.4
 const GLITCH_PATH := "res://data/glitch.json"
 const NO_GLITCH := "none"
 ## Replies without a glitch required between one glitch and the next: at most one in four.
@@ -544,6 +547,58 @@ func delete_agent(agent: Dictionary) -> void:
 func _save_agents() -> void:
 	Save.write_campaign(AGENTS_FILE, agents)
 	agents_changed.emit()
+
+
+# --- Recap for the players -------------------------------------------------
+
+## The Notebook pages about the last Assignment: those linked to the most recent session
+## that has any (recaps left out), or else the three most recently edited.
+func recap_sources() -> Array[Dictionary]:
+	var notes_pages := pages.filter(func(p: Dictionary) -> bool: return not p.get("recap", false) and str(p.text).strip_edges() != "")
+	var latest := 0
+	for page: Dictionary in notes_pages:
+		latest = maxi(latest, int(page.session))
+	var result: Array[Dictionary] = []
+	if latest > 0:
+		for page: Dictionary in notes_pages:
+			if int(page.session) == latest:
+				result.append(page)
+	else:
+		notes_pages.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return str(a.modified) > str(b.modified))
+		for page: Dictionary in notes_pages.slice(0, 3):
+			result.append(page)
+	return result
+
+
+## Asks the model for the recap and saves it as a new Notebook page ({} if the model
+## doesn't answer). The Manager reads it, fixes it and shows it with Mostra ai giocatori.
+func write_recap() -> Dictionary:
+	var sources := recap_sources()
+	if sources.is_empty():
+		return {}
+	var parts: PackedStringArray = []
+	for page in sources:
+		parts.append("## %s\n%s" % [page.title, str(page.text).strip_edges()])
+	var names: PackedStringArray = []
+	for agent in agents:
+		if str(agent.get("name", "")).strip_edges() != "":
+			var competency := str(agent.get("competency", "")).strip_edges()
+			names.append("- " + str(agent.name).strip_edges() + (" (" + competency + ")" if competency != "" else ""))
+	var started := generation
+	var text := await _ask(_read_text(PROMPT_RECAP).format({
+		"agents": "\n".join(names) if not names.is_empty() else tr("(non indicati)"),
+		"notes": _fit("\n\n".join(parts), RECAP_NOTES_SHARE, true),
+		"next": _next_session_text(),
+	}))
+	if text == "" or generation != started:
+		return {}
+	var session := int(sources[0].session)
+	var page := new_page(session)
+	page.title = tr("Riepilogo per gli Agenti · %s") % ItalianDate.numeric(Time.get_date_string_from_system())
+	page.text = text
+	page.recap = true
+	save_page(page)
+	return page
 
 
 # --- Prompt ----------------------------------------------------------------

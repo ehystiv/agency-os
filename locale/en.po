@@ -3466,3 +3466,31 @@ msgstr "No glitches on the players' screen"
 
 msgid "Glitch anche sullo schermo giocatori"
 msgstr "Glitches on the players' screen too"
+
+#: apps/notebook (recap)
+msgid "Scrivi il riepilogo per i giocatori"
+msgstr "Write the recap for the players"
+
+msgid "Niente da riassumere"
+msgstr "Nothing to recap"
+
+msgid "Scrivi prima qualche pagina sull'ultimo Incarico."
+msgstr "First write a few pages about the last Assignment."
+
+msgid "Scrivo il riepilogo per i giocatori…"
+msgstr "Writing the recap for the players…"
+
+msgid "Riepilogo non riuscito"
+msgstr "Recap failed"
+
+msgid "Il modello non ha risposto. Controlla la linea e riprova."
+msgstr "The model didn't answer. Check the line and try again."
+
+msgid "Riepilogo pronto: rileggilo, poi Mostra ai giocatori."
+msgstr "Recap ready: read it over, then Show to players."
+
+msgid "Riepilogo per gli Agenti · %s"
+msgstr "Recap for the Agents · %s"
+
+msgid "(non indicati)"
+msgstr "(not given)"

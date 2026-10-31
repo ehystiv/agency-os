@@ -10,6 +10,7 @@ var _dirty := false
 var _delete_armed := false
 var _loading := false
 var _exporter: ObsidianExporter
+var _writing_recap := false
 
 @onready var _rows: VBoxContainer = %Rows
 @onready var _empty_list: Label = %EmptyList
@@ -246,6 +247,27 @@ func _on_delete_pressed() -> void:
 	Campaign.trash_page(page)
 
 
+# --- Recap for the players -------------------------------------------------
+
+## The model writes the last Assignment's recap from the pages; it becomes a new page to
+## read, fix and show on the TV.
+func _write_recap() -> void:
+	_flush()
+	if Campaign.recap_sources().is_empty():
+		notification_requested.emit(tr("Niente da riassumere"), tr("Scrivi prima qualche pagina sull'ultimo Incarico."), {})
+		return
+	_writing_recap = true
+	_status.text = tr("Scrivo il riepilogo per i giocatori…")
+	var page := await Campaign.write_recap()
+	_writing_recap = false
+	if page.is_empty():
+		_status.text = ""
+		notification_requested.emit(tr("Riepilogo non riuscito"), tr("Il modello non ha risposto. Controlla la linea e riprova."), {})
+		return
+	_select(str(page.id))
+	_status.text = tr("Riepilogo pronto: rileggilo, poi Mostra ai giocatori.")
+
+
 # --- Export ----------------------------------------------------------------
 
 func _export_page() -> void:
@@ -294,6 +316,7 @@ func menu(title: String) -> Array[Dictionary]:
 		"File":
 			return [
 				{"label": "Nuova pagina", "action": "new", "accel": KEY_MASK_CMD_OR_CTRL | KEY_N},
+				{"label": "Scrivi il riepilogo per i giocatori", "action": "recap", "disabled": _writing_recap},
 				{},
 				{"label": "Esporta la pagina nel vault", "action": "export", "disabled": not has_page},
 				{"label": "Esporta tutte le pagine", "action": "export_all", "disabled": Campaign.pages.is_empty()},
@@ -311,6 +334,7 @@ func menu(title: String) -> Array[Dictionary]:
 func on_menu_action(action: StringName) -> void:
 	match action:
 		&"new": _new_page()
+		&"recap": _write_recap()
 		&"export": _export_page()
 		&"export_all": _export_all()
 		&"vault": _change_vault()
