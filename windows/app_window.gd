@@ -28,9 +28,13 @@ var app: AppInfo
 var content: AppContent
 var active: bool = false:
 	set(value):
+		var was_active := active
 		active = value
 		if content != null:
 			content.window_active = value
+			# Deferred: the WindowManager first takes the focus away from the previous window.
+			if value and not was_active:
+				content.on_activated.call_deferred()
 		if is_node_ready():
 			_title_bar.theme_type_variation = &"TitleBarActive" if value else &"TitleBarInactive"
 var maximized: bool = false

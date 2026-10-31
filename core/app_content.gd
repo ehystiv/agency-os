@@ -31,6 +31,12 @@ func on_opened(_args: Dictionary = {}) -> void:
 	pass
 
 
+## Called when the window comes to the front (a click, the taskbar, an opening):
+## e.g. to give the keyboard focus to the main field.
+func on_activated() -> void:
+	pass
+
+
 ## Called when the window is closed (it is hidden, not destroyed).
 func on_closed() -> void:
 	pass

@@ -34,6 +34,8 @@ var _busy := false
 
 
 func _ready() -> void:
+	# Like a real terminal, the line stays ready for the next command after Enter.
+	_input.keep_editing_on_text_submit = true
 	_input.text_submitted.connect(_on_submitted)
 	_input.gui_input.connect(_on_input_key)
 	_input.text_changed.connect(func(_t: String) -> void: Sfx.play(&"key"))
@@ -42,7 +44,35 @@ func _ready() -> void:
 
 
 func on_opened(_args: Dictionary = {}) -> void:
-	_input.grab_focus.call_deferred()
+	_focus_input.call_deferred()
+
+
+func on_activated() -> void:
+	_focus_input()
+
+
+## Focus and editing: since Godot 4.4 a focused LineEdit doesn't take keys until it's editing.
+func _focus_input() -> void:
+	if not is_visible_in_tree() or not _input.editable:
+		return
+	_input.grab_focus()
+	_input.edit()
+
+
+## Typing while the Prompt is in front writes in the command line, wherever the focus was
+## (e.g. after clicking the title bar or selecting some output).
+func _unhandled_key_input(event: InputEvent) -> void:
+	var key := event as InputEventKey
+	if key == null or not key.pressed or _busy or not window_active or not is_visible_in_tree():
+		return
+	if _input.has_focus() or key.is_command_or_control_pressed() or key.alt_pressed:
+		return
+	if key.unicode >= 32:
+		_focus_input()
+		_input.insert_text_at_caret(char(key.unicode))
+		get_viewport().set_input_as_handled()
+	elif key.keycode in [KEY_ENTER, KEY_KP_ENTER, KEY_BACKSPACE, KEY_UP, KEY_DOWN]:
+		_focus_input()
 
 
 # --- Output ----------------------------------------------------------------
@@ -82,8 +112,8 @@ func _on_submitted(raw: String) -> void:
 	_busy = false
 	_input.editable = true
 	# Only if still in front: the Manager may be typing in another window meanwhile.
-	if window_active and is_visible_in_tree():
-		_input.grab_focus()
+	if window_active:
+		_focus_input()
 
 
 func _on_input_key(event: InputEvent) -> void:
@@ -105,7 +135,7 @@ func _on_input_key(event: InputEvent) -> void:
 func _on_screen_input(event: InputEvent) -> void:
 	var click := event as InputEventMouseButton
 	if click != null and click.pressed and _output.get_selected_text() == "":
-		_input.grab_focus()
+		_focus_input()
 
 
 # --- Commands --------------------------------------------------------------
