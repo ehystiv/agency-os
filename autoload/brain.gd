@@ -112,7 +112,7 @@ func probe(provider: String, url: String, model: String, key: String, skip_reaso
 		[{"role": "user", "content": "Rispondi soltanto con la parola: pronto"}],
 		# Streaming, so a server that hangs fails after FIRST_TOKEN_TIMEOUT_MS and not after minutes.
 		{"stream": true, "temperature": 0.0, "max_tokens": int(get_setting("max_reply", provider)), "skip_reasoning": skip_reasoning})
-	request.finished.connect(probe_provider.queue_free)
+	_free_when_done(probe_provider, request)
 	return request
 
 
@@ -121,8 +121,16 @@ func probe_models(provider: String, url: String, key: String) -> BrainRequest:
 	var probe_provider := _make_provider(provider, url, "", key)
 	add_child(probe_provider)
 	var request := probe_provider.list_models()
-	request.finished.connect(probe_provider.queue_free)
+	_free_when_done(probe_provider, request)
 	return request
+
+
+## A request can be over already (e.g. the address can't even be parsed): then finished won't come.
+static func _free_when_done(provider: Node, request: BrainRequest) -> void:
+	if request.is_done:
+		provider.queue_free()
+	else:
+		request.finished.connect(provider.queue_free)
 
 
 ## A key starting with $ is the name of an environment variable (e.g. $ANTHROPIC_API_KEY).
@@ -142,6 +150,8 @@ func _make_provider(provider: String, url: String, model: String, key: String) -
 	made.base_url = url
 	made.model = model
 	made.api_key = resolve_key(key)
+	if key.begins_with("$") and made.api_key == "":
+		made.missing_key_variable = key.substr(1)
 	return made
 
 

@@ -10,6 +10,8 @@ const EMPTY_THINK := "<think>\n\n</think>\n\n"
 var base_url: String = ""
 var api_key: String = ""
 var model: String = ""
+## Name of the environment variable the key should come from, when it turned out empty.
+var missing_key_variable: String = ""
 
 var _jobs: Array[OpenAIJob] = []
 var _retired := false
@@ -48,6 +50,10 @@ func list_models() -> BrainRequest:
 
 func _start(endpoint: String, method: HTTPClient.Method, body: Dictionary, on_json: Callable = Callable()) -> BrainRequest:
 	var request := BrainRequest.new()
+	if missing_key_variable != "":
+		# Otherwise the server's 401 would blame a key that was never sent.
+		request.finish_error("La variabile d'ambiente %s è vuota. Le app aperte dal Finder non vedono le variabili della shell: incolla la chiave nelle impostazioni della linea, o avvia AgencyOS dal Terminale." % missing_key_variable)
+		return request
 	var job := OpenAIJob.new(request, base_url, endpoint, method, _headers(), body, model, on_json)
 	job.dialect = _dialect()
 	_jobs.append(job)
