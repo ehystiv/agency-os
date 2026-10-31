@@ -1,6 +1,7 @@
 [gd_resource type="Theme" format=3]
 
 [ext_resource type="Script" path="res://ui/theme/stylebox_bevel.gd" id="bevel"]
+[ext_resource type="Script" path="res://ui/theme/stylebox_gradient.gd" id="gradient"]
 [ext_resource type="FontFile" path="res://ui/fonts/IBMPlexMono-Regular.ttf" id="plex"]
 [ext_resource type="FontFile" path="res://ui/fonts/IBMPlexMono-Medium.ttf" id="plex_medium"]
 [ext_resource type="FontFile" path="res://ui/fonts/VT323-Regular.ttf" id="vt323"]
@@ -155,19 +156,23 @@ draw_outline = true
 drop_shadow_offset = Vector2(6, 6)
 drop_shadow_color = Color(0, 0, 0, 0.35)
 
-[sub_resource type="StyleBoxFlat" id="title_active"]
+[sub_resource type="StyleBox" id="title_active"]
+script = ExtResource("gradient")
 content_margin_left = 6.0
 content_margin_top = 3.0
 content_margin_right = 4.0
 content_margin_bottom = 3.0
-bg_color = Color(0.1373, 0.251, 0.7098, 1)
+from_color = Color(0.1373, 0.251, 0.7098, 1)
+to_color = Color(0.3608, 0.5529, 0.8627, 1)
 
-[sub_resource type="StyleBoxFlat" id="title_inactive"]
+[sub_resource type="StyleBox" id="title_inactive"]
+script = ExtResource("gradient")
 content_margin_left = 6.0
 content_margin_top = 3.0
 content_margin_right = 4.0
 content_margin_bottom = 3.0
-bg_color = Color(0.4902, 0.5176, 0.5804, 1)
+from_color = Color(0.4902, 0.5176, 0.5804, 1)
+to_color = Color(0.7412, 0.7569, 0.8, 1)
 
 [sub_resource type="StyleBox" id="sunken_white"]
 script = ExtResource("bevel")
@@ -501,12 +506,14 @@ border_width_right = 1
 border_width_bottom = 1
 border_color = Color(0, 0, 0, 1)
 
-[sub_resource type="StyleBoxFlat" id="title_error"]
+[sub_resource type="StyleBox" id="title_error"]
+script = ExtResource("gradient")
 content_margin_left = 6.0
 content_margin_top = 3.0
 content_margin_right = 4.0
 content_margin_bottom = 3.0
-bg_color = Color(0.4784, 0.07843, 0.09412, 1)
+from_color = Color(0.4784, 0.07843, 0.09412, 1)
+to_color = Color(0.7804, 0.3412, 0.302, 1)
 
 [sub_resource type="StyleBoxFlat" id="error_icon"]
 content_margin_left = 0.0
