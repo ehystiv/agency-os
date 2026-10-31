@@ -29,6 +29,7 @@ To test something, add a temporary autoload to the copy's `project.godot` (after
 Other things to know:
 - Godot's SVG rasterizer ignores `rgba()`: use `fill-opacity` / `stroke-opacity`.
 - **Real LLM tests:** use LM Studio (`~/.lmstudio/bin/lms`, models `gemma-3-12b-it-qat` and `qwen3.5-9b-mlx`). Leave the server and the loaded model as you found them.
+- **Player:** the Raccolta downloads audio with the `yt-dlp` and `ffmpeg` installed on the Mac (looked up in Homebrew's folders, since an app opened from the Finder has no shell PATH). Godot can't decode YouTube's formats, so the audio is converted to mp3 and kept in `user://player/cache/`; the collection (`user://player/library.json`) belongs to the Manager, not to a campaign.
 - **macOS installer:** `tools/make_dmg.sh <AgencyOS.app|exported.dmg> [out.dmg] [--simple]` builds the installer DMG. Godot's export needs "Import ETC2 ASTC" enabled. With ad-hoc signing the app sandbox must stay off, or the app is killed at launch.
 
 ## Architecture

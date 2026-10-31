@@ -3,6 +3,7 @@
 [ext_resource type="Script" path="res://apps/player/player.gd" id="1_script"]
 [ext_resource type="Script" path="res://apps/player/music_engine.gd" id="2_engine"]
 [ext_resource type="Script" path="res://apps/player/visualizer.gd" id="3_visualizer"]
+[ext_resource type="Script" path="res://apps/player/youtube_fetch.gd" id="4_fetch"]
 
 [node name="Player" type="MarginContainer"]
 theme_override_constants/margin_left = 4
@@ -156,6 +157,128 @@ layout_mode = 2
 focus_mode = 0
 text = "Apri cartella…"
 
+[node name="LibraryBar" type="HBoxContainer" parent="Layout"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="AddYoutube" type="Button" parent="Layout/LibraryBar"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+text = "+ Da YouTube…"
+
+[node name="Spacer" type="Control" parent="Layout/LibraryBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Rename" type="Button" parent="Layout/LibraryBar"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+text = "Rinomina"
+
+[node name="Delete" type="Button" parent="Layout/LibraryBar"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+text = "Elimina"
+
+[node name="YoutubeForm" type="PanelContainer" parent="Layout"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_type_variation = &"GroupPanel"
+
+[node name="Column" type="VBoxContainer" parent="Layout/YoutubeForm"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Grid" type="GridContainer" parent="Layout/YoutubeForm/Column"]
+layout_mode = 2
+theme_override_constants/h_separation = 8
+theme_override_constants/v_separation = 6
+columns = 2
+
+[node name="UrlLabel" type="Label" parent="Layout/YoutubeForm/Column/Grid"]
+layout_mode = 2
+text = "Link"
+
+[node name="Url" type="LineEdit" parent="Layout/YoutubeForm/Column/Grid"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "https://www.youtube.com/watch?v=…"
+
+[node name="NameLabel" type="Label" parent="Layout/YoutubeForm/Column/Grid"]
+layout_mode = 2
+text = "Nome"
+
+[node name="TrackName" type="LineEdit" parent="Layout/YoutubeForm/Column/Grid"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Facoltativo: altrimenti il titolo del video"
+max_length = 80
+
+[node name="Row" type="HBoxContainer" parent="Layout/YoutubeForm/Column"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Download" type="Button" parent="Layout/YoutubeForm/Column/Row"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+theme_type_variation = &"PrimaryButton"
+text = "Scarica"
+
+[node name="CancelDownload" type="Button" parent="Layout/YoutubeForm/Column/Row"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+text = "Annulla"
+
+[node name="Progress" type="ProgressBar" parent="Layout/YoutubeForm/Column/Row"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+max_value = 1.0
+
+[node name="FormStatus" type="Label" parent="Layout/YoutubeForm/Column"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+theme_type_variation = &"HintLabel"
+text = "L'audio viene scaricato con yt-dlp e salvato: si ascolta anche senza rete."
+autowrap_mode = 3
+
+[node name="RenameRow" type="HBoxContainer" parent="Layout"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="RenameField" type="LineEdit" parent="Layout/RenameRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+max_length = 80
+
+[node name="RenameSave" type="Button" parent="Layout/RenameRow"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+text = "Salva"
+
+[node name="RenameCancel" type="Button" parent="Layout/RenameRow"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+text = "Annulla"
+
 [node name="ListPanel" type="PanelContainer" parent="Layout"]
 custom_minimum_size = Vector2(0, 140)
 layout_mode = 2
@@ -184,3 +307,7 @@ text_overrun_behavior = 3
 [node name="Engine" type="Node" parent="."]
 unique_name_in_owner = true
 script = ExtResource("2_engine")
+
+[node name="Fetch" type="Node" parent="."]
+unique_name_in_owner = true
+script = ExtResource("4_fetch")

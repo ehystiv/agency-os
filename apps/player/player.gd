@@ -1,6 +1,7 @@
 extends AppContent
 ## Media player. Three sources, one per tab: the company hold music and the ambient
-## sounds (synthesized live), the audio files of a folder, and the saved collection.
+## sounds (synthesized live), the audio files of a folder, and the saved collection
+## (audio downloaded from YouTube with yt-dlp, under a name chosen by the Manager).
 
 enum Source { COMPANY, FOLDER, COLLECTION }
 
@@ -19,6 +20,11 @@ var _tab := Source.COMPANY
 var _playing_source := Source.COMPANY
 var _playing_index := -1
 var _seeking := false
+## The collection row last clicked: Rinomina and Elimina act on it.
+var _selected_id := ""
+var _delete_armed := false
+## The link being downloaded.
+var _downloading_url := ""
 
 @onready var _engine: MusicEngine = %Engine
 @onready var _now: Label = %NowPlaying
@@ -34,6 +40,19 @@ var _seeking := false
 @onready var _folder_label: Label = %Folder
 @onready var _rows: VBoxContainer = %Rows
 @onready var _status: Label = %Status
+@onready var _library_bar: HBoxContainer = %LibraryBar
+@onready var _rename: Button = %Rename
+@onready var _delete: Button = %Delete
+@onready var _youtube_form: PanelContainer = %YoutubeForm
+@onready var _url: LineEdit = %Url
+@onready var _track_name: LineEdit = %TrackName
+@onready var _download: Button = %Download
+@onready var _cancel_download: Button = %CancelDownload
+@onready var _progress: ProgressBar = %Progress
+@onready var _form_status: Label = %FormStatus
+@onready var _rename_row: HBoxContainer = %RenameRow
+@onready var _rename_field: LineEdit = %RenameField
+@onready var _fetch: YouTubeFetch = %Fetch
 
 
 func _ready() -> void:
@@ -60,6 +79,22 @@ func _ready() -> void:
 	_tabs.current_tab = _tab
 	_tabs.tab_changed.connect(_on_tab_changed)
 	_set_folder(str(Save.get_ui("player_folder", "")))
+	%AddYoutube.pressed.connect(_toggle_youtube_form)
+	_download.pressed.connect(_start_download)
+	_url.text_submitted.connect(func(_t: String) -> void: _start_download())
+	_track_name.text_submitted.connect(func(_t: String) -> void: _start_download())
+	_cancel_download.pressed.connect(func() -> void:
+		if _fetch.busy:
+			_fetch.cancel()
+		else:
+			_youtube_form.hide())
+	_fetch.progress.connect(func(fraction: float) -> void: _progress.value = fraction)
+	_fetch.finished.connect(_on_downloaded)
+	_rename.pressed.connect(_start_rename)
+	%RenameSave.pressed.connect(_apply_rename)
+	_rename_field.text_submitted.connect(func(_t: String) -> void: _apply_rename())
+	%RenameCancel.pressed.connect(_rename_row.hide)
+	_delete.pressed.connect(_on_delete_pressed)
 	_engine.state_changed.connect(_refresh)
 	_engine.file_finished.connect(_on_file_finished)
 	Campaign.interviews_changed.connect(_refresh)
@@ -179,6 +214,7 @@ func _on_file_finished() -> void:
 
 func _on_tab_changed(tab: int) -> void:
 	_tab = tab as Source
+	_delete_armed = false
 	Save.set_ui("player_tab", tab)
 	_refresh()
 
@@ -233,6 +269,15 @@ func _refresh() -> void:
 	else:
 		_status.text = IDLE_STATUS[_tab]
 	_folder_bar.visible = _tab == Source.FOLDER
+	var in_collection := _tab == Source.COLLECTION
+	_library_bar.visible = in_collection
+	if not in_collection:
+		_youtube_form.hide()
+		_rename_row.hide()
+	var has_selection := not _library.find(_selected_id).is_empty()
+	_rename.disabled = not has_selection
+	_delete.disabled = not has_selection
+	_delete.text = "Conferma" if _delete_armed and has_selection else "Elimina"
 	for child in _rows.get_children():
 		_rows.remove_child(child)
 		child.queue_free()
@@ -261,8 +306,112 @@ func _make_row(index: int, entry: Dictionary, current: bool) -> Button:
 	if entry.locked:
 		row.modulate.a = 0.55
 	var source := _tab
-	row.pressed.connect(func() -> void: _play_entry(source, index))
+	if source == Source.COLLECTION:
+		var id: String = _library.items[index].id
+		if id == _selected_id:
+			row.button_pressed = true
+		row.pressed.connect(func() -> void:
+			_selected_id = id
+			_delete_armed = false
+			_rename_row.hide()
+			_play_entry(source, index)
+			_refresh())
+	else:
+		row.pressed.connect(func() -> void: _play_entry(source, index))
 	return row
+
+
+# --- Collection --------------------------------------------------------------
+
+func _toggle_youtube_form() -> void:
+	_rename_row.hide()
+	_youtube_form.visible = not _youtube_form.visible
+	if _youtube_form.visible and not _fetch.busy:
+		_form_status.text = "L'audio viene scaricato con yt-dlp e salvato: si ascolta anche senza rete."
+		_url.grab_focus.call_deferred()
+
+
+func _start_download() -> void:
+	if _fetch.busy:
+		return
+	var url := _url.text.strip_edges()
+	if not (url.begins_with("http://") or url.begins_with("https://")):
+		_form_status.text = "Incolla il link completo del video (https://…)."
+		return
+	_downloading_url = url
+	_set_downloading(true)
+	_form_status.text = "Scaricamento in corso…"
+	var base := ProjectSettings.globalize_path(PlayerLibrary.CACHE_DIR).path_join("y-%d" % Time.get_unix_time_from_system())
+	_fetch.start(url, base)
+
+
+func _on_downloaded(ok: bool, path: String, title: String, error: String) -> void:
+	_set_downloading(false)
+	if not ok:
+		_form_status.text = error
+		Sfx.play(&"ding")
+		return
+	var chosen := _track_name.text.strip_edges()
+	var display_name := chosen if chosen != "" else (title if title != "" else "Brano senza titolo")
+	var item := _library.add(display_name, _downloading_url, path.get_file())
+	_selected_id = item.id
+	_url.clear()
+	_track_name.clear()
+	_youtube_form.hide()
+	Sfx.play(&"mail")
+	_refresh()
+	_status.text = "Salvato nella raccolta: «%s»" % display_name
+
+
+func _set_downloading(active: bool) -> void:
+	_download.disabled = active
+	_url.editable = not active
+	_track_name.editable = not active
+	_progress.visible = active
+	_progress.value = 0.0
+	_cancel_download.text = "Interrompi" if active else "Annulla"
+
+
+func _start_rename() -> void:
+	var item := _library.find(_selected_id)
+	if item.is_empty():
+		return
+	_youtube_form.hide()
+	_rename_row.show()
+	_rename_field.text = str(item.name)
+	_rename_field.grab_focus.call_deferred()
+	_rename_field.select_all.call_deferred()
+
+
+func _apply_rename() -> void:
+	var item := _library.find(_selected_id)
+	var new_name := _rename_field.text.strip_edges()
+	if item.is_empty() or new_name == "":
+		return
+	_library.rename(item, new_name)
+	if _engine.is_file() and _playing_source == Source.COLLECTION and _library.items.find(item) == _playing_index:
+		_engine.file_name = new_name
+	_rename_row.hide()
+	_refresh()
+
+
+## Two clicks, like Azzera in the calculator: the first arms, the second deletes.
+func _on_delete_pressed() -> void:
+	var item := _library.find(_selected_id)
+	if item.is_empty():
+		return
+	if not _delete_armed:
+		_delete_armed = true
+		_refresh()
+		return
+	_delete_armed = false
+	if _playing_source == Source.COLLECTION and _playing_index >= 0:
+		if _library.items.find(item) == _playing_index:
+			_engine.stop()
+		_playing_index = -1
+	_library.remove(item)
+	_selected_id = ""
+	_refresh()
 
 
 func _empty_label() -> Label:
@@ -274,7 +423,7 @@ func _empty_label() -> Label:
 		Source.FOLDER:
 			label.text = "Scegli una cartella con file mp3, ogg o wav." if _folder == "" else "Nessun file mp3, ogg o wav in questa cartella."
 		_:
-			label.text = "La raccolta è vuota."
+			label.text = "La raccolta è vuota. Con «+ Da YouTube…» salvi l'audio di un video con il nome che vuoi."
 	return label
 
 
