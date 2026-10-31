@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="AppInfo" format=3]
+
+[ext_resource type="Script" path="res://core/app_info.gd" id="1_info"]
+[ext_resource type="Texture2D" path="res://ui/icons/help.svg" id="2_icon"]
+[ext_resource type="PackedScene" path="res://apps/help/help.tscn" id="3_scene"]
+
+[resource]
+script = ExtResource("1_info")
+id = &"help"
+label = "Guida"
+window_title = "Guida di AgencyOS"
+icon = ExtResource("2_icon")
+scene = ExtResource("3_scene")
+default_position = Vector2i(-1, 50)
+default_size = Vector2i(780, 470)
+resizable = true
+min_size = Vector2i(480, 300)
+on_desktop = false
+on_start_menu = true
+open_at_first_start = false
+menu_strip = PackedStringArray()

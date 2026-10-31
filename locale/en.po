@@ -3251,3 +3251,33 @@ msgstr "Because AgencyOS was not properly shut down, ScanDisk is now checking\nd
 
 msgid "ScanDisk ha trovato 1 settore che non appartiene a nessun file: 0047BB.\nIl settore è stato lasciato com'è."
 msgstr "ScanDisk found 1 sector that belongs to no file: 0047BB.\nThe sector was left as it is."
+
+msgid "Guida"
+msgstr "Help"
+
+msgid "Guida di AgencyOS"
+msgstr "AgencyOS Help"
+
+msgid "Sommario"
+msgstr "Contents"
+
+msgid "Indice"
+msgstr "Index"
+
+msgid "Digita la parola da cercare:"
+msgstr "Type in the keyword to find:"
+
+msgid "Digita le parole da trovare:"
+msgstr "Type in the word(s) to search for:"
+
+msgid "Elenca argomenti"
+msgstr "List Topics"
+
+msgid "Nessun argomento trovato."
+msgstr "No topics found."
+
+msgid "Argomenti della Guida"
+msgstr "Help Topics"
+
+msgid "guida sulla finestra in primo piano"
+msgstr "help on the window in front"

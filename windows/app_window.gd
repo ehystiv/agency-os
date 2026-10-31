@@ -404,6 +404,8 @@ func _common_entries(title_text: String, after_others: bool) -> Array[Dictionary
 		"?":
 			if after_others:
 				entries.append({})
+			entries.append({"label": "Argomenti della Guida", "action": "_help", "accel": KEY_F1})
+			entries.append({})
 			entries.append({"label": tr("Informazioni su %s") % tr(app.label), "action": "_about"})
 	return entries
 
@@ -417,6 +419,8 @@ func _on_menu_id_pressed(id: int) -> void:
 			close_requested.emit(self)
 		&"_about":
 			_show_about()
+		&"_help":
+			app_requested.emit(&"help", {"topic": String(app.id)})
 		&"_undo", &"_cut", &"_copy", &"_paste", &"_select_all":
 			_edit_field(action)
 		_:

@@ -144,6 +144,12 @@ func _input(event: InputEvent) -> void:
 	var key := event as InputEventKey
 	if key == null or not key.pressed or _boot.is_running() or _saver.active:
 		return
+	if key.keycode == KEY_F1 and not key.echo:
+		# Help on the window in front, as in Windows.
+		var front := _windows.active_window()
+		_windows.open(&"help", {"topic": String(front.app.id)} if front != null else {})
+		get_viewport().set_input_as_handled()
+		return
 	var command := key.is_command_or_control_pressed()
 	var active := _windows.active_window()
 	var handled := true
@@ -212,6 +218,7 @@ func _show_shortcuts() -> void:
 		"%s+R\t%s" % [command, tr("Esegui…: apre un programma o un file per nome")],
 		"%s+%s+P\t%s" % [command, tr("Maiusc"), tr("mostra ai giocatori (memo, file, pagina, tiro)")],
 		"%s+B\t%s" % [command, tr("oscura lo schermo giocatori")],
+		"F1\t%s" % tr("guida sulla finestra in primo piano"),
 		"F11\t%s" % tr("schermo intero"),
 		"",
 	]

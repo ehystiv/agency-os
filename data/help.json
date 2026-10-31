@@ -1,0 +1,240 @@
+{
+	"_note": "Guida in linea. Ogni argomento: id (l'id dell'app quando parla di un'app), capitolo, titolo, parole chiave per l'Indice, testo in BBCode.",
+	"chapters": [
+		"Per iniziare",
+		"Le applicazioni",
+		"Il sistema"
+	],
+	"topics": [
+		{
+			"id": "intro",
+			"chapter": 0,
+			"title": "Che cos'è AgencyOS 98",
+			"keywords": [
+				"benvenuto",
+				"introduzione",
+				"Manager"
+			],
+			"body": "AgencyOS 98 è il terminale della Filiale: il General Manager lo usa al tavolo mentre conduce Triangle Agency.\n\nIl suo cuore è la [b]Linea riservata[/b], la chat con l'Entità U0047BB, interpretata da un modello linguistico. Intorno ci sono gli strumenti del Manager: il Fascicolo, il Taccuino, l'Agenda, la Calcolatrice per i dadi e lo schermo per i giocatori."
+		},
+		{
+			"id": "line_settings",
+			"chapter": 0,
+			"title": "Configurare la linea",
+			"keywords": [
+				"modello",
+				"LM Studio",
+				"Ollama",
+				"Hugging Face",
+				"Claude",
+				"chiave",
+				"server"
+			],
+			"body": "Prima di aprire la linea serve un modello che dia voce all'Entità. In [b]Impostazioni della linea[/b] scegli il provider: [b]Locale[/b] (LM Studio, Ollama, llama.cpp), [b]Hugging Face[/b] o [b]Claude[/b].\n\n«Elenca…» mostra i modelli del server, con un campo di ricerca. «Prova connessione» controlla che il server risponda e che il modello esista. Una chiave che comincia con $ è il nome di una variabile d'ambiente."
+		},
+		{
+			"id": "dossier",
+			"chapter": 0,
+			"title": "Il Fascicolo",
+			"keywords": [
+				"campagna",
+				"livello di accesso",
+				"note",
+				"memoria",
+				"colloqui"
+			],
+			"body": "Il Fascicolo raccoglie la campagna: il [b]livello di accesso[/b], le note del Manager, l'elenco dei colloqui e i ricordi che l'Entità accumula.\n\nIl livello sale ogni 3 colloqui conclusi e sblocca nuove parti del Canone e nuovi comandi segreti. Le note sulla campagna le leggono sia l'Entità sia l'Agenzia."
+		},
+		{
+			"id": "line",
+			"chapter": 1,
+			"title": "Linea riservata",
+			"keywords": [
+				"Entità",
+				"chat",
+				"colloquio",
+				"sessione",
+				"glitch",
+				"U0047BB"
+			],
+			"body": "La linea è la chat con l'Entità. «Apri la linea» inizia un colloquio; «Termina la sessione» lo chiude, e AgencyOS ne scrive un riassunto e aggiorna i ricordi dell'Entità.\n\nA volte le risposte arrivano con un [b]glitch[/b]: la finestra trema, l'inchiostro cola, il sistema crolla. Dal menu Visualizza puoi mostrare l'ultimo messaggio dell'Entità ai giocatori."
+		},
+		{
+			"id": "notebook",
+			"chapter": 1,
+			"title": "Taccuino",
+			"keywords": [
+				"pagine",
+				"appunti",
+				"Obsidian",
+				"esporta"
+			],
+			"body": "Il Taccuino tiene le pagine di appunti del Manager, collegate alle sessioni. Si salva da solo. Le pagine si possono esportare in Obsidian, una alla volta o tutte insieme. Le pagine eliminate finiscono nel Cestino."
+		},
+		{
+			"id": "amail",
+			"chapter": 1,
+			"title": "AMail",
+			"keywords": [
+				"memo",
+				"posta",
+				"Agenzia",
+				"messaggi"
+			],
+			"body": "AMail riceve i memo dell'Agenzia, dal più recente. Quelli non letti sono in grassetto, e il numero sull'icona del desktop dice quanti ne restano. I memo arrivano all'apertura di una nuova sessione."
+		},
+		{
+			"id": "agenda",
+			"chapter": 1,
+			"title": "Agenda",
+			"keywords": [
+				"calendario",
+				"sessioni",
+				"preparazione",
+				"data"
+			],
+			"body": "L'Agenda è un calendario mensile: fissa le sessioni con ora, titolo e una lista di preparazione. Per ogni giorno mostra anche i colloqui tenuti. La prossima sessione compare nell'area di notifica."
+		},
+		{
+			"id": "calc",
+			"chapter": 1,
+			"title": "Calcolatrice",
+			"keywords": [
+				"dadi",
+				"6d4",
+				"Caos",
+				"tiro",
+				"successi"
+			],
+			"body": "La Calcolatrice tira 6d4 nel vassoio 3D. Ogni 3 è un successo, ogni altro risultato aggiunge 1 al [b]Caos[/b]. Tiene anche la Riserva di Caos della Filiale, che puoi correggere con −1, +1 e Azzera."
+		},
+		{
+			"id": "cam",
+			"chapter": 1,
+			"title": "Webcam del Caveau",
+			"keywords": [
+				"CAM03",
+				"Caveau",
+				"gabbia",
+				"telecamera"
+			],
+			"body": "La webcam mostra la gabbia dell'Entità nel Caveau, in bassa risoluzione. L'Entità reagisce a quello che succede sulla linea: si agita, arrossisce, si ritira, e a volte il segnale salta."
+		},
+		{
+			"id": "canon",
+			"chapter": 1,
+			"title": "Canone",
+			"keywords": [
+				"regole",
+				"Entità",
+				"livello",
+				"cerca",
+				"segreto"
+			],
+			"body": "Il Canone è quello che si sa dell'Entità. Le sezioni sopra il livello di accesso appaiono censurate, ma il Manager può leggerle comunque. La ricerca mostra solo i punti che contengono le parole cercate."
+		},
+		{
+			"id": "term",
+			"chapter": 1,
+			"title": "Prompt",
+			"keywords": [
+				"comandi",
+				"DIR",
+				"TYPE",
+				"APRI",
+				"segreti",
+				"terminale"
+			],
+			"body": "Il Prompt è la riga di comando della Filiale. Digita [b]AIUTO[/b] per l'elenco dei comandi: DIR, TYPE, APRI, STATO, SCAN… Alcuni comandi non sono nell'elenco: si sbloccano con il livello di accesso."
+		},
+		{
+			"id": "mine",
+			"chapter": 1,
+			"title": "Contenimento",
+			"keywords": [
+				"gioco",
+				"Anomalie",
+				"campo minato",
+				"record"
+			],
+			"body": "Contenimento è un campo minato con le Anomalie al posto delle mine. Tiene il tempo, le bandierine e i record per livello. A fine partita l'Entità dice la sua."
+		},
+		{
+			"id": "player",
+			"chapter": 1,
+			"title": "Lettore",
+			"keywords": [
+				"musica",
+				"audio",
+				"attesa",
+				"YouTube",
+				"Raccolta",
+				"ambiente"
+			],
+			"body": "Il Lettore ha tre fonti: la musica d'attesa dell'Agenzia e i suoni d'ambiente, sintetizzati dal vivo; i file audio di una cartella; la [b]Raccolta[/b], con l'audio salvato da YouTube. La Raccolta appartiene al Manager, non alla campagna."
+		},
+		{
+			"id": "event_viewer",
+			"chapter": 1,
+			"title": "Registro eventi",
+			"keywords": [
+				"log",
+				"errori",
+				"eventi"
+			],
+			"body": "Il Registro eventi elenca quello che è successo nel sistema: aperture della linea, errori del modello, consegne della corrispondenza. È di sola lettura."
+		},
+		{
+			"id": "trash",
+			"chapter": 1,
+			"title": "Cestino",
+			"keywords": [
+				"eliminati",
+				"ripristina",
+				"bozze"
+			],
+			"body": "Nel Cestino finiscono le pagine eliminate del Taccuino, che si possono ripristinare. Ci sono anche le bozze che l'Entità ha scritto e buttato via senza spedirle: si leggono, ma non si ripristinano."
+		},
+		{
+			"id": "desktop",
+			"chapter": 2,
+			"title": "Il desktop e le scorciatoie",
+			"keywords": [
+				"tasto destro",
+				"Avvio veloce",
+				"Esegui",
+				"scorciatoie",
+				"Proprietà",
+				"tastiera"
+			],
+			"body": "Il [b]tasto destro[/b] apre un menu sulle icone (Apri, Proprietà), sul desktop e sui pulsanti della barra delle applicazioni. Accanto a Start, la barra [b]Avvio veloce[/b] apre le app con un clic e mostra il desktop.\n\n[b]Start › Esegui…[/b] (Cmd+R) apre un programma o un file per nome. Le altre scorciatoie sono in Start › Scorciatoie da tastiera."
+		},
+		{
+			"id": "players",
+			"chapter": 2,
+			"title": "Lo schermo dei giocatori",
+			"keywords": [
+				"TV",
+				"secondo monitor",
+				"giocatori",
+				"immagine",
+				"oscura"
+			],
+			"body": "Lo schermo dei giocatori è una seconda finestra, da mettere su una TV o un secondo monitor. Dal menu Start puoi aprirlo, mostrarci un'immagine o oscurarlo. Molte app possono mandarci quello che mostrano (Cmd+Maiusc+P)."
+		},
+		{
+			"id": "ctrl",
+			"chapter": 2,
+			"title": "Pannello di controllo",
+			"keywords": [
+				"impostazioni",
+				"sfondo",
+				"screensaver",
+				"lingua",
+				"area dello schermo",
+				"aggiornamenti"
+			],
+			"body": "Il Pannello di controllo regola sfondo, screensaver, audio ed effetti, l'area dello schermo e la lingua. Nella scheda Aggiornamento controlla, scarica e installa le nuove versioni di AgencyOS."
+		}
+	]
+}

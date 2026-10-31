@@ -1,0 +1,240 @@
+{
+	"_note": "Online help. Each topic: id (the app's id when it is about an app), chapter, title, keywords for the Index, BBCode text.",
+	"chapters": [
+		"Getting started",
+		"The applications",
+		"The system"
+	],
+	"topics": [
+		{
+			"id": "intro",
+			"chapter": 0,
+			"title": "What is AgencyOS 98",
+			"keywords": [
+				"welcome",
+				"introduction",
+				"Manager"
+			],
+			"body": "AgencyOS 98 is the Branch's terminal: the General Manager uses it at the table while running Triangle Agency.\n\nIts heart is the [b]Reserved Line[/b], the chat with the Entity U0047BB, played by a language model. Around it are the Manager's tools: the Dossier, the Notebook, the Agenda, the Calculator for the dice and the players' screen."
+		},
+		{
+			"id": "line_settings",
+			"chapter": 0,
+			"title": "Setting up the line",
+			"keywords": [
+				"model",
+				"LM Studio",
+				"Ollama",
+				"Hugging Face",
+				"Claude",
+				"key",
+				"server"
+			],
+			"body": "Before opening the line you need a model to give the Entity its voice. In [b]Line Settings[/b] choose the provider: [b]Local[/b] (LM Studio, Ollama, llama.cpp), [b]Hugging Face[/b] or [b]Claude[/b].\n\n\"List...\" shows the server's models, with a search field. \"Test connection\" checks that the server answers and that the model exists. A key starting with $ is the name of an environment variable."
+		},
+		{
+			"id": "dossier",
+			"chapter": 0,
+			"title": "The Dossier",
+			"keywords": [
+				"campaign",
+				"access level",
+				"notes",
+				"memory",
+				"interviews"
+			],
+			"body": "The Dossier holds the campaign: the [b]access level[/b], the Manager's notes, the list of interviews and the memories the Entity builds up.\n\nThe level goes up every 3 closed interviews and unlocks new parts of the Canon and new secret commands. Both the Entity and the Agency read the campaign notes."
+		},
+		{
+			"id": "line",
+			"chapter": 1,
+			"title": "Reserved Line",
+			"keywords": [
+				"Entity",
+				"chat",
+				"interview",
+				"session",
+				"glitch",
+				"U0047BB"
+			],
+			"body": "The line is the chat with the Entity. \"Open the line\" starts an interview; \"End the session\" closes it, and AgencyOS writes a summary and updates the Entity's memories.\n\nSometimes replies come with a [b]glitch[/b]: the window shakes, the ink drips, the system crashes. From the View menu you can show the Entity's last message to the players."
+		},
+		{
+			"id": "notebook",
+			"chapter": 1,
+			"title": "Notebook",
+			"keywords": [
+				"pages",
+				"notes",
+				"Obsidian",
+				"export"
+			],
+			"body": "The Notebook keeps the Manager's note pages, linked to the sessions. It saves by itself. Pages can be exported to Obsidian, one at a time or all together. Deleted pages go to the Recycle Bin."
+		},
+		{
+			"id": "amail",
+			"chapter": 1,
+			"title": "AMail",
+			"keywords": [
+				"memo",
+				"mail",
+				"Agency",
+				"messages"
+			],
+			"body": "AMail receives the Agency's memos, newest first. Unread ones are bold, and the number on the desktop icon tells how many are left. Memos arrive when a new session opens."
+		},
+		{
+			"id": "agenda",
+			"chapter": 1,
+			"title": "Agenda",
+			"keywords": [
+				"calendar",
+				"sessions",
+				"preparation",
+				"date"
+			],
+			"body": "The Agenda is a month calendar: schedule sessions with a time, a title and a preparation checklist. For each day it also shows the interviews held. The next session appears in the notification area."
+		},
+		{
+			"id": "calc",
+			"chapter": 1,
+			"title": "Calculator",
+			"keywords": [
+				"dice",
+				"6d4",
+				"Chaos",
+				"roll",
+				"successes"
+			],
+			"body": "The Calculator rolls 6d4 in the 3D tray. Every 3 is a success, every other result adds 1 to [b]Chaos[/b]. It also keeps the Branch's Chaos pool, which you can adjust with −1, +1 and Reset."
+		},
+		{
+			"id": "cam",
+			"chapter": 1,
+			"title": "Vault webcam",
+			"keywords": [
+				"CAM03",
+				"Vault",
+				"cage",
+				"camera"
+			],
+			"body": "The webcam shows the Entity's cage in the Vault, at low resolution. The Entity reacts to what happens on the line: it gets restless, turns red, pulls back, and sometimes the signal drops."
+		},
+		{
+			"id": "canon",
+			"chapter": 1,
+			"title": "Canon",
+			"keywords": [
+				"rules",
+				"Entity",
+				"level",
+				"search",
+				"secret"
+			],
+			"body": "The Canon is what is known about the Entity. Sections above the access level appear redacted, but the Manager can read them anyway. The search shows only the points that contain the words you look for."
+		},
+		{
+			"id": "term",
+			"chapter": 1,
+			"title": "Prompt",
+			"keywords": [
+				"commands",
+				"DIR",
+				"TYPE",
+				"OPEN",
+				"secrets",
+				"terminal"
+			],
+			"body": "The Prompt is the Branch's command line. Type [b]HELP[/b] for the list of commands: DIR, TYPE, OPEN, STATUS, SCAN... Some commands are not on the list: the access level unlocks them."
+		},
+		{
+			"id": "mine",
+			"chapter": 1,
+			"title": "Containment",
+			"keywords": [
+				"game",
+				"Anomalies",
+				"minesweeper",
+				"records"
+			],
+			"body": "Containment is a minesweeper with Anomalies instead of mines. It keeps the time, the flags and the records per level. At the end of a game the Entity has its say."
+		},
+		{
+			"id": "player",
+			"chapter": 1,
+			"title": "Player",
+			"keywords": [
+				"music",
+				"audio",
+				"hold",
+				"YouTube",
+				"Collection",
+				"ambient"
+			],
+			"body": "The Player has three sources: the Agency's hold music and the ambient sounds, synthesized live; the audio files of a folder; the [b]Collection[/b], with audio saved from YouTube. The Collection belongs to the Manager, not to the campaign."
+		},
+		{
+			"id": "event_viewer",
+			"chapter": 1,
+			"title": "Event Log",
+			"keywords": [
+				"log",
+				"errors",
+				"events"
+			],
+			"body": "The Event Log lists what happened in the system: the line being opened, the model's errors, the mail being delivered. It is read only."
+		},
+		{
+			"id": "trash",
+			"chapter": 1,
+			"title": "Recycle Bin",
+			"keywords": [
+				"deleted",
+				"restore",
+				"drafts"
+			],
+			"body": "Deleted Notebook pages go to the Recycle Bin, and can be restored. It also holds the drafts the Entity wrote and threw away without sending: you can read them, but not restore them."
+		},
+		{
+			"id": "desktop",
+			"chapter": 2,
+			"title": "The desktop and shortcuts",
+			"keywords": [
+				"right click",
+				"Quick Launch",
+				"Run",
+				"shortcuts",
+				"Properties",
+				"keyboard"
+			],
+			"body": "The [b]right mouse button[/b] opens a menu on the icons (Open, Properties), on the desktop and on the taskbar buttons. Next to Start, the [b]Quick Launch[/b] bar opens apps with one click and shows the desktop.\n\n[b]Start › Run...[/b] (Cmd+R) opens a program or a file by name. The other shortcuts are in Start › Keyboard Shortcuts."
+		},
+		{
+			"id": "players",
+			"chapter": 2,
+			"title": "The players' screen",
+			"keywords": [
+				"TV",
+				"second monitor",
+				"players",
+				"image",
+				"blank"
+			],
+			"body": "The players' screen is a second window, for a TV or a second monitor. From the Start menu you can open it, show an image on it or blank it. Many apps can send what they show to it (Cmd+Shift+P)."
+		},
+		{
+			"id": "ctrl",
+			"chapter": 2,
+			"title": "Control Panel",
+			"keywords": [
+				"settings",
+				"wallpaper",
+				"screen saver",
+				"language",
+				"screen area",
+				"updates"
+			],
+			"body": "The Control Panel sets the wallpaper, screen saver, audio and effects, the screen area and the language. Its Update tab checks for, downloads and installs new versions of AgencyOS."
+		}
+	]
+}
