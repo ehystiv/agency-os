@@ -299,9 +299,10 @@ func _rain(step: int, at: float, sd: float) -> void:
 ## The empty branch: neon hum, ventilation, a keyboard far away, sometimes a phone.
 func _office(step: int, at: float, sd: float) -> void:
 	if step % 16 == 0:
-		_pad(at, sd * 32, 120.0, SQUARE, 0.004)
+		_pad(at, sd * 32, 120.0, TRIANGLE, 0.006)
 		_pad(at, sd * 32, 60.0, SINE, 0.02)
-		_wash(at, sd * 32, 0.014, 700, (step / 16) % 3)
+		# Ventilation: a dark, low breath. Brighter or louder, it turns into static.
+		_wash(at, sd * 32, 0.0035, 220, (step / 16) % 3)
 	if step % 16 == 8 and randf() < 0.12:
 		var keys := randi_range(6, 14)
 		var when := at
@@ -318,10 +319,13 @@ func _office(step: int, at: float, sd: float) -> void:
 ## A low dissonant drone that grows, and a heartbeat at 70 beats per minute.
 func _tension(step: int, at: float, sd: float) -> void:
 	var strength := snappedf(clampf(at / TENSION_RISE, 0.5, 1.0), 0.1)
+	# Sines only: a low triangle is all harmonics on small speakers, and sounds like a buzz.
+	# A2 with B flat rubbing against it, the fifth above, and a sub an octave down.
 	if step % 16 == 0:
-		_pad(at, sd * 32, 55.0, TRIANGLE, 0.11 * strength)
-		_pad(at, sd * 32, 82.4, SINE, 0.07 * strength)
-		_pad(at, sd * 32, 58.3, SINE, 0.035 * strength)
+		_pad(at, sd * 32, 110.0, SINE, 0.07 * strength)
+		_pad(at, sd * 32, 116.5, SINE, 0.03 * strength)
+		_pad(at, sd * 32, 164.8, SINE, 0.035 * strength)
+		_pad(at, sd * 32, 55.0, SINE, 0.06 * strength)
 	if step % 4 == 0:
 		_queue(at, func() -> AudioStreamWAV: return Synth.tone(60.0, 0.18, SINE, 0.2 * strength, 0.0, 0.01))
 		_queue(at + 0.28, func() -> AudioStreamWAV: return Synth.tone(55.0, 0.22, SINE, 0.16 * strength, 0.0, 0.01))
