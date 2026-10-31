@@ -77,6 +77,9 @@ var generation: int = 0
 var _current_number: int = 0
 var _retrying := false
 var _glitch_table: Dictionary = {}
+## The files under res://data don't change while the app runs: read once, at first use.
+var _canon: Array = []
+var _texts: Dictionary[String, String] = {}
 
 
 func _ready() -> void:
@@ -234,9 +237,12 @@ func set_memory(text: String) -> void:
 
 
 ## Canon sections as they are in the data file.
+## Read-only: the same array is shared by every caller.
 func canon_sections() -> Array:
-	var data: Variant = Save.read_json(CANON_PATH, {})
-	return (data as Dictionary).get("sections", []) if data is Dictionary else []
+	if _canon.is_empty():
+		var data: Variant = Save.read_json(CANON_PATH, {})
+		_canon = (data as Dictionary).get("sections", []) if data is Dictionary else []
+	return _canon
 
 
 # --- Notebook --------------------------------------------------------------
@@ -642,17 +648,24 @@ func _next_session_text() -> String:
 
 
 func _examples_text() -> String:
+	if _texts.has(EXAMPLES_PATH):
+		return _texts[EXAMPLES_PATH]
 	var data: Variant = Save.read_json(EXAMPLES_PATH, {})
 	var parts: PackedStringArray = []
 	for example: Dictionary in (data as Dictionary).get("examples", []):
 		parts.append("MANAGER: %s\nTU: %s" % [example.get("manager", ""), example.get("entity", "")])
-	return "\n\n".join(parts) if not parts.is_empty() else "(nessuno)"
+	_texts[EXAMPLES_PATH] = "\n\n".join(parts) if not parts.is_empty() else "(nessuno)"
+	return _texts[EXAMPLES_PATH]
 
 
 func _read_text(path: String) -> String:
+	if _texts.has(path):
+		return _texts[path]
 	var text := FileAccess.get_file_as_string(path)
 	if text == "":
 		push_error("Campaign: can't read %s." % path)
+	else:
+		_texts[path] = text
 	return text
 
 
