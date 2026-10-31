@@ -207,7 +207,7 @@
 				"Proprietà",
 				"tastiera"
 			],
-			"body": "Il [b]tasto destro[/b] apre un menu sulle icone (Apri, Proprietà), sul desktop e sui pulsanti della barra delle applicazioni. Accanto a Start, la barra [b]Avvio veloce[/b] apre le app con un clic e mostra il desktop.\n\n[b]Start › Esegui…[/b] (Cmd+R) apre un programma o un file per nome. Le altre scorciatoie sono in Start › Scorciatoie da tastiera."
+			"body": "Il [b]tasto destro[/b] apre un menu sulle icone (Apri, Proprietà), sul desktop e sui pulsanti della barra delle applicazioni. Accanto a Start, la barra [b]Avvio veloce[/b] apre le app con un clic e mostra il desktop.\n\n[b]Start › Esegui…[/b] (Cmd+R) apre un programma o un file per nome. Le altre scorciatoie sono in Start › Scorciatoie da tastiera.\n\nCon il tasto destro sul desktop, «Mostra contenuto Web» accende il notiziario dell'Agenzia."
 		},
 		{
 			"id": "players",

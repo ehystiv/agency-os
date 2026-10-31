@@ -1,0 +1,50 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://desktop/active_desktop/ticker.gd" id="1_script"]
+[ext_resource type="FontFile" path="res://ui/fonts/VT323-Regular.ttf" id="2_vt323"]
+
+[sub_resource type="StyleBoxFlat" id="header"]
+content_margin_left = 6.0
+content_margin_top = 1.0
+content_margin_right = 6.0
+content_margin_bottom = 1.0
+bg_color = Color(0.0784, 0.1412, 0.3686, 1)
+
+[node name="Ticker" type="PanelContainer"]
+custom_minimum_size = Vector2(380, 0)
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -396.0
+offset_top = 12.0
+offset_right = -16.0
+grow_horizontal = 0
+mouse_filter = 2
+theme_type_variation = &"SunkenPanel"
+script = ExtResource("1_script")
+
+[node name="Layout" type="VBoxContainer" parent="."]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 2
+
+[node name="Header" type="Label" parent="Layout"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("2_vt323")
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("header")
+text = "AGENZIA · NOTIZIARIO"
+
+[node name="Strip" type="Control" parent="Layout"]
+unique_name_in_owner = true
+clip_contents = true
+custom_minimum_size = Vector2(0, 22)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Text" type="Label" parent="Layout/Strip"]
+unique_name_in_owner = true
+layout_mode = 0
+theme_override_colors/font_color = Color(0.0784, 0.0863, 0.1098, 1)
+text = "…"

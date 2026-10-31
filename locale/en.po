@@ -3281,3 +3281,15 @@ msgstr "Help Topics"
 
 msgid "guida sulla finestra in primo piano"
 msgstr "help on the window in front"
+
+msgid "AGENZIA · NOTIZIARIO"
+msgstr "AGENCY · NEWS"
+
+msgid "FILIALE · Livello di accesso %d."
+msgstr "BRANCH · Access level %d."
+
+msgid "%d memo non letti in AMail."
+msgstr "%d unread memos in AMail."
+
+msgid "Mostra contenuto Web"
+msgstr "Show Web Content"

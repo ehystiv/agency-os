@@ -207,7 +207,7 @@
 				"Properties",
 				"keyboard"
 			],
-			"body": "The [b]right mouse button[/b] opens a menu on the icons (Open, Properties), on the desktop and on the taskbar buttons. Next to Start, the [b]Quick Launch[/b] bar opens apps with one click and shows the desktop.\n\n[b]Start › Run...[/b] (Cmd+R) opens a program or a file by name. The other shortcuts are in Start › Keyboard Shortcuts."
+			"body": "The [b]right mouse button[/b] opens a menu on the icons (Open, Properties), on the desktop and on the taskbar buttons. Next to Start, the [b]Quick Launch[/b] bar opens apps with one click and shows the desktop.\n\n[b]Start › Run...[/b] (Cmd+R) opens a program or a file by name. The other shortcuts are in Start › Keyboard Shortcuts.\n\nRight-click the desktop and choose \"Show Web Content\" to turn on the Agency's news ticker."
 		},
 		{
 			"id": "players",

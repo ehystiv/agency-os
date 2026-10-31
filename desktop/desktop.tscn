@@ -11,6 +11,7 @@
 [ext_resource type="PackedScene" path="res://system/boot/boot.tscn" id="9_boot"]
 [ext_resource type="PackedScene" path="res://system/saver/saver.tscn" id="10_saver"]
 [ext_resource type="PackedScene" path="res://system/shutdown/shutdown.tscn" id="20_shutdown"]
+[ext_resource type="PackedScene" path="res://desktop/active_desktop/ticker.tscn" id="21_ticker"]
 
 [node name="Desktop" type="Control"]
 layout_mode = 3
@@ -34,6 +35,11 @@ offset_bottom = -38.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("3_icons")
+
+[node name="Ticker" parent="." instance=ExtResource("21_ticker")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
 
 [node name="Windows" type="Control" parent="."]
 layout_mode = 1

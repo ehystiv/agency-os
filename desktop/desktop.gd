@@ -22,6 +22,7 @@ const CAPTION_HEIGHT := 24.0
 @onready var _boot: BootScreen = %Boot
 @onready var _saver: ScreenSaver = %Saver
 @onready var _shutdown: ShutdownDialog = %Shutdown
+@onready var _ticker: AgencyTicker = %Ticker
 
 var _jackpot: JackpotOverlay
 var _bluescreen: BlueScreen
@@ -37,6 +38,7 @@ func _ready() -> void:
 	_set_fullscreen(bool(Save.get_ui("fullscreen", false)))
 	get_window().size_changed.connect(_on_window_size_changed)
 	_wallpaper.set_mode(StringName(Save.get_ui("wallpaper", "lattice")))
+	_ticker.visible = bool(Save.get_ui("active_desktop", false))
 
 	_icons.app_requested.connect(_windows.open)
 	_icons.file_requested.connect(func(id: String) -> void: _windows.open(&"notepad", {"file": id}))
@@ -318,7 +320,7 @@ func _on_task_pressed(id: StringName) -> void:
 	_windows.activate_from_taskbar(id)
 
 
-## entries: {label, call, disabled?}; an empty Dictionary is a separator.
+## entries: {label, call, disabled?, checked?}; an empty Dictionary is a separator.
 func _show_context(entries: Array[Dictionary], at: Vector2) -> void:
 	_set_start_open(false)
 	_context.clear()
@@ -327,7 +329,11 @@ func _show_context(entries: Array[Dictionary], at: Vector2) -> void:
 		if entry.is_empty():
 			_context.add_separator()
 			continue
-		_context.add_item(tr(str(entry.label)), _context_actions.size())
+		if entry.has("checked"):
+			_context.add_check_item(tr(str(entry.label)), _context_actions.size())
+			_context.set_item_checked(_context.item_count - 1, bool(entry.checked))
+		else:
+			_context.add_item(tr(str(entry.label)), _context_actions.size())
 		_context.set_item_disabled(_context.item_count - 1, bool(entry.get("disabled", false)))
 		_context_actions.append(entry.call)
 	_context.popup(Rect2i(Vector2i(at), Vector2i.ZERO))
@@ -344,6 +350,10 @@ func _on_icons_context(key: String, at: Vector2) -> void:
 	_show_context([
 		{"label": "Allinea le icone", "call": _icons.align},
 		{"label": "Aggiorna", "call": _icons.refresh},
+		{},
+		{"label": "Mostra contenuto Web", "checked": _ticker.visible, "call": func() -> void:
+			_ticker.visible = not _ticker.visible
+			Save.set_ui("active_desktop", _ticker.visible)},
 		{},
 		{"label": "Proprietà", "call": _windows.open.bind(&"ctrl", {"tab": "screen"})},
 	], at)
