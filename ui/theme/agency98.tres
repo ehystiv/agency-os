@@ -620,6 +620,13 @@ content_margin_right = 0.0
 content_margin_bottom = 0.0
 bg_color = Color(0.1373, 0.251, 0.7098, 1)
 
+[sub_resource type="StyleBoxFlat" id="tree_hovered"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.8588, 0.8784, 0.9294, 1)
+
 [sub_resource type="StyleBox" id="tree_title"]
 script = ExtResource("bevel")
 content_margin_left = 6.0
@@ -1264,11 +1271,18 @@ Tree/styles/panel = SubResource("tree_panel")
 Tree/styles/focus = SubResource("focus_none")
 Tree/styles/selected = SubResource("tree_selected")
 Tree/styles/selected_focus = SubResource("tree_selected")
+Tree/styles/hovered = SubResource("tree_hovered")
+Tree/styles/hovered_dimmed = SubResource("tree_hovered")
+Tree/styles/hovered_selected = SubResource("tree_selected")
+Tree/styles/hovered_selected_focus = SubResource("tree_selected")
 Tree/styles/title_button_normal = SubResource("tree_title")
 Tree/styles/title_button_hover = SubResource("tree_title")
 Tree/styles/title_button_pressed = SubResource("tree_title_pressed")
 Tree/colors/font_color = Color(0.07843, 0.08627, 0.1098, 1)
 Tree/colors/font_selected_color = Color(1, 1, 1, 1)
+Tree/colors/font_hovered_color = Color(0.07843, 0.08627, 0.1098, 1)
+Tree/colors/font_hovered_dimmed_color = Color(0.07843, 0.08627, 0.1098, 1)
+Tree/colors/font_hovered_selected_color = Color(1, 1, 1, 1)
 Tree/colors/title_button_color = Color(0.07843, 0.08627, 0.1098, 1)
 Tree/colors/guide_color = Color(0.8392, 0.851, 0.8784, 1)
 Tree/font_sizes/font_size = 12
