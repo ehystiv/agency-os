@@ -15,6 +15,8 @@ var _registry: AppRegistry
 var _windows: Dictionary[StringName, AppWindow] = {}
 ## Open windows (minimized too): the ones in the taskbar.
 var _open: Dictionary[StringName, bool] = {}
+## Windows minimized by "show the desktop", to bring back the second time.
+var _hidden_for_desktop: Array[StringName] = []
 
 
 func _ready() -> void:
@@ -87,6 +89,51 @@ func close(window: AppWindow) -> void:
 	_refresh_active()
 	_store()
 	windows_changed.emit()
+
+
+## The window in front, null if none is shown.
+func active_window() -> AppWindow:
+	for window: AppWindow in _windows.values():
+		if window.active and window.visible:
+			return window
+	return null
+
+
+## Next (step 1) or previous (-1) open window, in taskbar order, minimized ones included.
+func cycle(step: int) -> void:
+	var ids: Array[StringName] = []
+	for entry in entries():
+		ids.append(entry.id)
+	if ids.is_empty():
+		return
+	var current := active_window()
+	var index := ids.find(current.app.id) if current != null else -1
+	var next := ids[posmod(index + step, ids.size())] if index >= 0 else ids[0]
+	var window: AppWindow = _windows[next]
+	if window.visible:
+		focus(window)
+	else:
+		open(next)
+
+
+## Shows the desktop by minimizing every window; the second time brings them back.
+func toggle_desktop() -> void:
+	var shown: Array[StringName] = []
+	for id: StringName in _open:
+		if _windows[id].visible:
+			shown.append(id)
+	if not shown.is_empty():
+		_hidden_for_desktop = shown
+		for id in shown:
+			_windows[id].hide()
+		_refresh_active()
+		_store()
+		windows_changed.emit()
+	else:
+		for id in _hidden_for_desktop:
+			if _open.has(id):
+				open(id)
+		_hidden_for_desktop.clear()
 
 
 ## Taskbar button behavior: reopens, brings to front or minimizes.

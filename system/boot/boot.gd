@@ -28,6 +28,11 @@ func _ready() -> void:
 	_screen.hide()
 
 
+## True while the boot sequence is on screen.
+func is_running() -> bool:
+	return _running
+
+
 func play() -> void:
 	_running = true
 	_skipped = false

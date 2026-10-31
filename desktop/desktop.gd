@@ -75,6 +75,67 @@ func _ready() -> void:
 		Updater.check_daily()
 
 
+## Global shortcuts, before the focused field sees the keys (Cmd on a Mac, Ctrl elsewhere):
+## Cmd+W closes, Cmd+M minimizes, Ctrl+Tab / Cmd+` switch window (Shift = backwards),
+## Cmd+1…9 open the Start menu's apps, Cmd+D shows the desktop.
+func _input(event: InputEvent) -> void:
+	var key := event as InputEventKey
+	if key == null or not key.pressed or _boot.is_running() or _saver.active:
+		return
+	var command := key.is_command_or_control_pressed()
+	var active := _windows.active_window()
+	var handled := true
+	if (key.keycode == KEY_TAB and key.ctrl_pressed) or (key.keycode == KEY_QUOTELEFT and command):
+		_windows.cycle(-1 if key.shift_pressed else 1)
+	elif not command or key.alt_pressed or key.echo:
+		handled = false
+	elif key.keycode == KEY_W and active != null:
+		_windows.close(active)
+	elif key.keycode == KEY_M and active != null:
+		_windows.minimize(active)
+	elif key.keycode == KEY_D:
+		_windows.toggle_desktop()
+	elif key.keycode >= KEY_1 and key.keycode <= KEY_9 and not key.shift_pressed:
+		var apps := REGISTRY.start_menu_apps()
+		var index := key.keycode - KEY_1
+		handled = index < apps.size()
+		if handled:
+			_windows.open(apps[index].id)
+	else:
+		handled = false
+	if handled:
+		_set_start_open(false)
+		get_viewport().set_input_as_handled()
+
+
+func _show_shortcuts() -> void:
+	var command := "Cmd" if OS.get_name() == "macOS" else "Ctrl"
+	var lines: PackedStringArray = [
+		"%s+W\tchiude la finestra" % command,
+		"%s+M\triduce la finestra a icona" % command,
+		"Ctrl+Tab\tfinestra successiva (Maiusc: precedente)",
+		"%s+D\tmostra il desktop (di nuovo: ripristina)" % command,
+		"F11\tschermo intero",
+		"",
+	]
+	var apps := REGISTRY.start_menu_apps()
+	for i in mini(apps.size(), 9):
+		lines.append("%s+%d\t%s" % [command, i + 1, apps[i].label])
+	lines.append_array(["", "Nelle finestre: Alt + la lettera sottolineata apre il menu.", "%s+F cerca nel Canone e nel Blocco note, %s+N nuova pagina nel Taccuino." % [command, command]])
+	var dialog := AcceptDialog.new()
+	dialog.title = "Scorciatoie da tastiera"
+	# The font is monospaced: the first column is padded to line up the descriptions.
+	var aligned: PackedStringArray = []
+	for line in lines:
+		var parts := line.split("\t")
+		aligned.append(parts[0].rpad(10) + "  " + parts[1] if parts.size() == 2 else line)
+	dialog.dialog_text = "\n".join(aligned)
+	dialog.confirmed.connect(dialog.queue_free)
+	dialog.canceled.connect(dialog.queue_free)
+	add_child(dialog)
+	dialog.popup_centered()
+
+
 func _unhandled_key_input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel") and _start_menu.visible:
 		_set_start_open(false)
@@ -262,6 +323,8 @@ func _on_start_command(command: StringName) -> void:
 			_windows.reset_positions()
 		&"screensaver":
 			_saver.start()
+		&"shortcuts":
+			_show_shortcuts()
 		&"jackpot":
 			# The burst comes out of the calculator, if it's on screen.
 			var calc := _windows.rect_of(&"calc")

@@ -12,6 +12,7 @@ const ICON_ALIGN := preload("res://ui/icons/dossier.svg")
 const ICON_RESTART := preload("res://ui/icons/restart.svg")
 const ICON_SHUTDOWN := preload("res://ui/icons/shutdown.svg")
 const ICON_RESET := preload("res://ui/icons/reset.svg")
+const ICON_KEYS := preload("res://ui/icons/keys.svg")
 
 @onready var _scroll: ScrollContainer = %Scroll
 @onready var _items: VBoxContainer = %Items
@@ -28,6 +29,7 @@ func build(registry: AppRegistry, sound_enabled: bool, fullscreen: bool) -> void
 	_add_command(ICON_SOUND, "Disattiva i suoni" if sound_enabled else "Attiva i suoni", &"sounds")
 	_add_command(ICON_FULLSCREEN, "Esci dallo schermo intero" if fullscreen else "Schermo intero", &"fullscreen")
 	_add_command(ICON_ALIGN, "Allinea le icone", &"align_icons")
+	_add_command(ICON_KEYS, "Scorciatoie da tastiera", &"shortcuts")
 	_add_command(ICON_RESTART, "Riavvia AgencyOS", &"restart")
 	_items.add_child(HSeparator.new())
 	_add_command(ICON_RESET, "Azzera la Filiale…", &"reset_branch")
