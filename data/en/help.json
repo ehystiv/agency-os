@@ -96,6 +96,20 @@
 			"body": "The Agenda is a month calendar: schedule sessions with a time, a title and a preparation checklist. For each day it also shows the interviews held. The next session appears in the notification area."
 		},
 		{
+			"id": "staff",
+			"chapter": 1,
+			"title": "Personnel",
+			"keywords": [
+				"Agents",
+				"sheets",
+				"ARC",
+				"commendations",
+				"demerits",
+				"team"
+			],
+			"body": "Personnel keeps the sheets of the team's Agents: name, player, Anomaly, Reality and Competency, commendations, demerits and notes. It saves by itself. The Agents marked as known go into the Entity's prompt, without the player's name. Show to players puts the sheet on the TV, without the notes. The sheets stay even if you reset the Branch."
+		},
+		{
 			"id": "calc",
 			"chapter": 1,
 			"title": "Calculator",

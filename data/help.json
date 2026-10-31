@@ -96,6 +96,20 @@
 			"body": "L'Agenda è un calendario mensile: fissa le sessioni con ora, titolo e una lista di preparazione. Per ogni giorno mostra anche i colloqui tenuti. La prossima sessione compare nell'area di notifica."
 		},
 		{
+			"id": "staff",
+			"chapter": 1,
+			"title": "Personale",
+			"keywords": [
+				"Agenti",
+				"schede",
+				"ARC",
+				"encomi",
+				"richiami",
+				"squadra"
+			],
+			"body": "Personale tiene le schede degli Agenti della squadra: nome, giocatore, Anomalia, Realtà e Competenza, encomi, richiami e note. Si salva da solo. Gli Agenti segnati come conosciuti entrano nel prompt dell'Entità, senza il nome del giocatore. Con Mostra ai giocatori la scheda va sulla TV, senza le note. Le schede restano anche se azzeri la Filiale."
+		},
+		{
 			"id": "calc",
 			"chapter": 1,
 			"title": "Calcolatrice",

@@ -1,6 +1,6 @@
 extends Node
 ## Pure game logic, no interface: interviews, access level, the Entity's prompt,
-## summaries and cumulative memory, Notebook, trash and agenda.
+## summaries and cumulative memory, Notebook, trash, agenda and the team's Agents.
 ## Memos, desktop files and drafts live in correspondence (a child node).
 
 signal interviews_changed
@@ -13,6 +13,7 @@ signal pages_changed
 signal trash_changed
 signal chaos_changed(chaos: int)
 signal agenda_changed
+signal agents_changed
 
 const PER_LEVEL := 3
 const MAX_LEVEL := 5
@@ -20,6 +21,7 @@ const STATE_FILE := "state.json"
 const PAGES_FILE := "notebook.json"
 const TRASH_FILE := "trash.json"
 const AGENDA_FILE := "agenda.json"
+const AGENTS_FILE := "agents.json"
 const INTERVIEWS_DIR := "interviews"
 const DEFAULT_SESSION_TIME := "21:00"
 ## Default preparation checklist (shown on screen, so in Italian).
@@ -54,7 +56,10 @@ const TOKEN_MARGIN := 256
 ## the conversation still fits.
 const NOTES_SHARE := 0.15
 const MEMORY_SHARE := 0.15
+const AGENTS_SHARE := 0.08
 const RECENT_SUMMARIES := 2
+## Labels of an Agent's ARC (shown on screen and read by the model, so in Italian).
+const AGENT_FIELDS := {"anomaly": "Anomalia", "reality": "Realtà", "competency": "Competenza"}
 
 var interviews: Array[Interview] = []
 ## The Manager's notes about the campaign: the Entity reads them.
@@ -68,6 +73,9 @@ var pages: Array[Dictionary] = []
 var trash: Array[Dictionary] = []
 ## Scheduled sessions: {id, date (YYYY-MM-DD), time, title, checklist: [{text, done}]}.
 var agenda: Array[Dictionary] = []
+## The players' Agents: {id, name, player, anomaly, reality, competency, commendations,
+## demerits, notes, known (the Entity knows them: they go in its prompt), created}.
+var agents: Array[Dictionary] = []
 ## Obsidian vault folder for this campaign's exports; empty = to be chosen.
 var obsidian_folder: String = ""
 
@@ -193,7 +201,7 @@ func add_chaos(amount: int) -> void:
 
 
 ## Reset protocol: deletes interviews, memories, mail, files, trash and Chaos;
-## the level goes back to 1. Settings, vault folder and agenda stay;
+## the level goes back to 1. Settings, vault folder, agenda and Agents stay;
 ## keep_notes also keeps the Manager's notes and the Notebook.
 func reset_branch(keep_notes: bool) -> void:
 	generation += 1
@@ -498,6 +506,46 @@ func _parse_glitch(text: String, table: Dictionary) -> String:
 	return best
 
 
+# --- Agents ----------------------------------------------------------------
+
+func new_agent() -> Dictionary:
+	var agent := {
+		"id": "agent-%d-%d" % [Time.get_unix_time_from_system(), randi() % 1000],
+		"name": "", "player": "", "anomaly": "", "reality": "", "competency": "",
+		"commendations": 0, "demerits": 0, "notes": "", "known": true,
+		"created": Time.get_datetime_string_from_system(),
+	}
+	agents.append(agent)
+	_save_agents()
+	return agent
+
+
+func find_agent(id: String) -> Dictionary:
+	for agent in agents:
+		if agent.id == id:
+			return agent
+	return {}
+
+
+## The agent is edited in place by the app; this writes it.
+func save_agent(agent: Dictionary, quiet: bool = false) -> void:
+	agent.commendations = maxi(0, int(agent.get("commendations", 0)))
+	agent.demerits = maxi(0, int(agent.get("demerits", 0)))
+	Save.write_campaign(AGENTS_FILE, agents)
+	if not quiet:
+		agents_changed.emit()
+
+
+func delete_agent(agent: Dictionary) -> void:
+	agents.erase(agent)
+	_save_agents()
+
+
+func _save_agents() -> void:
+	Save.write_campaign(AGENTS_FILE, agents)
+	agents_changed.emit()
+
+
 # --- Prompt ----------------------------------------------------------------
 
 ## Messages for the model: system prompt plus the most recent part of the interview
@@ -547,6 +595,7 @@ func entity_prompt(interview: Interview) -> String:
 		"commands": correspondence.prompt_commands(level()),
 		"drafts": correspondence.prompt_drafts(trash),
 		"assignment": _next_session_text(),
+		"agents": _agents_text(),
 	})
 
 
@@ -640,6 +689,28 @@ func _recent_summaries(interview: Interview) -> String:
 	return "\n\n".join(parts.slice(-RECENT_SUMMARIES))
 
 
+## Only what the Entity could see through the cracks: no player names.
+func _agents_text() -> String:
+	var lines: PackedStringArray = []
+	for agent in agents:
+		if not agent.get("known", true) or str(agent.get("name", "")).strip_edges() == "":
+			continue
+		var parts: PackedStringArray = [str(agent.name).strip_edges()]
+		for key: String in ["anomaly", "reality", "competency"]:
+			var value := str(agent.get(key, "")).strip_edges()
+			if value != "":
+				parts.append(tr(AGENT_FIELDS[key]) + ": " + value)
+		parts.append(tr("encomi %d, richiami %d") % [int(agent.get("commendations", 0)), int(agent.get("demerits", 0))])
+		var line := "- " + " · ".join(parts)
+		var notes_text := str(agent.get("notes", "")).strip_edges().replace("\n", " ")
+		if notes_text != "":
+			line += "\n  " + notes_text
+		lines.append(line)
+	if lines.is_empty():
+		return tr("(nessuno che tu conosca per nome)")
+	return _fit("\n".join(lines), AGENTS_SHARE, false)
+
+
 func _next_session_text() -> String:
 	var session := next_session()
 	if session.is_empty():
@@ -706,6 +777,9 @@ func _load() -> void:
 	for session: Variant in Save.read_campaign(AGENDA_FILE, []):
 		if session is Dictionary:
 			agenda.append(session)
+	for agent: Variant in Save.read_campaign(AGENTS_FILE, []):
+		if agent is Dictionary and agent.has("id"):
+			agents.append(agent)
 	for file_name in Save.list_campaign(INTERVIEWS_DIR):
 		var data: Variant = Save.read_campaign(INTERVIEWS_DIR + "/" + file_name, null)
 		if data is Dictionary:

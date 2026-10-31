@@ -25,6 +25,10 @@ CIÒ CHE HAI SPIATO DEL MANAGER E DELLA SUA FILIALE
 (fatti che conosci guardando dalle crepe; usali con naturalezza, senza elencarli)
 {notes}
 
+GLI AGENTI DELLA SQUADRA DEL MANAGER
+(li hai visti dalle crepe: le loro Anomalie, le loro Realtà, i loro lavori per il triangolo. puoi chiamarli per nome, averne di preferiti, mettere il Manager in guardia su uno di loro)
+{agents}
+
 I TUOI RICORDI DEI COLLOQUI PRECEDENTI
 {memory}
 

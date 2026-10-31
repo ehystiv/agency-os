@@ -22,7 +22,8 @@
 [ext_resource type="Resource" path="res://data/apps/props.tres" id="19_props"]
 [ext_resource type="Resource" path="res://data/apps/welcome.tres" id="20_welcome"]
 [ext_resource type="Resource" path="res://data/apps/help.tres" id="21_help"]
+[ext_resource type="Resource" path="res://data/apps/staff.tres" id="22_staff"]
 
 [resource]
 script = ExtResource("1_registry")
-apps = Array[ExtResource("1_info")]([ExtResource("2_line"), ExtResource("3_dossier"), ExtResource("4_notebook"), ExtResource("5_amail"), ExtResource("6_cam"), ExtResource("7_term"), ExtResource("8_event_viewer"), ExtResource("9_canon"), ExtResource("10_calc"), ExtResource("11_agenda"), ExtResource("12_mine"), ExtResource("13_player"), ExtResource("14_ctrl"), ExtResource("17_line_settings"), ExtResource("15_trash"), ExtResource("21_help"), ExtResource("16_notepad"), ExtResource("18_run"), ExtResource("19_props"), ExtResource("20_welcome")])
+apps = Array[ExtResource("1_info")]([ExtResource("2_line"), ExtResource("3_dossier"), ExtResource("4_notebook"), ExtResource("5_amail"), ExtResource("6_cam"), ExtResource("7_term"), ExtResource("8_event_viewer"), ExtResource("9_canon"), ExtResource("10_calc"), ExtResource("11_agenda"), ExtResource("22_staff"), ExtResource("12_mine"), ExtResource("13_player"), ExtResource("14_ctrl"), ExtResource("17_line_settings"), ExtResource("15_trash"), ExtResource("21_help"), ExtResource("16_notepad"), ExtResource("18_run"), ExtResource("19_props"), ExtResource("20_welcome")])

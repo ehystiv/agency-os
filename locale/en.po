@@ -3310,8 +3310,8 @@ msgstr "Backup"
 msgid "Backup della Filiale"
 msgstr "Branch backup"
 
-msgid "Il backup è un unico file .zip con colloqui, memoria, posta, file, Taccuino e agenda. Le impostazioni e la Raccolta del Lettore non sono incluse."
-msgstr "The backup is a single .zip file with the interviews, memory, mail, files, Notebook and agenda. Settings and the Media Player's collection are not included."
+msgid "Il backup è un unico file .zip con colloqui, memoria, posta, file, Taccuino, agenda e Agenti. Le impostazioni e la Raccolta del Lettore non sono incluse."
+msgstr "The backup is a single .zip file with the interviews, memory, mail, files, Notebook, agenda and Agents. Settings and the Media Player's collection are not included."
 
 msgid "Esporta la Filiale…"
 msgstr "Export the Branch…"
@@ -3373,3 +3373,80 @@ msgstr "The backup contains unexpected files."
 
 msgid "Il backup è troppo grande."
 msgstr "The backup is too large."
+
+#: autoload/campaign.gd
+msgid "Anomalia"
+msgstr "Anomaly"
+
+msgid "Realtà"
+msgstr "Reality"
+
+msgid "Competenza"
+msgstr "Competency"
+
+msgid "encomi %d, richiami %d"
+msgstr "commendations %d, demerits %d"
+
+msgid "(nessuno che tu conosca per nome)"
+msgstr "(none you know by name)"
+
+#: apps/staff
+msgid "Personale"
+msgstr "Personnel"
+
+msgid "personale.exe"
+msgstr "personnel.exe"
+
+msgid "Agente"
+msgstr "Agent"
+
+msgid "Nuovo Agente"
+msgstr "New Agent"
+
+msgid "Nessun Agente."
+msgstr "No Agents."
+
+msgid "Nome dell'Agente"
+msgstr "Agent's name"
+
+msgid "Giocatore"
+msgstr "Player"
+
+msgid "Chi lo interpreta (resta fuori dal prompt)"
+msgstr "Who plays them (kept out of the prompt)"
+
+msgid "Encomi"
+msgstr "Commendations"
+
+msgid "Richiami"
+msgstr "Demerits"
+
+msgid "Note del Manager"
+msgstr "Manager's notes"
+
+msgid "Cosa nasconde, chi conosce, cosa ha combinato all'ultimo Incarico…"
+msgstr "What they hide, who they know, what they did on the last Assignment…"
+
+msgid "L'Entità conosce questo Agente"
+msgstr "The Entity knows this Agent"
+
+msgid "Nome, ARC, encomi, richiami e note entrano nel prompt dell'Entità (il giocatore no)."
+msgstr "Name, ARC, commendations, demerits and notes go into the Entity's prompt (the player doesn't)."
+
+msgid "Nessun Agente in organico. Le schede della squadra restano anche se azzeri la Filiale."
+msgstr "No Agents on staff. The team's sheets stay even if you reset the Branch."
+
+msgid "Elimina l'Agente"
+msgstr "Delete the Agent"
+
+msgid "Conferma: elimina l'Agente"
+msgstr "Confirm: delete the Agent"
+
+msgid "Agente senza nome"
+msgstr "Unnamed Agent"
+
+msgid "E%d · R%d"
+msgstr "C%d · D%d"
+
+msgid "Personale · scheda dell'Agente"
+msgstr "Personnel · Agent sheet"

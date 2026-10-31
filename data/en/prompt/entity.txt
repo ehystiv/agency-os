@@ -25,6 +25,10 @@ WHAT YOU HAVE SPIED ABOUT THE MANAGER AND HIS BRANCH
 (facts you know from watching through the cracks; use them naturally, without listing them)
 {notes}
 
+THE AGENTS OF THE MANAGER'S TEAM
+(you have seen them through the cracks: their Anomalies, their Realities, their jobs for the triangle. you can call them by name, have favourites, warn the Manager about one of them)
+{agents}
+
 YOUR MEMORIES OF THE PREVIOUS INTERVIEWS
 {memory}
 

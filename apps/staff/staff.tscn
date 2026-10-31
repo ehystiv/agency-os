@@ -1,0 +1,195 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://apps/staff/staff.gd" id="1_script"]
+
+[node name="Staff" type="MarginContainer"]
+size_flags_vertical = 3
+script = ExtResource("1_script")
+
+[node name="Layout" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Main" type="HBoxContainer" parent="Layout"]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 3
+
+[node name="ListPanel" type="PanelContainer" parent="Layout/Main"]
+custom_minimum_size = Vector2(170, 0)
+layout_mode = 2
+theme_type_variation = &"SunkenPanel"
+
+[node name="Scroll" type="ScrollContainer" parent="Layout/Main/ListPanel"]
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="List" type="VBoxContainer" parent="Layout/Main/ListPanel/Scroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 0
+
+[node name="EmptyList" type="Label" parent="Layout/Main/ListPanel/Scroll/List"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"HintLabel"
+text = "Nessun Agente."
+
+[node name="Rows" type="VBoxContainer" parent="Layout/Main/ListPanel/Scroll/List"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="Sheet" type="Control" parent="Layout/Main"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Form" type="VBoxContainer" parent="Layout/Main/Sheet"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 4
+
+[node name="AgentName" type="LineEdit" parent="Layout/Main/Sheet/Form"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"TitleEdit"
+max_length = 80
+placeholder_text = "Nome dell'Agente"
+
+[node name="Grid" type="GridContainer" parent="Layout/Main/Sheet/Form"]
+layout_mode = 2
+theme_override_constants/h_separation = 8
+theme_override_constants/v_separation = 4
+columns = 2
+
+[node name="PlayerLabel" type="Label" parent="Layout/Main/Sheet/Form/Grid"]
+layout_mode = 2
+theme_type_variation = &"StatusLabel"
+text = "Giocatore"
+
+[node name="Player" type="LineEdit" parent="Layout/Main/Sheet/Form/Grid"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+max_length = 80
+placeholder_text = "Chi lo interpreta (resta fuori dal prompt)"
+
+[node name="AnomalyLabel" type="Label" parent="Layout/Main/Sheet/Form/Grid"]
+layout_mode = 2
+theme_type_variation = &"StatusLabel"
+text = "Anomalia"
+
+[node name="Anomaly" type="LineEdit" parent="Layout/Main/Sheet/Form/Grid"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+max_length = 120
+
+[node name="RealityLabel" type="Label" parent="Layout/Main/Sheet/Form/Grid"]
+layout_mode = 2
+theme_type_variation = &"StatusLabel"
+text = "Realtà"
+
+[node name="Reality" type="LineEdit" parent="Layout/Main/Sheet/Form/Grid"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+max_length = 120
+
+[node name="CompetencyLabel" type="Label" parent="Layout/Main/Sheet/Form/Grid"]
+layout_mode = 2
+theme_type_variation = &"StatusLabel"
+text = "Competenza"
+
+[node name="Competency" type="LineEdit" parent="Layout/Main/Sheet/Form/Grid"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+max_length = 120
+
+[node name="Counters" type="HBoxContainer" parent="Layout/Main/Sheet/Form"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="NotesLabel" type="Label" parent="Layout/Main/Sheet/Form"]
+layout_mode = 2
+theme_type_variation = &"FieldLabel"
+text = "Note del Manager"
+uppercase = true
+
+[node name="Notes" type="TextEdit" parent="Layout/Main/Sheet/Form"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+size_flags_vertical = 3
+placeholder_text = "Cosa nasconde, chi conosce, cosa ha combinato all'ultimo Incarico…"
+wrap_mode = 1
+
+[node name="Known" type="CheckBox" parent="Layout/Main/Sheet/Form"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+tooltip_text = "Nome, ARC, encomi, richiami e note entrano nel prompt dell'Entità (il giocatore no)."
+text = "L'Entità conosce questo Agente"
+
+[node name="Empty" type="CenterContainer" parent="Layout/Main/Sheet"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Box" type="VBoxContainer" parent="Layout/Main/Sheet/Empty"]
+custom_minimum_size = Vector2(280, 0)
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Text" type="Label" parent="Layout/Main/Sheet/Empty/Box"]
+layout_mode = 2
+theme_type_variation = &"StatusLabel"
+text = "Nessun Agente in organico. Le schede della squadra restano anche se azzeri la Filiale."
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="NewAgentEmpty" type="Button" parent="Layout/Main/Sheet/Empty/Box"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 4
+focus_mode = 0
+theme_type_variation = &"PrimaryButton"
+text = "Nuovo Agente"
+
+[node name="Buttons" type="HBoxContainer" parent="Layout"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="NewAgent" type="Button" parent="Layout/Buttons"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+text = "Nuovo Agente"
+
+[node name="Status" type="Label" parent="Layout/Buttons"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"HintLabel"
+horizontal_alignment = 1
+
+[node name="Delete" type="LinkButton" parent="Layout/Buttons"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 4
+focus_mode = 0
+theme_type_variation = &"LinkDanger"
+text = "Elimina l'Agente"

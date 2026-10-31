@@ -432,7 +432,7 @@ autowrap_mode = 3
 [node name="BackupHint" type="Label" parent="Layout/Tabs/Backup/BackupBox/Column"]
 layout_mode = 2
 theme_type_variation = &"HintLabel"
-text = "Il backup è un unico file .zip con colloqui, memoria, posta, file, Taccuino e agenda. Le impostazioni e la Raccolta del Lettore non sono incluse."
+text = "Il backup è un unico file .zip con colloqui, memoria, posta, file, Taccuino, agenda e Agenti. Le impostazioni e la Raccolta del Lettore non sono incluse."
 autowrap_mode = 3
 
 [node name="Row" type="HBoxContainer" parent="Layout/Tabs/Backup/BackupBox/Column"]

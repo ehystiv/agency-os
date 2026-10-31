@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="AppInfo" format=3]
+
+[ext_resource type="Script" path="res://core/app_info.gd" id="1_info"]
+[ext_resource type="Texture2D" path="res://ui/icons/staff.svg" id="2_icon"]
+[ext_resource type="PackedScene" path="res://apps/staff/staff.tscn" id="3_scene"]
+
+[resource]
+script = ExtResource("1_info")
+id = &"staff"
+label = "Personale"
+window_title = "personale.exe"
+icon = ExtResource("2_icon")
+scene = ExtResource("3_scene")
+default_position = Vector2i(-1, 80)
+default_size = Vector2i(640, 470)
+resizable = true
+min_size = Vector2i(520, 380)
+on_desktop = true
+open_at_first_start = false
+menu_strip = PackedStringArray("File", "Agente", "?")
