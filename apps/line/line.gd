@@ -265,9 +265,18 @@ func _reply() -> void:
 	_request = Brain.chat(Campaign.build_messages(interview))
 	Entity.set_speaking(true)
 	Entity.stir(0.25)
-	_request.chunk_received.connect(func(_piece: String) -> void:
-		bubble.set_entity_text(_request.text, true)
-		_scroll_to_end())
+	# Fast providers send many pieces per frame: show the text once per frame, not per piece.
+	var streaming := _request
+	var flush_pending := [false]  # an Array, so the lambda's runs share it
+	streaming.chunk_received.connect(func(_piece: String) -> void:
+		if flush_pending[0]:
+			return
+		flush_pending[0] = true
+		await get_tree().process_frame
+		flush_pending[0] = false
+		if not streaming.is_done:
+			bubble.set_entity_text(streaming.text, true)
+			_scroll_to_end())
 	_update_chrome()
 	_scroll_to_end()
 	if not _request.is_done:

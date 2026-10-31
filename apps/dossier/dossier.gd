@@ -9,6 +9,8 @@ const SELECTED_TEXT := Color.WHITE
 
 var _selected_number := 0
 var _notes_dirty := false
+## The interview list changed while the window was hidden: rebuilt when it shows again.
+var _list_stale := false
 
 @onready var _level: Label = %Level
 @onready var _pips: HBoxContainer = %Pips
@@ -42,6 +44,9 @@ func _ready() -> void:
 	Campaign.memory_changed.connect(_load_memory)
 	_notes.text = Campaign.notes
 	_load_memory()
+	visibility_changed.connect(func() -> void:
+		if _list_stale and is_visible_in_tree():
+			_refresh_list())
 	_refresh()
 
 
@@ -86,6 +91,10 @@ func _refresh_level() -> void:
 
 
 func _refresh_list() -> void:
+	# interview_updated fires for every message: a hidden Dossier would rebuild all its rows each time.
+	_list_stale = not is_visible_in_tree()
+	if _list_stale:
+		return
 	for child in _rows.get_children():
 		_rows.remove_child(child)
 		child.queue_free()

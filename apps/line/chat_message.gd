@@ -49,7 +49,9 @@ func _ready() -> void:
 ## Updates the Entity's text while streaming.
 func set_entity_text(text: String, typing: bool) -> void:
 	plain_text = text
-	_label.theme_type_variation = &"MsgEntityTyping" if typing else &"MsgEntity"
+	var variation := &"MsgEntityTyping" if typing else &"MsgEntity"
+	if _label.theme_type_variation != variation:
+		_label.theme_type_variation = variation
 	_set_rich(_escape(text if text != "" else "…") + (TYPING_CURSOR if typing else ""))
 
 

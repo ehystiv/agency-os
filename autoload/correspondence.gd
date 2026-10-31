@@ -28,6 +28,8 @@ const PROMPT_MEMOS := 3
 const PROMPT_MEMO_CHARS := 600
 const PROMPT_FILE_CHARS := 900
 const PROMPT_DRAFT_CHARS := 400
+## Only the newest drafts: one lands in the trash about every other session, forever.
+const PROMPT_DRAFTS := 3
 
 ## {id, session, created, sender, subject, body, read, delivered}
 var mail: Array[Dictionary] = []
@@ -195,10 +197,10 @@ func prompt_commands(level: int) -> String:
 
 
 func prompt_drafts(trash: Array[Dictionary]) -> String:
+	var drafts := trash.filter(func(item: Dictionary) -> bool: return item.get("type", "") == "draft")
 	var parts: PackedStringArray = []
-	for item in trash:
-		if item.get("type", "") == "draft":
-			parts.append(tr("\"%s\": %s") % [item.name, str(item.get("text", "")).left(PROMPT_DRAFT_CHARS)])
+	for item: Dictionary in drafts.slice(-PROMPT_DRAFTS):
+		parts.append(tr("\"%s\": %s") % [item.name, str(item.get("text", "")).left(PROMPT_DRAFT_CHARS)])
 	return "\n".join(parts) if not parts.is_empty() else tr("(nessuno)")
 
 
@@ -368,6 +370,11 @@ func _enqueue(job: Callable) -> void:
 		return
 	_running = true
 	while not _queue.is_empty():
+		# A local model often serves one request at a time: don't queue up behind the Line.
+		while Brain.is_busy():
+			await Brain.busy_changed
+		if _queue.is_empty():  # emptied by cancel_pending() meanwhile
+			break
 		var next: Callable = _queue.pop_front()
 		await next.call()
 	_running = false
