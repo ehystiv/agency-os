@@ -5,6 +5,8 @@ extends Node
 ## plus [line] provider = the active one. It can also be edited by hand.
 
 signal settings_changed
+## True while at least one chat request is running (the desktop shows the busy cursor).
+signal busy_changed(busy: bool)
 
 const SETTINGS_PATH := "user://config/model.cfg"
 const ACTIVE_SECTION := "line"
@@ -44,6 +46,8 @@ const DEFAULTS: Dictionary[String, Dictionary] = {
 	},
 }
 
+## Chat requests still running.
+var _running := 0
 var _settings := ConfigFile.new()
 var _provider: OpenAICompatibleProvider
 
@@ -96,7 +100,20 @@ func chat(messages: Array[Dictionary], options: Dictionary = {}) -> BrainRequest
 		full["max_tokens"] = int(get_setting("max_reply"))
 	if not full.has("skip_reasoning"):
 		full["skip_reasoning"] = bool(get_setting("skip_reasoning"))
-	return _provider.chat(messages, full)
+	var request := _provider.chat(messages, full)
+	if not request.is_done:
+		_running += 1
+		if _running == 1:
+			busy_changed.emit(true)
+		request.finished.connect(func() -> void:
+			_running -= 1
+			if _running == 0:
+				busy_changed.emit(false))
+	return request
+
+
+func is_busy() -> bool:
+	return _running > 0
 
 
 ## The reply text is the list of models, one per line.

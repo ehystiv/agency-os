@@ -5,6 +5,8 @@ extends Control
 const REGISTRY: AppRegistry = preload("res://data/apps/registry.tres")
 const TRASH_EMPTY := preload("res://ui/icons/trash.svg")
 const TRASH_FULL := preload("res://ui/icons/trash_full.svg")
+## Arrow with an hourglass, as Windows 98 "working in background".
+const BUSY_CURSOR := preload("res://ui/icons/cursor_busy.svg")
 
 @onready var _wallpaper: Wallpaper = $Wallpaper
 @onready var _icons: DesktopIcons = $Icons
@@ -84,6 +86,8 @@ func _ready() -> void:
 	_catcher.gui_input.connect(_on_catcher_input)
 	Entity.glitch_started.connect(_on_glitch_started)
 	Updater.state_changed.connect(_on_update_state)
+	Brain.busy_changed.connect(func(busy: bool) -> void:
+		Input.set_custom_mouse_cursor(BUSY_CURSOR if busy else null, Input.CURSOR_ARROW, Vector2(1, 1)))
 
 	_on_windows_changed()
 	BootPatch.confirm()
