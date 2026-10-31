@@ -9,8 +9,13 @@ enum Phase { CONNECTING, REQUESTING, READING, DONE }
 enum Dialect { OPENAI, ANTHROPIC }
 
 const CONNECT_TIMEOUT_MS := 5000
+## DNS and the TLS handshake of a remote server can take longer than a local connection.
+const REMOTE_CONNECT_TIMEOUT_MS := 15000
 ## A local model can take a long time to load into memory the first time.
 const FIRST_TOKEN_TIMEOUT_MS := 90000
+## Without streaming nothing arrives until the whole reply is written:
+## a slow local model needs minutes for a summary.
+const WHOLE_REPLY_TIMEOUT_MS := 300000
 const IDLE_TIMEOUT_MS := 30000
 
 var request: BrainRequest
@@ -77,15 +82,15 @@ func poll() -> bool:
 				_send()
 			elif status in [HTTPClient.STATUS_CANT_CONNECT, HTTPClient.STATUS_CANT_RESOLVE, HTTPClient.STATUS_CONNECTION_ERROR, HTTPClient.STATUS_TLS_HANDSHAKE_ERROR]:
 				_fail(_unreachable_message())
-			elif now - _started_ms > CONNECT_TIMEOUT_MS:
+			elif now - _started_ms > _connect_limit():
 				_fail(_unreachable_message())
 		Phase.REQUESTING:
 			if status == HTTPClient.STATUS_BODY or (status == HTTPClient.STATUS_CONNECTED and _http.has_response()):
 				_phase = Phase.READING
 				_last_data_ms = now
 			elif status == HTTPClient.STATUS_REQUESTING:
-				if now - _last_data_ms > FIRST_TOKEN_TIMEOUT_MS:
-					_fail("Il modello non ha risposto entro %d secondi. Forse si sta ancora caricando: riprova tra poco." % (FIRST_TOKEN_TIMEOUT_MS / 1000))
+				if now - _last_data_ms > _first_data_limit():
+					_fail(_no_answer_message())
 			elif status in [HTTPClient.STATUS_CONNECTION_ERROR, HTTPClient.STATUS_CANT_CONNECT, HTTPClient.STATUS_DISCONNECTED]:
 				# On some systems the connection looks open even if nobody is listening:
 				# the refusal only comes when the request is sent.
@@ -127,12 +132,12 @@ func _read(now: int) -> void:
 				return
 		_http.poll()
 	if _http.get_status() == HTTPClient.STATUS_BODY:
-		var limit := IDLE_TIMEOUT_MS if _got_first_data else FIRST_TOKEN_TIMEOUT_MS
+		var limit := IDLE_TIMEOUT_MS if _got_first_data else _first_data_limit()
 		if now - _last_data_ms > limit:
 			if _got_first_data:
 				_fail("La linea è caduta a metà risposta.")
 			else:
-				_fail("Il modello non ha risposto entro %d secondi. Forse si sta ancora caricando: riprova tra poco." % (limit / 1000))
+				_fail(_no_answer_message())
 		return
 	# Body finished.
 	if code != 200:
@@ -261,8 +266,24 @@ func _close() -> void:
 	_http.close()
 
 
+func _is_local() -> bool:
+	return _host in ["127.0.0.1", "localhost"]
+
+
+func _connect_limit() -> int:
+	return CONNECT_TIMEOUT_MS if _is_local() else REMOTE_CONNECT_TIMEOUT_MS
+
+
+func _first_data_limit() -> int:
+	return FIRST_TOKEN_TIMEOUT_MS if _streaming else WHOLE_REPLY_TIMEOUT_MS
+
+
+func _no_answer_message() -> String:
+	return "Il modello non ha risposto entro %d secondi. Forse si sta ancora caricando: riprova tra poco." % (_first_data_limit() / 1000)
+
+
 func _unreachable_message() -> String:
-	if _host in ["127.0.0.1", "localhost"]:
+	if _is_local():
 		return "Il server del modello non risponde su %s. È acceso?" % _base_url
 	return "Non riesco a raggiungere %s. Controlla la connessione a internet." % _host
 
