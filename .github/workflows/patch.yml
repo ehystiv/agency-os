@@ -1,9 +1,12 @@
 # Builds and publishes an update patch (.pck + update.json) when a version tag is pushed.
 # See "Updates" in CLAUDE.md. The patch is built against the installer of the base
 # version named in tools/release_base, downloaded from that version's release.
+# When tools/release_base names this very version, it's a new base: the installer is
+# exported here (tools/make_base.sh) and the patch comes out nearly empty, with base = version.
 #
 # Release a patch:   bump application/config/version, commit, then
 #                    git tag -a v0.2.1 -m "Short notes shown in the app" && git push origin v0.2.1
+# Release a base:    the same, with tools/release_base set to the new version in that commit.
 # Try it:            Actions > Patch > Run workflow (dry run: the files end up as an artifact).
 name: Patch
 
@@ -70,11 +73,22 @@ jobs:
           touch notes.txt
 
       - name: Base installer
+        id: base
         env:
           GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.meta.outputs.version }}
         run: |
           base_version=$(tr -d '[:space:]' < tools/release_base)
-          gh release download "v$base_version" --pattern "AgencyOS-*.dmg" --dir base
+          mkdir -p base
+          if [ "$base_version" = "$VERSION" ]; then
+            # A new base: its installer is built here. --simple: no Finder automation on the runner.
+            echo "new=true" >> "$GITHUB_OUTPUT"
+            GODOT="$HOME/godot/Godot.app/Contents/MacOS/Godot" \
+              tools/make_base.sh "base/AgencyOS-$VERSION.dmg" --simple
+          else
+            echo "new=false" >> "$GITHUB_OUTPUT"
+            gh release download "v$base_version" --pattern "AgencyOS-*.dmg" --dir base
+          fi
 
       - name: Build the patch
         run: |
@@ -91,12 +105,17 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           VERSION: ${{ steps.meta.outputs.version }}
+          NEW_BASE: ${{ steps.base.outputs.new }}
         run: |
           tag="v$VERSION"
           # The base installer goes along, so the latest release always has one:
           # a new user installs it and the app updates itself to this version.
           dmg=$(ls base/AgencyOS-*.dmg)
-          printf '\n\n---\n**Nuova installazione:** scarica `%s` (trascina l’app in Applicazioni; al primo avvio clic destro › Apri). All’avvio l’app si aggiorna da sola alla %s.\n' "$(basename "$dmg")" "$VERSION" >> notes.txt
+          if [ "$NEW_BASE" = "true" ]; then
+            printf '\n\n---\n**This version needs the new installer:** download `%s` and drag the app to Applications, replacing the old one (first launch: right-click › Open). Campaigns and settings are kept.\n' "$(basename "$dmg")" >> notes.txt
+          else
+            printf '\n\n---\n**New installation:** download `%s` (drag the app to Applications; first launch: right-click › Open). On start the app updates itself to %s.\n' "$(basename "$dmg")" "$VERSION" >> notes.txt
+          fi
           if gh release view "$tag" > /dev/null 2>&1; then
             gh release upload "$tag" out/* "$dmg" --clobber
           else

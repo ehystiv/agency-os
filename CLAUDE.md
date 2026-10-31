@@ -30,7 +30,7 @@ Other things to know:
 - Godot's SVG rasterizer ignores `rgba()`: use `fill-opacity` / `stroke-opacity`.
 - **Real LLM tests:** use LM Studio (`~/.lmstudio/bin/lms`, models `gemma-3-12b-it-qat` and `qwen3.5-9b-mlx`). Leave the server and the loaded model as you found them.
 - **Player:** the Raccolta downloads audio with `yt-dlp` and `ffmpeg`/`ffprobe`. `YouTubeTools` prefers its own copies in `user://tools/` and falls back to Homebrew's; on a Mac without them, "Installa componenti" downloads them once (yt-dlp from its official release, checked against `SHA2-256SUMS`; ffmpeg/ffprobe from a pinned `eugeneware/ffmpeg-static` build, checked against hashes in the code) and the managed yt-dlp runs `--update` at most once a day. Godot can't decode YouTube's formats, so the audio is converted to mp3 and kept in `user://player/cache/`; the collection (`user://player/library.json`) belongs to the Manager, not to a campaign.
-- **macOS installer:** `tools/make_dmg.sh <AgencyOS.app|exported.dmg> [out.dmg] [--simple]` builds the installer DMG. Godot's export needs "Import ETC2 ASTC" enabled. With ad-hoc signing the app sandbox must stay off, or the app is killed at launch.
+- **macOS installer:** `tools/make_base.sh [out.dmg] [--simple]` exports the app and builds the installer DMG; `tools/make_dmg.sh <AgencyOS.app|exported.dmg> [out.dmg] [--simple]` only wraps an existing app. Godot's export needs "Import ETC2 ASTC" enabled. With ad-hoc signing the app sandbox must stay off, or the app is killed at launch.
 
 ## Architecture
 
@@ -94,7 +94,7 @@ To try the build without publishing: Actions › Patch › Run workflow (dry run
 
 Patches are **cumulative against the base**: always build against the DMG's `.pck`, never against a previous patch, so a user who skipped versions downloads only the latest one.
 
-**Releasing a new base:** export the DMG with the new version, run `tools/make_dmg.sh` (name it `AgencyOS-<version>.dmg`), and attach the installer to the release together with an `update.json` whose `base` equals its own `version` (`make_patch.sh` with the new app as base produces a near-empty patch that does this). Then write the new version in `tools/release_base`, so the next patches are built against it. Apps on the old base see a different `base` and point the user to the release page instead of downloading.
+**Releasing a new base:** in the same commit, bump `application/config/version` and write that same version in `tools/release_base`, then push the tag as for a patch. When `tools/release_base` names the version being released, the workflow builds the installer itself (`tools/make_base.sh`: export from a temporary copy, then `make_dmg.sh --simple`), builds a near-empty patch against it (so `update.json` has `base` equal to its own `version`) and publishes all three; the release notes tell users to install the new DMG. Apps on the old base see a different `base` and point the user to the release page instead of downloading. Locally, `tools/make_base.sh [out.dmg] [--simple]` builds the same installer (default `build/AgencyOS-<version>.dmg`).
 
 **At runtime** (`user://updates/`):
 - `current.json` describes the installed patch. The `Updater` writes it last, only after the download's size and sha256 match.
