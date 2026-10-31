@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 AgencyOS 98: a fake late-90s desktop OS, written in Godot 4.7 (GDScript), that the General Manager uses at the table when running Triangle Agency (Italian edition). Its core is the "reserved line", a chat with the Entity U0047BB played by an LLM (local through LM Studio/Ollama/llama.cpp, or remote through Hugging Face or Claude). The original brief and the HTML prototype it was ported from are in `reference/`.
 
-**Language rule:** code, identifiers, comments, file names, save-file keys and JSON keys are in English. The app is localized in Italian (the source language) and English: everything shown on screen is written in Italian in the code and scenes and translated through `locale/en.po`; the prompts and game data the model reads (`data/prompt/*.txt`, the content of `data/*.json`) are in Italian, with English copies under `data/en/`.
+**Language rule:** code, identifiers, comments, file names, save-file keys and JSON keys are in English, and so are commit messages and the changelog (the annotated tag messages, which become the release notes and the updater's `notes`). The app is localized in Italian (the source language) and English: everything shown on screen is written in Italian in the code and scenes and translated through `locale/en.po`; the prompts and game data the model reads (`data/prompt/*.txt`, the content of `data/*.json`) are in Italian, with English copies under `data/en/`.
 
 ## Running and verifying
 
