@@ -11,6 +11,8 @@ const ZOOM_SECONDS := 0.2
 ## Exists while AgencyOS runs: found at start, the last session didn't end properly.
 const SESSION_LOCK := "user://config/session.lock"
 const CAPTION_HEIGHT := 24.0
+## Pause between two main-loop iterations in low-processor mode: up to ~60 checks a second.
+const IDLE_SLEEP_USEC := 16000
 
 @onready var _wallpaper: Wallpaper = $Wallpaper
 @onready var _icons: DesktopIcons = $Icons
@@ -33,6 +35,10 @@ var _context_actions: Array[Callable] = []
 
 
 func _ready() -> void:
+	# Draw only when something changes: an idle desktop shouldn't keep the GPU and the
+	# battery busy for hours at the table. Set here, not in project.godot, so it ships in a patch.
+	OS.low_processor_usage_mode = true
+	OS.low_processor_usage_mode_sleep_usec = IDLE_SLEEP_USEC
 	# Before the windows are restored, so they are placed inside the right area.
 	ScreenArea.apply(get_window(), ScreenArea.current())
 	_set_fullscreen(bool(Save.get_ui("fullscreen", false)))

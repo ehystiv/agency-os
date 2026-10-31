@@ -35,5 +35,7 @@ func kick() -> void:
 	_material.set_shader_parameter("aberration", 1.0)
 	_material.set_shader_parameter("tear", 1.0)
 	var tween := create_tween().set_parallel()
-	tween.tween_method(func(v: float) -> void: _material.set_shader_parameter("aberration", v), 1.0, 0.0, KICK_SECONDS)
+	tween.tween_method(func(v: float) -> void:
+		_material.set_shader_parameter("aberration", v)
+		_material.set_shader_parameter("tick", Time.get_ticks_msec() / 1000.0), 1.0, 0.0, KICK_SECONDS)
 	tween.tween_method(func(v: float) -> void: _material.set_shader_parameter("tear", v), 1.0, 0.0, KICK_SECONDS)

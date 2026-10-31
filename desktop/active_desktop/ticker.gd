@@ -20,7 +20,10 @@ func _ready() -> void:
 		var data: Variant = JSON.parse_string(file.get_as_text())
 		if data is Dictionary:
 			_headlines = PackedStringArray(data.get("headlines", []))
-	visibility_changed.connect(func() -> void: set_process(is_visible_in_tree()))
+	# Moving even a hidden label redraws the whole screen: scroll only while it's shown.
+	var follow_visibility := func() -> void: set_process(is_visible_in_tree())
+	visibility_changed.connect(follow_visibility)
+	follow_visibility.call_deferred()  # the desktop sets the starting visibility after this
 	_restart()
 
 

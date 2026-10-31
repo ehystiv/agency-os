@@ -69,6 +69,7 @@ Other things to know:
 - The global theme is `ui/theme/agency98.tres`, a large `Theme` that uses the custom `StyleBoxBevel` (`ui/theme/stylebox_bevel.gd`) for '98 bevels. Widgets pick their style by `theme_type_variation` (e.g. `ListRow`, `MsgEntity`, `PrimaryButton`). Check the theme before adding new variations.
 - The desktop's logical resolution is the "Area dello schermo" (`core/screen_area.gd`, UI pref `screen_area`, Control panel › Schermo): it sets `content_scale_size` at runtime, so `project.godot`'s 1280×720 is only the default.
 - 3D views (dice tray, webcam cage) render in a SubViewport at low resolution that is redrawn on demand.
+- **Idle cost:** the desktop runs in low-processor mode (set in `desktop.gd`), so a frame is drawn only when something changes; idle it uses about 1% CPU. Anything that changes every frame keeps the whole screen (and the full-screen CRT pass) redrawing at 60 Hz: a `canvas_item` shader that reads `TIME`, a `_process` that moves or redraws even a hidden node, an endless tween. Run animations only while visible and stop them afterwards; drive shader time from a uniform set only while animating (see `system/crt/`). To check, count `RenderingServer.frame_post_draw` over a few idle seconds.
 
 ## Localization
 
