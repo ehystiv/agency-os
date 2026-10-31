@@ -70,8 +70,10 @@ func _ready() -> void:
 	_update_action.pressed.connect(_on_update_action)
 	_auto_update.toggled.connect(func(on: bool) -> void: _store_setting(&"update_auto", on))
 	Updater.state_changed.connect(func(_state: Updater.State) -> void: _refresh_update())
-	Save.ui_changed.connect(func(_key: String) -> void: _load())
-	Sfx.settings_changed.connect(_load)
+	# Every window moved changes a UI setting: refresh only if the panel is on screen
+	# (on_opened reloads anyway when it's shown).
+	Save.ui_changed.connect(func(_key: String) -> void: _load_if_visible())
+	Sfx.settings_changed.connect(_load_if_visible)
 	_load()
 
 
@@ -79,6 +81,11 @@ func on_opened(args: Dictionary = {}) -> void:
 	if args.has("tab"):
 		_tabs.current_tab = maxi(0, TABS.keys().find(str(args.tab)))
 	_load()
+
+
+func _load_if_visible() -> void:
+	if is_visible_in_tree():
+		_load()
 
 
 func _load() -> void:
