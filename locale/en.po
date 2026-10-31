@@ -3048,3 +3048,6 @@ msgstr "%d results"
 #: apps/line/effects/glitch_layer.gd
 msgid "ahahah. no."
 msgstr "hahaha. no."
+
+msgid "Cerca…"
+msgstr "Search..."

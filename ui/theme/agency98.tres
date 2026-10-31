@@ -1033,6 +1033,7 @@ PopupMenu/styles/hover = SubResource("popup_hover")
 PopupMenu/colors/font_color = Color(0.07843, 0.08627, 0.1098, 1)
 PopupMenu/colors/font_hover_color = Color(1, 1, 1, 1)
 PopupMenu/font_sizes/font_size = 12
+PopupPanel/styles/panel = SubResource("popup")
 HSlider/styles/slider = SubResource("slider_track")
 HSlider/styles/grabber_area = SubResource("slider_area")
 HSlider/styles/grabber_area_highlight = SubResource("slider_area_hi")

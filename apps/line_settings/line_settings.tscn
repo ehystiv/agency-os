@@ -85,8 +85,24 @@ layout_mode = 2
 focus_mode = 0
 text = "Elenca…"
 
-[node name="ModelsPopup" type="PopupMenu" parent="Layout/Grid/ModelRow"]
+[node name="ModelsPopup" type="PopupPanel" parent="Layout/Grid/ModelRow"]
 unique_name_in_owner = true
+size = Vector2i(360, 300)
+
+[node name="Box" type="VBoxContainer" parent="Layout/Grid/ModelRow/ModelsPopup"]
+theme_override_constants/separation = 4
+
+[node name="ModelSearch" type="LineEdit" parent="Layout/Grid/ModelRow/ModelsPopup/Box"]
+unique_name_in_owner = true
+layout_mode = 2
+placeholder_text = "Cerca…"
+clear_button_enabled = true
+
+[node name="ModelList" type="Tree" parent="Layout/Grid/ModelRow/ModelsPopup/Box"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+hide_root = true
 
 [node name="TemperatureLabel" type="Label" parent="Layout/Grid"]
 layout_mode = 2

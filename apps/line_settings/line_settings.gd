@@ -8,6 +8,8 @@ var _presets: Array[String] = []
 var _testing := false
 ## Provider shown in the fields (it becomes the active one only on Save).
 var _shown_provider := ""
+## Every model the server listed, sorted; the popup shows the ones matching the search.
+var _all_models: Array[String] = []
 
 @onready var _provider: OptionButton = %Provider
 @onready var _server_row: Array[Control] = [%ServerLabel, %Server]
@@ -17,7 +19,9 @@ var _shown_provider := ""
 @onready var _url: LineEdit = %Url
 @onready var _model: LineEdit = %Model
 @onready var _list: Button = %ListModels
-@onready var _models_popup: PopupMenu = %ModelsPopup
+@onready var _models_popup: PopupPanel = %ModelsPopup
+@onready var _model_search: LineEdit = %ModelSearch
+@onready var _model_list: Tree = %ModelList
 @onready var _temperature: HSlider = %Temperature
 @onready var _temperature_value: Label = %TemperatureValue
 @onready var _context: SpinBox = %Context
@@ -39,7 +43,11 @@ func _ready() -> void:
 	_server.item_selected.connect(_on_server_selected)
 	_url.text_changed.connect(_on_url_changed)
 	_list.pressed.connect(_on_list_pressed)
-	_models_popup.id_pressed.connect(func(id: int) -> void: _model.text = _models_popup.get_item_text(id))
+	_model_search.text_changed.connect(_fill_models)
+	_model_search.text_submitted.connect(func(_t: String) -> void: _pick_model(_model_list.get_selected()))
+	_model_search.gui_input.connect(_on_model_search_input)
+	_model_list.item_activated.connect(func() -> void: _pick_model(_model_list.get_selected()))
+	_model_list.item_mouse_selected.connect(func(_p: Vector2, _b: int) -> void: _pick_model(_model_list.get_selected()))
 	_temperature.value_changed.connect(func(v: float) -> void: _temperature_value.text = "%.2f" % v)
 	_test.pressed.connect(_on_test_pressed)
 	_save.pressed.connect(_on_save_pressed)
@@ -112,18 +120,62 @@ func _on_list_pressed() -> void:
 	var request := Brain.probe_models(_shown_provider, _url.text.strip_edges(), _key.text.strip_edges())
 	await request.finished
 	_list.disabled = false
-	_models_popup.clear()
 	if not request.ok():
 		_report.text = "[!!] " + request.error
 		return
-	var ids := request.text.split("\n", false)
-	if ids.is_empty():
+	_all_models.assign(request.text.split("\n", false))
+	if _all_models.is_empty():
 		_report.text = tr("[!!] Il server non ha nessun modello disponibile.")
 		return
-	for id in ids:
-		_models_popup.add_item(id)
-	var rect := _list.get_global_rect()
-	_models_popup.popup(Rect2i(Vector2i(rect.position + Vector2(0, rect.size.y)), Vector2i(int(rect.size.x), 0)))
+	# Servers list them in their own order.
+	_all_models.sort_custom(func(a: String, b: String) -> bool: return a.naturalnocasecmp_to(b) < 0)
+	_model_search.text = ""
+	_fill_models("")
+	# As wide as the model field and its button, right below them.
+	var row := _model.get_parent() as Control
+	var rect := row.get_global_rect()
+	_models_popup.popup(Rect2i(Vector2i(rect.position + Vector2(0, rect.size.y)), Vector2i(maxi(int(rect.size.x), 320), 300)))
+	_model_search.grab_focus()
+
+
+## Arrow keys in the search box move the selection in the list below.
+func _on_model_search_input(event: InputEvent) -> void:
+	var step := 0
+	if event.is_action_pressed("ui_down", true):
+		step = 1
+	elif event.is_action_pressed("ui_up", true):
+		step = -1
+	if step == 0:
+		return
+	_model_search.accept_event()
+	var item := _model_list.get_selected()
+	if item == null:
+		return
+	var next := item.get_next_visible() if step > 0 else item.get_prev_visible()
+	if next:
+		next.select(0)
+		_model_list.scroll_to_item(next)
+
+
+## Shows the models whose name contains the filter, the first one selected.
+func _fill_models(filter: String) -> void:
+	_model_list.clear()
+	var root := _model_list.create_item()
+	var needle := filter.strip_edges()
+	for id in _all_models:
+		if needle == "" or id.containsn(needle):
+			_model_list.create_item(root).set_text(0, id)
+	var first := root.get_first_child()
+	if first:
+		first.select(0)
+		_model_list.scroll_to_item(first)
+
+
+func _pick_model(item: TreeItem) -> void:
+	if item == null:
+		return
+	_model.text = item.get_text(0)
+	_models_popup.hide()
 
 
 func _on_test_pressed() -> void:
