@@ -31,6 +31,20 @@ func on_opened(_args: Dictionary = {}) -> void:
 	pass
 
 
+## Entries of the drop-down menu with this title (one of AppInfo.menu_strip), shown when
+## the Manager opens it, so they can reflect the current state. Each entry is
+## {label, action, accel?: Key (e.g. KEY_MASK_CMD_OR_CTRL | KEY_S, only shown), disabled?,
+## checked?: bool (radio item)}, or {} for a separator. The window adds the common
+## entries: File › Chiudi, Modifica › Taglia/Copia/Incolla…, ? › Informazioni.
+func menu(_title: String) -> Array[Dictionary]:
+	return []
+
+
+## An entry of menu() was chosen.
+func on_menu_action(_action: StringName) -> void:
+	pass
+
+
 ## Called when the window comes to the front (a click, the taskbar, an opening):
 ## e.g. to give the keyboard focus to the main field.
 func on_activated() -> void:

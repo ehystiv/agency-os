@@ -387,3 +387,36 @@ func _export_interview() -> void:
 		return
 	var title := "Esportato in Obsidian" if result.error == "" else "Esportazione non riuscita"
 	notification_requested.emit(title, ObsidianExporter.summary(result), {"folder": result.folder} if result.folder != "" else {})
+
+
+# --- Menus ---------------------------------------------------------------------
+
+func menu(title: String) -> Array[Dictionary]:
+	var live := _interview != null and not _is_archive()
+	match title:
+		"File":
+			return [
+				{"label": "Apri la linea", "action": "open", "disabled": Campaign.current() != null},
+				{"label": "Termina la sessione", "action": "end", "disabled": not live or _busy},
+				{},
+				{"label": "Esporta il colloquio nel vault", "action": "export", "disabled": _interview == null},
+				{"label": "Impostazioni della linea…", "action": "settings"},
+			]
+		"Visualizza":
+			return [
+				{"label": "Torna al colloquio in corso" if Campaign.current() != null else "Torna alla linea", "action": "back", "disabled": not _is_archive()},
+				{"label": "Colloqui archiviati…", "action": "dossier"},
+				{"label": "Webcam del Caveau", "action": "cam"},
+			]
+	return []
+
+
+func on_menu_action(action: StringName) -> void:
+	match action:
+		&"open": _on_open_pressed()
+		&"end": _on_end_pressed()
+		&"export": _export_interview()
+		&"settings": _open_settings()
+		&"back": _on_back_pressed()
+		&"dossier": app_requested.emit(&"dossier", {})
+		&"cam": app_requested.emit(&"cam", {})

@@ -284,3 +284,43 @@ func _write_notes(notes: Array[Dictionary]) -> void:
 func _change_vault() -> void:
 	await _exporter.choose_folder()
 	_refresh_vault()
+
+
+# --- Menus ---------------------------------------------------------------------
+
+func menu(title: String) -> Array[Dictionary]:
+	var has_page := not _page().is_empty()
+	match title:
+		"File":
+			return [
+				{"label": "Nuova pagina", "action": "new", "accel": KEY_MASK_CMD_OR_CTRL | KEY_N},
+				{},
+				{"label": "Esporta la pagina nel vault", "action": "export", "disabled": not has_page},
+				{"label": "Esporta tutte le pagine", "action": "export_all", "disabled": Campaign.pages.is_empty()},
+				{"label": "Cambia cartella del vault…", "action": "vault"},
+			]
+		"Pagina":
+			return [
+				{"label": "Sposta la pagina nel Cestino", "action": "delete", "disabled": not has_page},
+			]
+	return []
+
+
+func on_menu_action(action: StringName) -> void:
+	match action:
+		&"new": _new_page()
+		&"export": _export_page()
+		&"export_all": _export_all()
+		&"vault": _change_vault()
+		&"delete":
+			# From the menu the choice is already deliberate; the page can come back from the Cestino.
+			_delete_armed = true
+			_on_delete_pressed()
+
+
+## Cmd+N: new page.
+func _unhandled_key_input(event: InputEvent) -> void:
+	var key := event as InputEventKey
+	if window_active and key != null and key.pressed and key.keycode == KEY_N and key.is_command_or_control_pressed():
+		_new_page()
+		get_viewport().set_input_as_handled()

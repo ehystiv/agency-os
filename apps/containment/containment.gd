@@ -85,3 +85,36 @@ func _finish(won: bool) -> void:
 	var lines := WON_LINES if won else LOST_LINES
 	notification_requested.emit("U0047BB", lines[randi() % lines.size()], {"app": &"line", "args": {}})
 	Entity.stir(0.5 if won else 0.35, 0.4 if won else 0.0)
+
+
+# --- Menus ---------------------------------------------------------------------
+
+func menu(title: String) -> Array[Dictionary]:
+	if title != "Partita":
+		return []
+	var entries: Array[Dictionary] = [{"label": "Nuova partita", "action": "new", "accel": KEY_F2}, {}]
+	for key: String in LEVEL_NAMES:
+		entries.append({"label": LEVEL_NAMES[key], "action": "level_" + key, "checked": key == _level})
+	entries.append({})
+	entries.append({"label": "Un clic segna (invece di scavare)", "action": "flag_mode", "checked": _board.flag_mode})
+	return entries
+
+
+func on_menu_action(action: StringName) -> void:
+	var chosen := String(action)
+	if chosen == "new":
+		_new_game()
+	elif chosen == "flag_mode":
+		_mode.pressed.emit()
+	elif chosen.begins_with("level_"):
+		var index := LEVEL_NAMES.keys().find(chosen.trim_prefix("level_"))
+		_levels.select(index)
+		_levels.item_selected.emit(index)
+
+
+## F2 starts a new game, as in the original.
+func _unhandled_key_input(event: InputEvent) -> void:
+	var key := event as InputEventKey
+	if window_active and key != null and key.pressed and key.keycode == KEY_F2:
+		_new_game()
+		get_viewport().set_input_as_handled()

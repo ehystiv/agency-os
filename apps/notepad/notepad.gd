@@ -14,6 +14,8 @@ var _loaded := ""
 @onready var _save: Button = %Save
 @onready var _restore: Button = %Restore
 @onready var _saved: Label = %Saved
+@onready var _find_bar: HBoxContainer = %FindBar
+@onready var _find_field: LineEdit = %FindField
 
 
 func _ready() -> void:
@@ -22,6 +24,13 @@ func _ready() -> void:
 	Campaign.correspondence.files_changed.connect(_refresh)
 	_text.text_changed.connect(_update_title)
 	_text.gui_input.connect(_on_text_input)
+	%FindNext.pressed.connect(_find_next)
+	%FindClose.pressed.connect(_close_find)
+	_find_field.text_submitted.connect(func(_t: String) -> void: _find_next())
+	_find_field.gui_input.connect(func(event: InputEvent) -> void:
+		if event.is_action_pressed("ui_cancel"):
+			_close_find()
+			_find_field.accept_event())
 	_refresh()
 
 
@@ -109,3 +118,79 @@ func _on_text_input(event: InputEvent) -> void:
 	if key != null and key.pressed and key.keycode == KEY_S and key.is_command_or_control_pressed():
 		get_viewport().set_input_as_handled()
 		_on_save_pressed()
+
+
+## Cmd+F finds, Cmd+G finds the next one (wherever the focus is in the window).
+func _unhandled_key_input(event: InputEvent) -> void:
+	var key := event as InputEventKey
+	if not window_active or key == null or not key.pressed or not key.is_command_or_control_pressed():
+		return
+	if key.keycode == KEY_F:
+		_open_find()
+		get_viewport().set_input_as_handled()
+	elif key.keycode == KEY_G:
+		_find_next()
+		get_viewport().set_input_as_handled()
+
+
+# --- Menus ---------------------------------------------------------------------
+
+func menu(title: String) -> Array[Dictionary]:
+	var file := _file()
+	match title:
+		"File":
+			return [
+				{"label": "Salva la correzione", "action": "save", "accel": KEY_MASK_CMD_OR_CTRL | KEY_S, "disabled": file.is_empty()},
+				{"label": "Ripristina la versione dell'Entità", "action": "restore", "disabled": not file.get("corrected", false)},
+			]
+		"Cerca":
+			return [
+				{"label": "Trova…", "action": "find", "accel": KEY_MASK_CMD_OR_CTRL | KEY_F, "disabled": file.is_empty()},
+				{"label": "Trova successivo", "action": "find_next", "accel": KEY_MASK_CMD_OR_CTRL | KEY_G, "disabled": _find_field.text == ""},
+			]
+	return []
+
+
+func on_menu_action(action: StringName) -> void:
+	match action:
+		&"save": _on_save_pressed()
+		&"restore": _on_restore_pressed()
+		&"find": _open_find()
+		&"find_next": _find_next()
+
+
+# --- Find ----------------------------------------------------------------------
+
+func _open_find() -> void:
+	if _file().is_empty():
+		return
+	_find_bar.show()
+	var selected := _text.get_selected_text()
+	if selected != "" and not selected.contains("\n"):
+		_find_field.text = selected
+	_find_field.grab_focus()
+	_find_field.edit()
+	_find_field.select_all()
+
+
+func _close_find() -> void:
+	_find_bar.hide()
+	_text.grab_focus()
+
+
+## From the caret on, back to the top after the end; the match is selected.
+func _find_next() -> void:
+	var wanted := _find_field.text
+	if wanted == "":
+		_open_find()
+		return
+	var from_line := _text.get_caret_line()
+	var from_column := _text.get_caret_column()
+	var found := _text.search(wanted, 0, from_line, from_column)
+	if found.x < 0:
+		Sfx.play(&"ding")
+		return
+	_text.select(found.y, found.x, found.y, found.x + wanted.length())
+	_text.set_caret_line(found.y)
+	_text.set_caret_column(found.x + wanted.length())
+	_text.center_viewport_to_caret()

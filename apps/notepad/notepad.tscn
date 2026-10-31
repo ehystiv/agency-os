@@ -18,6 +18,35 @@ size_flags_vertical = 3
 theme_type_variation = &"NoteEdit"
 wrap_mode = 1
 
+[node name="FindBar" type="HBoxContainer" parent="Layout"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="FindLabel" type="Label" parent="Layout/FindBar"]
+layout_mode = 2
+text = "Trova:"
+
+[node name="FindField" type="LineEdit" parent="Layout/FindBar"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="FindNext" type="Button" parent="Layout/FindBar"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+text = "Trova successivo"
+
+[node name="FindClose" type="Button" parent="Layout/FindBar"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(24, 0)
+layout_mode = 2
+tooltip_text = "Chiudi la ricerca"
+focus_mode = 0
+text = "×"
+
 [node name="Status" type="RichTextLabel" parent="Layout"]
 unique_name_in_owner = true
 layout_mode = 2

@@ -121,3 +121,27 @@ func _refresh_chaos() -> void:
 
 func _set_live(live: bool) -> void:
 	_viewport.render_target_update_mode = SubViewport.UPDATE_WHEN_VISIBLE if live else SubViewport.UPDATE_ONCE
+
+
+# --- Menus ---------------------------------------------------------------------
+
+func menu(title: String) -> Array[Dictionary]:
+	if title != "Modifica":
+		return []
+	return [
+		{"label": "Tira 6d4", "action": "roll", "accel": KEY_SPACE, "disabled": _tray.rolling},
+		{},
+		{"label": "Aggiungi 1 Caos", "action": "chaos_plus"},
+		{"label": "Togli 1 Caos", "action": "chaos_minus", "disabled": Campaign.chaos == 0},
+		{"label": "Azzera la riserva di Caos", "action": "chaos_reset", "disabled": Campaign.chaos == 0},
+	]
+
+
+func on_menu_action(action: StringName) -> void:
+	match action:
+		&"roll": _on_roll_pressed()
+		&"chaos_plus": _change_chaos(1)
+		&"chaos_minus": _change_chaos(-1)
+		&"chaos_reset":
+			_reset_armed = false
+			Campaign.set_chaos(0)

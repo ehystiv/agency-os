@@ -49,6 +49,12 @@ var _restore_rect := Rect2()
 var _resize_edges := 0
 var _resize_from_mouse := Vector2.ZERO
 var _resize_from_rect := Rect2()
+var _menu_popup: PopupMenu
+## Menu title text -> its control; actions of the open menu, by item id.
+var _menu_titles: Dictionary[String, Control] = {}
+var _menu_actions: Array[StringName] = []
+var _menu_open_title := ""
+var _menu_focus: Control = null
 
 @onready var _title_bar: PanelContainer = %TitleBar
 @onready var _title: Label = %Title
@@ -305,14 +311,179 @@ func _on_title_bar_input(event: InputEvent) -> void:
 		position = clamp_position(get_parent_control().get_local_mouse_position() - _drag_offset)
 
 
+# --- Menu bar ------------------------------------------------------------------
+# The titles come from AppInfo.menu_strip, the entries from content.menu(title) plus the
+# common ones added here. Actions starting with "_" are the window's own.
+
 func _build_menu_strip(items: PackedStringArray) -> void:
 	_menu_strip.visible = not items.is_empty()
+	_menu_popup = PopupMenu.new()
+	_menu_popup.id_pressed.connect(_on_menu_id_pressed)
+	_menu_popup.popup_hide.connect(func() -> void: _highlight_menu_title(null))
+	add_child(_menu_popup)
 	for item in items:
-		var entry := RichTextLabel.new()
-		entry.bbcode_enabled = true
-		entry.fit_content = true
-		entry.autowrap_mode = TextServer.AUTOWRAP_OFF
-		entry.scroll_active = false
-		entry.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		entry.text = "[u]%s[/u]%s" % [item.left(1), item.substr(1)]
-		_menu_items.add_child(entry)
+		var title := PanelContainer.new()
+		title.mouse_filter = Control.MOUSE_FILTER_STOP
+		title.add_theme_stylebox_override(&"panel", _menu_title_style(false))
+		var label := RichTextLabel.new()
+		label.bbcode_enabled = true
+		label.fit_content = true
+		label.autowrap_mode = TextServer.AUTOWRAP_OFF
+		label.scroll_active = false
+		label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		label.text = "[u]%s[/u]%s" % [item.left(1), item.substr(1)]
+		title.add_child(label)
+		title.gui_input.connect(func(event: InputEvent) -> void:
+			var click := event as InputEventMouseButton
+			if click != null and click.pressed and click.button_index == MOUSE_BUTTON_LEFT:
+				_open_menu(item, title))
+		title.mouse_entered.connect(func() -> void:
+			# Like Windows: with a menu open, moving over another title opens that one.
+			if _menu_popup.visible and _menu_open_title != item:
+				_open_menu(item, title))
+		_menu_items.add_child(title)
+		_menu_titles[item] = title
+
+
+func _open_menu(title_text: String, title: Control) -> void:
+	# The text field that had the focus, for Modifica's entries.
+	var owner := get_viewport().gui_get_focus_owner()
+	_menu_focus = owner if owner != null and is_ancestor_of(owner) else null
+	_menu_popup.clear()
+	_menu_actions.clear()
+	var entries := content.menu(title_text)
+	entries.append_array(_common_entries(title_text, not entries.is_empty()))
+	for entry in entries:
+		if entry.is_empty():
+			if _menu_popup.item_count > 0:
+				_menu_popup.add_separator()
+			continue
+		var id := _menu_actions.size()
+		_menu_actions.append(StringName(entry.action))
+		if entry.has("checked"):
+			_menu_popup.add_radio_check_item(str(entry.label), id, int(entry.get("accel", 0)) as Key)
+			_menu_popup.set_item_checked(_menu_popup.get_item_index(id), bool(entry.checked))
+		else:
+			_menu_popup.add_item(str(entry.label), id, int(entry.get("accel", 0)) as Key)
+		_menu_popup.set_item_disabled(_menu_popup.get_item_index(id), bool(entry.get("disabled", false)))
+	if _menu_popup.item_count == 0:
+		return
+	_menu_open_title = title_text
+	_highlight_menu_title(title)
+	var rect := title.get_global_rect()
+	_menu_popup.popup(Rect2i(Vector2i(rect.position + Vector2(0, rect.size.y)), Vector2i.ZERO))
+
+
+func _common_entries(title_text: String, after_others: bool) -> Array[Dictionary]:
+	var entries: Array[Dictionary] = []
+	match title_text:
+		"File":
+			if after_others:
+				entries.append({})
+			entries.append({"label": "Chiudi", "action": "_close", "accel": KEY_MASK_CMD_OR_CTRL | KEY_W})
+		"Modifica":
+			# An app with its own Modifica (the calculator) has no text to edit.
+			if after_others:
+				return entries
+			var field := _menu_focus
+			var is_text := field is LineEdit or field is TextEdit
+			var editable := is_text and bool(field.get("editable"))
+			if after_others:
+				entries.append({})
+			entries.append({"label": "Annulla", "action": "_undo", "accel": KEY_MASK_CMD_OR_CTRL | KEY_Z, "disabled": not editable})
+			entries.append({})
+			entries.append({"label": "Taglia", "action": "_cut", "accel": KEY_MASK_CMD_OR_CTRL | KEY_X, "disabled": not editable})
+			entries.append({"label": "Copia", "action": "_copy", "accel": KEY_MASK_CMD_OR_CTRL | KEY_C, "disabled": not is_text})
+			entries.append({"label": "Incolla", "action": "_paste", "accel": KEY_MASK_CMD_OR_CTRL | KEY_V, "disabled": not editable})
+			entries.append({})
+			entries.append({"label": "Seleziona tutto", "action": "_select_all", "accel": KEY_MASK_CMD_OR_CTRL | KEY_A, "disabled": not is_text})
+		"?":
+			if after_others:
+				entries.append({})
+			entries.append({"label": "Informazioni su %s" % app.label, "action": "_about"})
+	return entries
+
+
+func _on_menu_id_pressed(id: int) -> void:
+	if id < 0 or id >= _menu_actions.size():
+		return
+	var action := _menu_actions[id]
+	match action:
+		&"_close":
+			close_requested.emit(self)
+		&"_about":
+			_show_about()
+		&"_undo", &"_cut", &"_copy", &"_paste", &"_select_all":
+			_edit_field(action)
+		_:
+			content.on_menu_action(action)
+
+
+## Modifica's entries act on the text field that had the focus when the menu opened.
+func _edit_field(action: StringName) -> void:
+	var field := _menu_focus
+	if field == null or not is_instance_valid(field):
+		return
+	field.grab_focus()
+	if field is LineEdit:
+		var line := field as LineEdit
+		match action:
+			&"_undo": line.menu_option(LineEdit.MENU_UNDO)
+			&"_cut": line.menu_option(LineEdit.MENU_CUT)
+			&"_copy": line.menu_option(LineEdit.MENU_COPY)
+			&"_paste": line.menu_option(LineEdit.MENU_PASTE)
+			&"_select_all": line.select_all()
+	elif field is TextEdit:
+		var text := field as TextEdit
+		match action:
+			&"_undo": text.undo()
+			&"_cut": text.cut()
+			&"_copy": text.copy()
+			&"_paste": text.paste()
+			&"_select_all": text.select_all()
+
+
+func _show_about() -> void:
+	var dialog := AcceptDialog.new()
+	dialog.title = "Informazioni su %s" % app.label
+	dialog.dialog_text = "AgencyOS 98 · %s\nVersione %s\n\n© 1998 Triangle Agency. Tutti i diritti riservati.\nL'uso non autorizzato verrà annotato." % [app.label, BootPatch.version()]
+	dialog.ok_button_text = "OK"
+	dialog.confirmed.connect(dialog.queue_free)
+	dialog.canceled.connect(dialog.queue_free)
+	add_child(dialog)
+	dialog.popup_centered()
+
+
+func _highlight_menu_title(open: Control) -> void:
+	if open == null:
+		_menu_open_title = ""
+	for key: String in _menu_titles:
+		var title: Control = _menu_titles[key]
+		var on := title == open
+		title.add_theme_stylebox_override(&"panel", _menu_title_style(on))
+		(title.get_child(0) as RichTextLabel).add_theme_color_override(&"default_color", get_theme_color(&"font_hover_color" if on else &"font_color", &"PopupMenu"))
+
+
+func _menu_title_style(open: bool) -> StyleBox:
+	var style: StyleBox = get_theme_stylebox(&"hover", &"PopupMenu").duplicate() if open else StyleBoxEmpty.new()
+	style.content_margin_left = 4
+	style.content_margin_right = 4
+	style.content_margin_top = 1
+	style.content_margin_bottom = 1
+	return style
+
+
+## Alt + the underlined letter opens that menu, when no text field is taking the keys
+## (on a Mac Option + a letter also types characters like @ and #).
+func _unhandled_key_input(event: InputEvent) -> void:
+	var key := event as InputEventKey
+	if not active or not visible or key == null or not key.pressed or key.echo or not key.alt_pressed:
+		return
+	if key.is_command_or_control_pressed():
+		return
+	var letter := OS.get_keycode_string(key.physical_keycode).to_upper()
+	for item: String in _menu_titles:
+		if item.left(1).to_upper() == letter:
+			_open_menu(item, _menu_titles[item])
+			get_viewport().set_input_as_handled()
+			return

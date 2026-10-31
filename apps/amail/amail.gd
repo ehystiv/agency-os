@@ -119,3 +119,31 @@ func _show(memo: Dictionary, has_messages: bool) -> void:
 static func _address(sender: String) -> String:
 	var regex := RegEx.create_from_string("[^a-z]+")
 	return regex.sub(sender.to_lower(), ".", true).trim_prefix(".").trim_suffix(".") + "@filiale.agency"
+
+
+# --- Menus ---------------------------------------------------------------------
+
+func menu(title: String) -> Array[Dictionary]:
+	var memo := Campaign.correspondence.find_mail(_selected_id)
+	match title:
+		"Messaggio":
+			return [
+				{"label": "Copia il testo del messaggio", "action": "copy", "disabled": memo.is_empty()},
+			]
+		"Cartelle":
+			return [
+				{"label": "Posta in arrivo", "action": "inbox", "checked": true},
+				{"label": "Posta inviata (vuota)", "action": "sent", "disabled": true},
+				{"label": "Posta eliminata (accesso negato)", "action": "deleted", "disabled": true},
+			]
+	return []
+
+
+func on_menu_action(action: StringName) -> void:
+	match action:
+		&"copy":
+			var memo := Campaign.correspondence.find_mail(_selected_id)
+			if not memo.is_empty():
+				DisplayServer.clipboard_set("Da: %s\nOggetto: %s\n\n%s" % [memo.sender, memo.subject, memo.body])
+		&"inbox":
+			_refresh()
