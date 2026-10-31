@@ -79,6 +79,9 @@ func _input(event: InputEvent) -> void:
 	var click := event as InputEventMouseButton
 	if click == null or not click.pressed or not is_visible_in_tree():
 		return
+	# The wheel scrolls whatever is under the mouse without raising its window.
+	if not click.button_index in [MOUSE_BUTTON_LEFT, MOUSE_BUTTON_RIGHT, MOUSE_BUTTON_MIDDLE]:
+		return
 	var hovered := get_viewport().gui_get_hovered_control()
 	if hovered != null and (hovered == self or is_ancestor_of(hovered)):
 		focus_requested.emit(self)
