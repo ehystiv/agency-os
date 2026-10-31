@@ -27,5 +27,5 @@ func _draw() -> void:
 	var bar_width := size.x / BARS
 	for i in BARS:
 		var height := maxf(1.0, round(levels[i] * (size.y - 2.0)))
-		var color := RED if i == engine.track * 4 and engine.playing else GREEN
+		var color := RED if i == engine.marker_bar(BARS) else GREEN
 		draw_rect(Rect2(i * bar_width + 1.0, size.y - height, bar_width - 2.0, height), color)

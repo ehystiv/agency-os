@@ -89,6 +89,57 @@ static func noise(duration: float, volume: float, center: float, shaped: bool = 
 	return _store(key, _stream(data))
 
 
+## Held note for ambient beds: rises and falls with a Hann envelope, so copies that start
+## every duration / 2 add up to a steady sound. end_frequency > 0 = exponential glide (sirens).
+static func pad(frequency: float, duration: float, wave: Wave, volume: float, end_frequency: float = 0.0) -> AudioStreamWAV:
+	duration = snappedf(duration, DURATION_STEP)
+	var key := "p%.2f/%.2f/%d/%.4f/%.1f" % [frequency, duration, wave, volume, end_frequency]
+	var cached := _cached(key)
+	if cached != null:
+		return cached
+	var frames := int(duration * MIX_RATE)
+	var data := PackedByteArray()
+	data.resize(frames * 2)
+	var phase := 0.0
+	var step := frequency / MIX_RATE
+	var glide := pow(end_frequency / frequency, 1.0 / maxi(1, frames)) if end_frequency > 0.0 else 1.0
+	for i in frames:
+		var envelope := sin(PI * float(i) / frames)
+		data.encode_s16(i * 2, int(clampf(_wave(wave, phase) * volume * envelope * envelope, -1.0, 1.0) * 32767.0))
+		phase = fmod(phase + step, 1.0)
+		step *= glide
+	return _store(key, _stream(data))
+
+
+## Filtered noise for ambient beds (rain, air), with the same Hann envelope as pad().
+static func wash(duration: float, volume: float, center: float, variant: int = 0) -> AudioStreamWAV:
+	duration = snappedf(duration, DURATION_STEP)
+	var key := "w%.2f/%.4f/%.0f/%d" % [duration, volume, center, variant]
+	var cached := _cached(key)
+	if cached != null:
+		return cached
+	var frames := int(duration * MIX_RATE)
+	var data := PackedByteArray()
+	data.resize(frames * 2)
+	# A wider band-pass than noise(): air, not a whistle.
+	var r := 0.9
+	var theta := TAU * clampf(center, 20.0, MIX_RATE * 0.45) / MIX_RATE
+	var a1 := 2.0 * r * cos(theta)
+	var a2 := -r * r
+	var gain := (1.0 - r) * 2.0
+	var y1 := 0.0
+	var y2 := 0.0
+	var rng := RandomNumberGenerator.new()
+	rng.seed = int(center) * 31 + variant * 7907 + int(duration * 100.0)
+	for i in frames:
+		var envelope := sin(PI * float(i) / frames)
+		var y := rng.randf_range(-1.0, 1.0) * gain + a1 * y1 + a2 * y2
+		y2 = y1
+		y1 = y
+		data.encode_s16(i * 2, int(clampf(y * volume * 4.0 * envelope * envelope, -1.0, 1.0) * 32767.0))
+	return _store(key, _stream(data))
+
+
 ## A die hitting the tray: a dull knock, like resin on a wooden tray with felt. The die's
 ## resonances are low and die out in a few milliseconds (long high ringing sounds like glass),
 ## over a thud from the table, all low-passed. Each variant has slightly different

@@ -16,12 +16,20 @@ const VOICES := 20
 const SQUARE := Synth.Wave.SQUARE
 const TRIANGLE := Synth.Wave.TRIANGLE
 const SINE := Synth.Wave.SINE
+const SAWTOOTH := Synth.Wave.SAWTOOTH
+## The hold music, the ambient sounds for the table ("utility") and the locked one, last.
 const TRACKS: Array[Dictionary] = [
-	{"name": "Benvenuto in Filiale", "bpm": 96, "level": 0},
-	{"name": "Attesa in linea", "bpm": 72, "level": 0},
-	{"name": "Corridoio B", "bpm": 52, "level": 0},
-	{"name": "███████", "bpm": 44, "level": 3},
+	{"id": "welcome", "name": "Benvenuto in Filiale", "bpm": 96, "level": 0},
+	{"id": "hold", "name": "Attesa in linea", "bpm": 72, "level": 0},
+	{"id": "corridor", "name": "Corridoio B", "bpm": 52, "level": 0},
+	{"id": "rain", "name": "Pioggia sui vetri", "bpm": 120, "level": 0, "utility": true},
+	{"id": "office", "name": "Ufficio di notte", "bpm": 120, "level": 0, "utility": true},
+	{"id": "tension", "name": "Tensione", "bpm": 70, "level": 0, "utility": true},
+	{"id": "alarm", "name": "Allarme di contenimento", "bpm": 100, "level": 0, "utility": true},
+	{"id": "vault", "name": "███████", "bpm": 44, "level": 3},
 ]
+## Tension grows to full strength in this many seconds.
+const TENSION_RISE := 120.0
 const CHORDS_1: Array = [[60, 64, 67], [57, 60, 64], [53, 57, 60], [55, 59, 62]]
 const CHORDS_WAIT: Array = [[62, 66, 69, 73], [59, 62, 66, 69], [55, 59, 62, 66], [57, 61, 64, 67]]
 const CHORDS_CORRIDOR: Array = [[45, 52, 57, 60], [43, 50, 55, 58]]
@@ -50,7 +58,7 @@ func _ready() -> void:
 		voice.bus = BUS
 		add_child(voice)
 		_voices.append(voice)
-	set_volume(float(Save.get_ui("lettore_volume", 70)) / 100.0)
+	set_volume(float(Save.get_ui("player_volume", 70)) / 100.0)
 	set_process(false)
 
 
@@ -98,6 +106,11 @@ func set_volume(value: float) -> void:
 	AudioServer.set_bus_volume_db(AudioServer.get_bus_index(BUS), linear_to_db(maxf(value * BUS_BOOST, 0.0001)))
 
 
+## The visualizer bar marking the current track (red), -1 for none.
+func marker_bar(bars: int) -> int:
+	return track * bars / TRACKS.size() if playing else -1
+
+
 ## Levels for the visualizer: count bands between 60 Hz and 4 kHz, from 0 to 1.
 func levels(count: int) -> PackedFloat32Array:
 	var result := PackedFloat32Array()
@@ -136,8 +149,8 @@ func _process(delta: float) -> void:
 # --- Tracks (translated from the prototype's functions) --------------------
 
 func _run_step(step: int, at: float, sd: float) -> void:
-	match track:
-		0:
+	match str(TRACKS[track].id):
+		"welcome":
 			var chord: Array = CHORDS_1[(step / 16) % 4]
 			var s := step % 16
 			if s % 2 == 0:
@@ -148,7 +161,7 @@ func _run_step(step: int, at: float, sd: float) -> void:
 				_noise(at, 0.05, 0.03, 6000)
 			if s in [0, 6, 12]:
 				_note(chord[(s / 6) % 3] + 24, at, sd * 3, SINE, 0.03)
-		1:
+		"hold":
 			# Left alone, the hold music slowly goes out of tune.
 			var chord: Array = CHORDS_WAIT[(step / 32) % 4].duplicate()
 			var s := step % 32
@@ -164,7 +177,7 @@ func _run_step(step: int, at: float, sd: float) -> void:
 				_note(chord.pick_random() + 12, at, sd * 3, TRIANGLE, 0.028, detune)
 			if at > 200.0 and s == 16 and randf() < 0.5:
 				_noise(at, 1.4, 0.012, 900)
-		2:
+		"corridor":
 			var chord: Array = CHORDS_CORRIDOR[(step / 64) % 2]
 			var s := step % 64
 			if s == 0:
@@ -174,7 +187,15 @@ func _run_step(step: int, at: float, sd: float) -> void:
 				_note([81, 84, 88, 91].pick_random(), at, sd * 10, SINE, 0.018)
 			if s % 32 == 0:
 				_noise(at, sd * 20, 0.008, 420)
-		3:
+		"rain":
+			_rain(step, at, sd)
+		"office":
+			_office(step, at, sd)
+		"tension":
+			_tension(step, at, sd)
+		"alarm":
+			_alarm(step, at, sd)
+		"vault":
 			var chord: Array = CHORDS_1[(step / 16) % 4]
 			var s := step % 16
 			var detune := -50.0 + sin(step * 0.05) * 35.0
@@ -186,6 +207,78 @@ func _run_step(step: int, at: float, sd: float) -> void:
 				_noise(at, sd * 10, 0.02, 700)
 			if step % 64 == 0:
 				Entity.stir(0.3)
+
+
+# --- Ambient sounds for the table --------------------------------------------
+# Continuous beds are pads and washes twice as long as the gap between them: their
+# Hann envelopes overlap into a steady sound. Volumes are quantized, so samples are reused.
+
+## Steady rain, drops ticking on the glass, now and then distant thunder.
+func _rain(step: int, at: float, sd: float) -> void:
+	if step % 16 == 0:
+		var variant := (step / 16) % 3
+		_wash(at, sd * 32, 0.03, 2600, variant)
+		_wash(at, sd * 32, 0.022, 380, variant)
+	if randf() < 0.55:
+		var center: float = [3500.0, 4800.0, 6200.0].pick_random()
+		var volume: float = [0.02, 0.03, 0.045].pick_random()
+		_queue(at + randf() * sd, func() -> AudioStreamWAV: return Synth.noise(0.02, volume, center))
+	if step % 64 == 32 and randf() < 0.2:
+		_wash(at, 3.0, 0.06, 90, 0)
+
+
+## The empty branch: neon hum, ventilation, a keyboard far away, sometimes a phone.
+func _office(step: int, at: float, sd: float) -> void:
+	if step % 16 == 0:
+		_pad(at, sd * 32, 120.0, SQUARE, 0.004)
+		_pad(at, sd * 32, 60.0, SINE, 0.02)
+		_wash(at, sd * 32, 0.014, 700, (step / 16) % 3)
+	if step % 16 == 8 and randf() < 0.12:
+		var keys := randi_range(6, 14)
+		var when := at
+		for k in keys:
+			_queue(when, func() -> AudioStreamWAV: return Synth.noise(0.012, 0.012, 3200, false))
+			when += randf_range(0.08, 0.2)
+	if step % 256 == 128 and randf() < 0.5:
+		for ring in 2:
+			for k in 20:
+				var frequency := 440.0 if k % 2 == 0 else 480.0
+				_queue(at + ring * 2.0 + k * 0.05, func() -> AudioStreamWAV: return Synth.tone(frequency, 0.05, SINE, 0.008, 0.0, 0.005))
+
+
+## A low dissonant drone that grows, and a heartbeat at 70 beats per minute.
+func _tension(step: int, at: float, sd: float) -> void:
+	var strength := snappedf(clampf(at / TENSION_RISE, 0.5, 1.0), 0.1)
+	if step % 16 == 0:
+		_pad(at, sd * 32, 55.0, TRIANGLE, 0.11 * strength)
+		_pad(at, sd * 32, 82.4, SINE, 0.07 * strength)
+		_pad(at, sd * 32, 58.3, SINE, 0.035 * strength)
+	if step % 4 == 0:
+		_queue(at, func() -> AudioStreamWAV: return Synth.tone(60.0, 0.18, SINE, 0.2 * strength, 0.0, 0.01))
+		_queue(at + 0.28, func() -> AudioStreamWAV: return Synth.tone(55.0, 0.22, SINE, 0.16 * strength, 0.0, 0.01))
+	if step % 32 == 16 and randf() < 0.4:
+		_note([84, 85].pick_random(), at, 2.0, SINE, 0.018)
+
+
+## A siren wailing somewhere in the building, over an electric buzz.
+func _alarm(step: int, at: float, sd: float) -> void:
+	if step % 16 == 0:
+		var half := sd * 8
+		_pad(at, half * 1.4, 520.0, TRIANGLE, 0.035, 880.0)
+		_pad(at + half, half * 1.4, 880.0, TRIANGLE, 0.035, 520.0)
+		_pad(at, sd * 32, 100.0, SQUARE, 0.004)
+		_wash(at, sd * 32, 0.012, 300, (step / 16) % 3)
+	if step % 64 == 48 and randf() < 0.5:
+		for k in 3:
+			_queue(at + k * 0.3, func() -> AudioStreamWAV: return Synth.tone(330.0, 0.18, SQUARE, 0.012, 0.0, 0.01))
+
+
+func _pad(at: float, duration: float, frequency: float, wave: Synth.Wave, volume: float, end_frequency: float = 0.0) -> void:
+	_queue(at, func() -> AudioStreamWAV: return Synth.pad(frequency, duration, wave, volume, end_frequency))
+
+
+func _wash(at: float, duration: float, volume: float, center: float, variant: int) -> void:
+	_queue(at, func() -> AudioStreamWAV: return Synth.wash(duration, volume, center, variant))
 
 
 func _note(midi_note: int, at: float, duration: float, wave: Synth.Wave, volume: float, detune: float = 0.0) -> void:
