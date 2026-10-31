@@ -4,6 +4,7 @@
 [ext_resource type="Script" path="res://apps/player/music_engine.gd" id="2_engine"]
 [ext_resource type="Script" path="res://apps/player/visualizer.gd" id="3_visualizer"]
 [ext_resource type="Script" path="res://apps/player/youtube_fetch.gd" id="4_fetch"]
+[ext_resource type="Script" path="res://apps/player/youtube_tools.gd" id="5_tools"]
 
 [node name="Player" type="MarginContainer"]
 theme_override_constants/margin_left = 4
@@ -311,3 +312,7 @@ script = ExtResource("2_engine")
 [node name="Fetch" type="Node" parent="."]
 unique_name_in_owner = true
 script = ExtResource("4_fetch")
+
+[node name="Tools" type="Node" parent="."]
+unique_name_in_owner = true
+script = ExtResource("5_tools")

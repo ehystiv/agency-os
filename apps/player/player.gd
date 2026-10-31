@@ -53,6 +53,7 @@ var _downloading_url := ""
 @onready var _rename_row: HBoxContainer = %RenameRow
 @onready var _rename_field: LineEdit = %RenameField
 @onready var _fetch: YouTubeFetch = %Fetch
+@onready var _tools: YouTubeTools = %Tools
 
 
 func _ready() -> void:
@@ -86,10 +87,14 @@ func _ready() -> void:
 	_cancel_download.pressed.connect(func() -> void:
 		if _fetch.busy:
 			_fetch.cancel()
-		else:
+		elif not _tools.installing:
 			_youtube_form.hide())
 	_fetch.progress.connect(func(fraction: float) -> void: _progress.value = fraction)
 	_fetch.finished.connect(_on_downloaded)
+	_tools.progress.connect(func(fraction: float, label: String) -> void:
+		_progress.value = fraction
+		_form_status.text = label)
+	_tools.install_finished.connect(_on_tools_installed)
 	_rename.pressed.connect(_start_rename)
 	%RenameSave.pressed.connect(_apply_rename)
 	_rename_field.text_submitted.connect(func(_t: String) -> void: _apply_rename())
@@ -326,13 +331,32 @@ func _make_row(index: int, entry: Dictionary, current: bool) -> Button:
 func _toggle_youtube_form() -> void:
 	_rename_row.hide()
 	_youtube_form.visible = not _youtube_form.visible
-	if _youtube_form.visible and not _fetch.busy:
-		_form_status.text = "L'audio viene scaricato con yt-dlp e salvato: si ascolta anche senza rete."
+	if _youtube_form.visible and not _fetch.busy and not _tools.installing:
+		_refresh_form()
 		_url.grab_focus.call_deferred()
+		# Keeps the managed yt-dlp in step with YouTube (at most once a day, in the background).
+		_tools.update_if_due()
+
+
+## Before the first download the Mac may need yt-dlp and ffmpeg: the same button installs them.
+func _refresh_form() -> void:
+	if YouTubeTools.ready_to_use():
+		_download.text = "Scarica"
+		_form_status.text = "L'audio viene scaricato e salvato: si ascolta anche senza rete."
+	else:
+		_download.text = "Installa componenti"
+		_form_status.text = "Per salvare l'audio da YouTube servono yt-dlp e ffmpeg (circa 75 MB, una volta sola, da GitHub). Premi «Installa componenti»."
 
 
 func _start_download() -> void:
-	if _fetch.busy:
+	if _fetch.busy or _tools.installing:
+		return
+	if not YouTubeTools.ready_to_use():
+		_set_downloading(true)
+		# The components download can't be stopped halfway: it's short, and resumes cleanly.
+		_cancel_download.disabled = true
+		_form_status.text = "Scarico i componenti…"
+		_tools.install()
 		return
 	var url := _url.text.strip_edges()
 	if not (url.begins_with("http://") or url.begins_with("https://")):
@@ -340,6 +364,9 @@ func _start_download() -> void:
 		return
 	_downloading_url = url
 	_set_downloading(true)
+	if _tools.updating:
+		_form_status.text = "Aggiorno yt-dlp…"
+		await _tools.update_finished
 	_form_status.text = "Scaricamento in corso…"
 	var base := ProjectSettings.globalize_path(PlayerLibrary.CACHE_DIR).path_join("y-%d" % Time.get_unix_time_from_system())
 	_fetch.start(url, base)
@@ -363,6 +390,19 @@ func _on_downloaded(ok: bool, path: String, title: String, error: String) -> voi
 	_status.text = "Salvato nella raccolta: «%s»" % display_name
 
 
+func _on_tools_installed(error: String) -> void:
+	_set_downloading(false)
+	_refresh_form()
+	if error != "":
+		_form_status.text = error
+		Sfx.play(&"ding")
+		return
+	_form_status.text = "Componenti installati."
+	# The link may already be there: go on with it.
+	if _url.text.strip_edges() != "":
+		_start_download()
+
+
 func _set_downloading(active: bool) -> void:
 	_download.disabled = active
 	_url.editable = not active
@@ -370,6 +410,7 @@ func _set_downloading(active: bool) -> void:
 	_progress.visible = active
 	_progress.value = 0.0
 	_cancel_download.text = "Interrompi" if active else "Annulla"
+	_cancel_download.disabled = false
 
 
 func _start_rename() -> void:

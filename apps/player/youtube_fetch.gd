@@ -1,17 +1,13 @@
 class_name YouTubeFetch
 extends Node
 ## Downloads the audio of a YouTube video (or of anything else yt-dlp knows) as mp3,
-## with the yt-dlp and ffmpeg installed on the Mac (Homebrew). Godot can't decode
-## YouTube's own formats, so the audio is converted and kept, not streamed.
+## with yt-dlp and ffmpeg (see YouTubeTools). Godot can't decode YouTube's own
+## formats, so the audio is converted and kept, not streamed.
 ## yt-dlp runs in a thread; its progress lines come back as signals.
 
 signal progress(fraction: float)
 ## ok: path is the mp3 written and title the video's; otherwise error says why (Italian).
 signal finished(ok: bool, path: String, title: String, error: String)
-
-## Where to look: an app opened from the Finder doesn't get the shell's PATH.
-const SEARCH_DIRS: PackedStringArray = ["/opt/homebrew/bin", "/usr/local/bin", "/usr/bin"]
-const INSTALL_HINT := "Installa i programmi necessari dal Terminale con: brew install yt-dlp ffmpeg"
 
 var busy := false
 
@@ -24,10 +20,10 @@ var _cancelled := false
 func start(url: String, out_base: String) -> void:
 	if busy:
 		return
-	var yt_dlp := find_tool("yt-dlp")
-	var ffmpeg := find_tool("ffmpeg")
+	var yt_dlp := YouTubeTools.find("yt-dlp")
+	var ffmpeg := YouTubeTools.find("ffmpeg")
 	if yt_dlp == "" or ffmpeg == "":
-		finished.emit(false, "", "", "%s non è installato. %s" % ["yt-dlp" if yt_dlp == "" else "ffmpeg", INSTALL_HINT])
+		finished.emit(false, "", "", "Mancano i componenti per YouTube (yt-dlp, ffmpeg).")
 		return
 	busy = true
 	_cancelled = false
@@ -45,17 +41,6 @@ func cancel() -> void:
 	_cancelled = true
 	if _pid > 0:
 		OS.kill(_pid)
-
-
-## The full path of a command-line tool, "" if it isn't installed.
-static func find_tool(tool_name: String) -> String:
-	for dir in SEARCH_DIRS:
-		if FileAccess.file_exists(dir.path_join(tool_name)):
-			return dir.path_join(tool_name)
-	var home := OS.get_environment("HOME")
-	if home != "" and FileAccess.file_exists(home.path_join(".local/bin").path_join(tool_name)):
-		return home.path_join(".local/bin").path_join(tool_name)
-	return ""
 
 
 ## In the thread. stderr is merged into stdout by the shell, so a single pipe is read
@@ -96,7 +81,7 @@ func _run(yt_dlp: String, args: PackedStringArray) -> void:
 		_done.call_deferred(false, "", "", "Download annullato.")
 	elif code != 0 or path == "" or not FileAccess.file_exists(path):
 		var reason := last_error.left(200) if last_error != "" else "codice %d" % code
-		_done.call_deferred(false, "", "", "yt-dlp non è riuscito a scaricare l'audio (%s). Se il link è giusto, prova ad aggiornare yt-dlp: brew upgrade yt-dlp" % reason)
+		_done.call_deferred(false, "", "", "yt-dlp non è riuscito a scaricare l'audio (%s). Controlla il link e riprova." % reason)
 	else:
 		_done.call_deferred(true, path, title, "")
 
