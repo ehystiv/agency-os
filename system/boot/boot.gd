@@ -26,6 +26,9 @@ var _lines: PackedStringArray = []
 @onready var _text: RichTextLabel = %Text
 @onready var _logo: Control = %Logo
 @onready var _hint: Label = %Hint
+## The "AGENCY · SAFE MODE COMPLIANT" badge, top right as on 90s BIOS screens; the boot
+## splash (project settings) shows it in the same place, so the two join seamlessly.
+@onready var _badge: TextureRect = %Badge
 
 
 func _ready() -> void:
@@ -44,6 +47,7 @@ func play(scandisk: bool = false) -> void:
 	_screen.show()
 	_screen.modulate.a = 1.0
 	_logo.hide()
+	_badge.show()
 	_hint.show()
 	_lines.clear()
 	_text.text = ""
@@ -65,6 +69,7 @@ func play(scandisk: bool = false) -> void:
 		await _scandisk()
 	await _line(tr("Avvio di AgencyOS in Modalità Sicura…"))
 	await _wait(0.5)
+	_badge.hide()
 	if not _skipped:
 		_text.hide()
 		_logo.show()
@@ -112,6 +117,7 @@ func _check_server() -> void:
 func _scandisk() -> void:
 	var black := _screen.color
 	_screen.color = SCANDISK_BLUE
+	_badge.hide()
 	var saved := _lines.duplicate()
 	_lines.clear()
 	await _line("[bgcolor=#aaaaaa][color=#0000aa]  ScanDisk di AgencyOS  [/color][/bgcolor]")
@@ -133,6 +139,7 @@ func _scandisk() -> void:
 	await _line(tr("ScanDisk ha trovato 1 settore che non appartiene a nessun file: 0047BB.\nIl settore è stato lasciato com'è."))
 	await _wait(1.6)
 	_screen.color = black
+	_badge.show()
 	_lines = saved
 	_text.text = "\n".join(_lines)
 
