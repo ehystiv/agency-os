@@ -96,8 +96,19 @@ func read_json(path: String, default: Variant) -> Variant:
 	var json := JSON.new()
 	if json.parse(FileAccess.get_file_as_string(path)) != OK:
 		push_warning("Save: %s is not valid JSON (line %d), using defaults." % [path, json.get_error_line()])
+		_set_aside(path)
 		return default
 	return json.data
+
+
+## Renames an unreadable save to <name>.corrupt-<time>, so the next write
+## (made from the defaults) doesn't destroy what could still be recovered by hand.
+func _set_aside(path: String) -> void:
+	if not path.begins_with("user://"):
+		return
+	var aside := "%s.corrupt-%d" % [path, int(Time.get_unix_time_from_system())]
+	if DirAccess.rename_absolute(path, aside) == OK:
+		push_warning("Save: the unreadable file was kept as %s." % aside)
 
 
 ## Atomic write: first a temporary file, then a rename over the original.
