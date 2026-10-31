@@ -86,6 +86,8 @@ mkdir -p "$OUT"
 OUT="$(cd "$OUT" && pwd)"
 # A .pck left by an earlier run must not pass for this export's output.
 rm -f "$OUT/$FILE" "$OUT/update.json"
+# Twice: on a fresh checkout (CI) new SVGs need a second pass to be imported.
+"$GODOT" --headless --path "$WORK/project" --import >/dev/null 2>&1 || true
 "$GODOT" --headless --path "$WORK/project" --import >/dev/null 2>&1 || true
 "$GODOT" --headless --path "$WORK/project" --export-patch macOS "$OUT/$FILE" --patches "$BASE_PCK" >"$WORK/export.log" 2>&1 || true
 if [ ! -s "$OUT/$FILE" ]; then

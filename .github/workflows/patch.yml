@@ -1,0 +1,100 @@
+# Builds and publishes an update patch (.pck + update.json) when a version tag is pushed.
+# See "Updates" in CLAUDE.md. The patch is built against the installer of the base
+# version named in tools/release_base, downloaded from that version's release.
+#
+# Release a patch:   bump application/config/version, commit, then
+#                    git tag -a v0.2.1 -m "Short notes shown in the app" && git push origin v0.2.1
+# Try it:            Actions > Patch > Run workflow (dry run: the files end up as an artifact).
+name: Patch
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Only build, don't publish"
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+env:
+  GODOT_VERSION: "4.7.2"
+
+jobs:
+  patch:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Godot (cached)
+        id: cache
+        uses: actions/cache@v4
+        with:
+          path: ~/godot
+          key: godot-${{ env.GODOT_VERSION }}-macos
+
+      - name: Download Godot and the macOS export template
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          base="https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable"
+          mkdir -p ~/godot/templates && cd ~/godot
+          curl -fsSL -o godot.zip "$base/Godot_v${GODOT_VERSION}-stable_macos.universal.zip"
+          unzip -q godot.zip && rm godot.zip
+          # The full templates archive is 1.3 GB: keep only what a macOS export needs.
+          curl -fsSL -o templates.tpz "$base/Godot_v${GODOT_VERSION}-stable_export_templates.tpz"
+          unzip -q -j templates.tpz "templates/macos.zip" "templates/version.txt" -d templates
+          rm templates.tpz
+
+      - name: Install the export template
+        run: |
+          dest="$HOME/Library/Application Support/Godot/export_templates/${GODOT_VERSION}.stable"
+          mkdir -p "$dest" && cp ~/godot/templates/* "$dest/"
+
+      - name: Version and notes
+        id: meta
+        run: |
+          version=$(sed -n 's/^config\/version="\(.*\)"/\1/p' project.godot)
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          if [ "$GITHUB_EVENT_NAME" = "push" ]; then
+            if [ "$GITHUB_REF_NAME" != "v$version" ]; then
+              echo "::error::The tag $GITHUB_REF_NAME doesn't match application/config/version ($version)."
+              exit 1
+            fi
+            # Annotated tag message = the notes shown in the Control panel.
+            git fetch --force origin "refs/tags/$GITHUB_REF_NAME:refs/tags/$GITHUB_REF_NAME"
+            git tag -l --format='%(contents:subject)%0a%0a%(contents:body)' "$GITHUB_REF_NAME" | sed -e '/^-----BEGIN/,$d' > notes.txt
+          fi
+          touch notes.txt
+
+      - name: Base installer
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          base_version=$(tr -d '[:space:]' < tools/release_base)
+          gh release download "v$base_version" --pattern "AgencyOS-*.dmg" --dir base
+
+      - name: Build the patch
+        run: |
+          GODOT="$HOME/godot/Godot.app/Contents/MacOS/Godot" \
+            tools/make_patch.sh base/AgencyOS-*.dmg out --notes "$(cat notes.txt)"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: patch-${{ steps.meta.outputs.version }}
+          path: out/
+
+      - name: Publish
+        if: github.event_name == 'push' || !inputs.dry_run
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.meta.outputs.version }}
+        run: |
+          tag="v$VERSION"
+          if gh release view "$tag" > /dev/null 2>&1; then
+            gh release upload "$tag" out/* --clobber
+          else
+            gh release create "$tag" out/* --verify-tag --title "AgencyOS 98 $VERSION" --notes-file notes.txt
+          fi

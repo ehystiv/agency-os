@@ -78,14 +78,15 @@ The app updates itself by loading a Godot patch `.pck` on top of the files of th
 
 **What a patch can't change**, so it needs a new DMG (a new base): `project.godot` (autoloads, settings, the main scene path), the engine version, `autoload/boot_patch.gd`, and the export preset. Everything else (scripts, scenes, `data/`, prompts, icons, the `Updater` itself) can ship as a patch.
 
-**Releasing a patch:**
-1. Bump `application/config/version` in `project.godot` (e.g. `0.1.1` → `0.1.2`).
-2. `tools/make_patch.sh <base AgencyOS.app | installer .dmg> [out_dir] [--notes "…"]`. It exports with `--export-patch` against the base's `.pck` (on a temp copy, not the project folder), and writes `agencyos-<version>.pck` plus `update.json` (`version`, `base`, `file`, `url`, `sha256`, `size`, `notes`, `page`).
-3. Create a GitHub release tagged `v<version>` with both files attached (the script prints the `gh release create` command). The app reads `https://github.com/ehystiv/agency-os/releases/latest/download/update.json`, so the newest release must always carry an `update.json`.
+**Releasing a patch** (GitHub Actions, `.github/workflows/patch.yml`):
+1. Bump `application/config/version` in `project.godot` (e.g. `0.2.0` → `0.2.1`) and commit.
+2. Push an annotated tag: `git tag -a v0.2.1 -m "Short notes shown in the app"` and `git push origin v0.2.1`. The workflow checks the tag against the version, downloads Godot and the installer of the base named in `tools/release_base` (from that version's release), runs `tools/make_patch.sh` and publishes `agencyos-<version>.pck` plus `update.json` on the `v<version>` release (created with the tag message as notes, or added to an existing release). The app reads `https://github.com/ehystiv/agency-os/releases/latest/download/update.json`, so the newest release must always carry an `update.json`.
+
+To try the build without publishing: Actions › Patch › Run workflow (dry run): the files are left as an artifact. Locally the same is `tools/make_patch.sh <base AgencyOS.app | installer .dmg> [out_dir] [--notes "…"]` (it exports with `--export-patch` against the base's `.pck`, on a temp copy).
 
 Patches are **cumulative against the base**: always build against the DMG's `.pck`, never against a previous patch, so a user who skipped versions downloads only the latest one.
 
-**Releasing a new base:** export the DMG with the new version, run `tools/make_dmg.sh`, and attach the installer to the release together with an `update.json` whose `base` equals its own `version` (`make_patch.sh` with the new app as base produces a near-empty patch that does this). Apps on the old base see a different `base` and point the user to the release page instead of downloading.
+**Releasing a new base:** export the DMG with the new version, run `tools/make_dmg.sh` (name it `AgencyOS-<version>.dmg`), and attach the installer to the release together with an `update.json` whose `base` equals its own `version` (`make_patch.sh` with the new app as base produces a near-empty patch that does this). Then write the new version in `tools/release_base`, so the next patches are built against it. Apps on the old base see a different `base` and point the user to the release page instead of downloading.
 
 **At runtime** (`user://updates/`):
 - `current.json` describes the installed patch. The `Updater` writes it last, only after the download's size and sha256 match.
