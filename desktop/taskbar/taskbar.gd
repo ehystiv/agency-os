@@ -9,6 +9,7 @@ signal show_desktop_pressed
 ## Right click on a window button (its id) or on the empty taskbar (an empty id).
 signal context_requested(id: StringName, at: Vector2)
 signal sound_toggled
+signal volume_changed(value: float)
 
 const TASK_MIN_WIDTH := 70.0
 const TASK_MAX_WIDTH := 150.0
@@ -25,11 +26,15 @@ const SHOW_DESKTOP := preload("res://ui/icons/show_desktop.svg")
 @onready var _mode: Label = %Mode
 
 var _sabotaged := false
+var _volume_popup: PopupPanel
+var _volume: VSlider
+var _mute: CheckBox
 
 
 func _ready() -> void:
 	_start.toggled.connect(start_toggled.emit)
-	_sound.pressed.connect(sound_toggled.emit)
+	_build_volume_popup()
+	_sound.pressed.connect(_open_volume)
 	_tasks.resized.connect(_fit_tasks)
 	%ClockTimer.timeout.connect(_update_clock)
 	_update_clock()
@@ -109,7 +114,46 @@ func task_rect(id: StringName) -> Rect2:
 
 func set_sound_enabled(enabled: bool) -> void:
 	_sound.texture_normal = SOUND_ON if enabled else SOUND_OFF
-	_sound.tooltip_text = tr("Suoni attivi: clic per disattivare") if enabled else tr("Suoni disattivati: clic per attivare")
+	_sound.tooltip_text = tr("Volume") if enabled else tr("Volume: suoni disattivati")
+	_mute.set_pressed_no_signal(not enabled)
+
+
+func set_volume(value: float) -> void:
+	_volume.set_value_no_signal(value)
+
+
+## The '98 volume control: a small panel above the speaker, with a slider and "Disattiva".
+func _build_volume_popup() -> void:
+	_volume_popup = PopupPanel.new()
+	var box := VBoxContainer.new()
+	box.add_theme_constant_override(&"separation", 6)
+	_volume_popup.add_child(box)
+	var title := Label.new()
+	title.text = tr("Volume")
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	box.add_child(title)
+	_volume = VSlider.new()
+	_volume.min_value = 0.0
+	_volume.max_value = 1.0
+	_volume.step = 0.05
+	_volume.custom_minimum_size = Vector2(0, 90)
+	_volume.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	_volume.value_changed.connect(volume_changed.emit)
+	# Like Windows, a ding when the slider is let go, at the new volume.
+	_volume.drag_ended.connect(func(_changed: bool) -> void: Sfx.play(&"ding"))
+	box.add_child(_volume)
+	_mute = CheckBox.new()
+	_mute.text = tr("Disattiva")
+	_mute.toggled.connect(func(_on: bool) -> void: sound_toggled.emit())
+	box.add_child(_mute)
+	add_child(_volume_popup)
+
+
+func _open_volume() -> void:
+	var size_needed := Vector2i(_volume_popup.get_contents_minimum_size())
+	var speaker := _sound.get_global_rect()
+	var at := Vector2i(int(speaker.get_center().x) - size_needed.x / 2, int(global_position.y) - size_needed.y - 2)
+	_volume_popup.popup(Rect2i(at, size_needed))
 
 
 ## Empty text = hides the next session hint.

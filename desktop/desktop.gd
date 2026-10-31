@@ -74,6 +74,7 @@ func _ready() -> void:
 		quick.append({"id": app.id, "label": tr(app.label), "icon": app.icon})
 	_taskbar.set_quick_launch(quick)
 	_taskbar.sound_toggled.connect(Sfx.toggle)
+	_taskbar.volume_changed.connect(func(value: float) -> void: Sfx.volume = value)
 	Sfx.settings_changed.connect(_on_sound_changed)
 	_on_sound_changed()
 
@@ -368,6 +369,7 @@ static func _caption_rect(window: AppWindow) -> Rect2:
 
 func _on_sound_changed() -> void:
 	_taskbar.set_sound_enabled(Sfx.enabled)
+	_taskbar.set_volume(Sfx.volume)
 
 
 func _on_catcher_input(event: InputEvent) -> void:

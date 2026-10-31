@@ -224,14 +224,6 @@ msgid "clic o tasto per saltare"
 msgstr "click or press any key to skip"
 
 #: desktop/taskbar/taskbar.gd
-msgid "Suoni attivi: clic per disattivare"
-msgstr "Sounds on: click to turn off"
-
-#: desktop/taskbar/taskbar.gd
-msgid "Suoni disattivati: clic per attivare"
-msgstr "Sounds off: click to turn on"
-
-#: desktop/taskbar/taskbar.gd
 msgid "MODALITÀ SICURA ▒▒▒ DISATTIVATA"
 msgstr "SAFE MODE ▒▒▒ DISABLED"
 
@@ -3181,3 +3173,12 @@ msgstr "Log File"
 
 msgid "File %s"
 msgstr "%s File"
+
+msgid "Volume"
+msgstr "Volume"
+
+msgid "Disattiva"
+msgstr "Mute"
+
+msgid "Volume: suoni disattivati"
+msgstr "Volume: muted"

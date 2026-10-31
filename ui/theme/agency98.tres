@@ -406,6 +406,20 @@ light_color = Color(0.949, 0.9529, 0.9647, 1)
 shadow_color = Color(0.4157, 0.4353, 0.4941, 1)
 draw_outline = true
 
+[sub_resource type="StyleBox" id="vslider_track"]
+script = ExtResource("bevel")
+content_margin_left = 2.0
+content_margin_top = 0.0
+content_margin_right = 2.0
+content_margin_bottom = 0.0
+kind = 1
+bg_color = Color(1, 1, 1, 1)
+light_color = Color(0.949, 0.9529, 0.9647, 1)
+shadow_color = Color(0.4157, 0.4353, 0.4941, 1)
+draw_outline = false
+
+[sub_resource type="StyleBoxEmpty" id="vslider_area"]
+
 [sub_resource type="StyleBoxFlat" id="slider_area"]
 content_margin_left = 0.0
 content_margin_top = 2.0
@@ -1080,6 +1094,9 @@ PopupPanel/styles/panel = SubResource("popup")
 HSlider/styles/slider = SubResource("slider_track")
 HSlider/styles/grabber_area = SubResource("slider_area")
 HSlider/styles/grabber_area_highlight = SubResource("slider_area_hi")
+VSlider/styles/slider = SubResource("vslider_track")
+VSlider/styles/grabber_area = SubResource("vslider_area")
+VSlider/styles/grabber_area_highlight = SubResource("vslider_area")
 ChatPane/base_type = &"PanelContainer"
 ChatPane/styles/panel = SubResource("chat_pane")
 MsgManager/base_type = &"RichTextLabel"
