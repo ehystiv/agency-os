@@ -13,6 +13,9 @@ var _month := 0
 var _cancel_armed := false
 ## True while the day panel is rebuilt: fields losing focus don't save.
 var _rebuilding := false
+## Saving a new checklist item rebuilds the panel: the new field gets the focus back,
+## so several items can be typed in a row.
+var _refocus_new_item := false
 
 @onready var _title: Label = %MonthTitle
 @onready var _grid: GridContainer = %Grid
@@ -193,12 +196,16 @@ func _build_side() -> void:
 		if new_item.text.strip_edges() == "":
 			return
 		session.checklist.append({"text": new_item.text.strip_edges(), "done": false})
+		_refocus_new_item = true
 		Campaign.save_agenda()
 	add.pressed.connect(add_item)
 	new_item.text_submitted.connect(func(_t: String) -> void: add_item.call())
 	add_row.add_child(new_item)
 	add_row.add_child(add)
 	_side.add_child(add_row)
+	if _refocus_new_item:
+		_refocus_new_item = false
+		new_item.grab_focus.call_deferred()
 	var cancel := LinkButton.new()
 	cancel.theme_type_variation = &"LinkDanger"
 	cancel.text = "Conferma: annulla la sessione" if _cancel_armed else "Annulla la sessione"
