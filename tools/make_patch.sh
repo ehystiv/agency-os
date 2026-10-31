@@ -82,6 +82,8 @@ echo "Patch: $VERSION"
 rsync -a --exclude .git --exclude /build "$ROOT/" "$WORK/project/"
 FILE="agencyos-$VERSION.pck"
 mkdir -p "$OUT"
+# Godot resolves relative paths against the project copy: make it absolute.
+OUT="$(cd "$OUT" && pwd)"
 # A .pck left by an earlier run must not pass for this export's output.
 rm -f "$OUT/$FILE" "$OUT/update.json"
 "$GODOT" --headless --path "$WORK/project" --import >/dev/null 2>&1 || true
