@@ -25,19 +25,22 @@ permissions:
 
 env:
   GODOT_VERSION: "4.7.2"
+  # From the release's SHA512-SUMS.txt: update them together with GODOT_VERSION.
+  GODOT_SHA512: "38aa16e5bba2083941fc5b3e54be0089bd4cc35e32415f5b9fd9a8a6a7b9818255d44532ea8ef94b5aef56c4b407c2d634fa4f657e4ebe681ebbf59b7bac69ca"
+  TEMPLATES_SHA512: "ca4d71c4d7b81dfc15d1a98baa07534aa95b03fdda78a0075b06672e1648d2e5f40980c9adc28d23e1b92e732ee7bf3461997aa804af74ec2fcd7a93ccb84079"
 
 jobs:
   patch:
     runs-on: macos-15
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
       - name: Godot (cached)
         id: cache
-        uses: actions/cache@v4
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         with:
           path: ~/godot
-          key: godot-${{ env.GODOT_VERSION }}-macos
+          key: godot-${{ env.GODOT_VERSION }}-macos-verified
 
       - name: Download Godot and the macOS export template
         if: steps.cache.outputs.cache-hit != 'true'
@@ -45,9 +48,11 @@ jobs:
           base="https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable"
           mkdir -p ~/godot/templates && cd ~/godot
           curl -fsSL -o godot.zip "$base/Godot_v${GODOT_VERSION}-stable_macos.universal.zip"
+          echo "$GODOT_SHA512  godot.zip" | shasum -a 512 -c -
           unzip -q godot.zip && rm godot.zip
           # The full templates archive is 1.3 GB: keep only what a macOS export needs.
           curl -fsSL -o templates.tpz "$base/Godot_v${GODOT_VERSION}-stable_export_templates.tpz"
+          echo "$TEMPLATES_SHA512  templates.tpz" | shasum -a 512 -c -
           unzip -q -j templates.tpz "templates/macos.zip" "templates/version.txt" -d templates
           rm templates.tpz
 
@@ -95,7 +100,7 @@ jobs:
           GODOT="$HOME/godot/Godot.app/Contents/MacOS/Godot" \
             tools/make_patch.sh base/AgencyOS-*.dmg out --notes "$(cat notes.txt)"
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: patch-${{ steps.meta.outputs.version }}
           path: out/
