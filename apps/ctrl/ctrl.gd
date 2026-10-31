@@ -1,5 +1,5 @@
 extends AppContent
-## Control panel: wallpaper, screensaver, audio, effects, updates and system information.
+## Control panel: wallpaper, screensaver, audio, effects, screen area, updates and system information.
 ## Only writes the settings; their users update through Save.ui_changed or Sfx.
 
 const SAVER_CHOICES: Array[int] = [1, 3, 5, 10, 0]
@@ -11,12 +11,19 @@ const DEFAULTS := {
 	"crt_enabled": true,
 	"show_boot": true,
 	"update_auto": true,
+	ScreenArea.PREF: "1280x720",
 }
+## As in Windows 98: a new screen area goes back to the previous one unless confirmed in time.
+const CONFIRM_SECONDS := 15
 const DEFAULT_VOLUME := 0.8
 ## Tab ids for on_opened({"tab": …}), in the order of the tabs, with their titles.
-const TABS := {"general": "Generale", "update": "Aggiornamento", "system": "Sistema"}
+const TABS := {"general": "Generale", "screen": "Schermo", "update": "Aggiornamento", "system": "Sistema"}
 
 var _loading := false
+## The area in use before Applica, while waiting for the confirmation; ZERO otherwise.
+var _previous_area := Vector2i.ZERO
+var _confirm_left := 0
+var _confirm_timer: Timer
 
 @onready var _tabs: TabContainer = %Tabs
 @onready var _wallpapers: Array[CheckBox] = [%Lattice, %Vault, %Solid]
@@ -35,6 +42,11 @@ var _loading := false
 @onready var _update_progress: ProgressBar = %UpdateProgress
 @onready var _update_action: Button = %UpdateAction
 @onready var _auto_update: CheckBox = %AutoUpdate
+@onready var _area_slider: HSlider = %AreaSlider
+@onready var _area_label: Label = %AreaLabel
+@onready var _apply_area: Button = %ApplyArea
+@onready var _confirm_area: PanelContainer = %ConfirmArea
+@onready var _confirm_text: Label = %ConfirmText
 
 
 func _ready() -> void:
@@ -72,6 +84,16 @@ func _ready() -> void:
 	Updater.state_changed.connect(func(_state: Updater.State) -> void: _refresh_update())
 	# Every window moved changes a UI setting: refresh only if the panel is on screen
 	# (on_opened reloads anyway when it's shown).
+	_area_slider.max_value = ScreenArea.SIZES.size() - 1
+	_area_slider.tick_count = ScreenArea.SIZES.size()
+	_area_slider.value_changed.connect(func(_v: float) -> void: _refresh_area())
+	_apply_area.pressed.connect(_on_apply_area)
+	%KeepArea.pressed.connect(_end_confirm.bind(true))
+	%RevertArea.pressed.connect(_end_confirm.bind(false))
+	_confirm_timer = Timer.new()
+	_confirm_timer.wait_time = 1.0
+	_confirm_timer.timeout.connect(_on_confirm_tick)
+	add_child(_confirm_timer)
 	Save.ui_changed.connect(func(_key: String) -> void: _load_if_visible())
 	Sfx.settings_changed.connect(_load_if_visible)
 	_load()
@@ -104,6 +126,9 @@ func _load() -> void:
 	_fullscreen.set_pressed_no_signal(bool(Save.get_ui("fullscreen", false)))
 	_boot.set_pressed_no_signal(bool(Save.get_ui("show_boot", true)))
 	_auto_update.set_pressed_no_signal(bool(Save.get_ui("update_auto", true)))
+	if _previous_area == Vector2i.ZERO:
+		_area_slider.set_value_no_signal(ScreenArea.SIZES.find(ScreenArea.current()))
+	_refresh_area()
 	_info.text = _system_info()
 	_refresh_update()
 	_loading = false
@@ -174,6 +199,49 @@ func _store_setting(key: StringName, value: Variant) -> void:
 func _on_wallpaper_toggled(on: bool, mode: StringName) -> void:
 	if on:
 		_store_setting(&"wallpaper", String(mode))
+
+
+# --- Screen area -------------------------------------------------------------
+
+func _chosen_area() -> Vector2i:
+	return ScreenArea.SIZES[int(_area_slider.value)]
+
+
+func _refresh_area() -> void:
+	_area_label.text = ScreenArea.label(_chosen_area())
+	_apply_area.disabled = _previous_area != Vector2i.ZERO or _chosen_area() == ScreenArea.current()
+
+
+func _on_apply_area() -> void:
+	_previous_area = ScreenArea.current()
+	_confirm_left = CONFIRM_SECONDS
+	_confirm_area.show()
+	_update_confirm_text()
+	_confirm_timer.start()
+	Save.set_ui(ScreenArea.PREF, ScreenArea.format(_chosen_area()))
+
+
+func _on_confirm_tick() -> void:
+	_confirm_left -= 1
+	if _confirm_left <= 0:
+		_end_confirm(false)
+	else:
+		_update_confirm_text()
+
+
+func _update_confirm_text() -> void:
+	_confirm_text.text = "Le impostazioni dello schermo sono cambiate. Mantenerle? Ripristino tra %d secondi." % _confirm_left
+
+
+func _end_confirm(keep: bool) -> void:
+	_confirm_timer.stop()
+	_confirm_area.hide()
+	var previous := _previous_area
+	_previous_area = Vector2i.ZERO
+	if not keep and previous != Vector2i.ZERO:
+		_area_slider.set_value_no_signal(ScreenArea.SIZES.find(previous))
+		Save.set_ui(ScreenArea.PREF, ScreenArea.format(previous))
+	_refresh_area()
 
 
 func _restore_defaults() -> void:

@@ -18,6 +18,8 @@ const TRASH_FULL := preload("res://ui/icons/trash_full.svg")
 
 
 func _ready() -> void:
+	# Before the windows are restored, so they are placed inside the right area.
+	ScreenArea.apply(get_window(), ScreenArea.current())
 	_set_fullscreen(bool(Save.get_ui("fullscreen", false)))
 	get_window().size_changed.connect(_on_window_size_changed)
 	_wallpaper.set_mode(StringName(Save.get_ui("wallpaper", "lattice")))
@@ -101,6 +103,8 @@ func _on_ui_changed(key: String) -> void:
 	match key:
 		"wallpaper":
 			_wallpaper.set_mode(StringName(Save.get_ui("wallpaper", "lattice")))
+		ScreenArea.PREF:
+			ScreenArea.apply(get_window(), ScreenArea.current())
 		"fullscreen":
 			var wanted := bool(Save.get_ui("fullscreen", false))
 			if wanted != _is_fullscreen():
