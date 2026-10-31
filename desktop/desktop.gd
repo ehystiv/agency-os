@@ -7,6 +7,8 @@ const TRASH_EMPTY := preload("res://ui/icons/trash.svg")
 const TRASH_FULL := preload("res://ui/icons/trash_full.svg")
 ## Arrow with an hourglass, as Windows 98 "working in background".
 const BUSY_CURSOR := preload("res://ui/icons/cursor_busy.svg")
+const ZOOM_SECONDS := 0.2
+const CAPTION_HEIGHT := 24.0
 
 @onready var _wallpaper: Wallpaper = $Wallpaper
 @onready var _icons: DesktopIcons = $Icons
@@ -48,6 +50,10 @@ func _ready() -> void:
 	_refresh_trash_icon()
 
 	_windows.windows_changed.connect(_on_windows_changed)
+	_windows.window_minimized.connect(func(window: AppWindow) -> void:
+		_zoom(_caption_rect(window), _taskbar.task_rect(window.app.id)))
+	_windows.window_restored.connect(func(window: AppWindow) -> void:
+		_zoom(_taskbar.task_rect(window.app.id), _caption_rect(window)))
 	_windows.notification_requested.connect(_show_balloon)
 	_windows.command_requested.connect(_on_start_command)
 	_windows.restore(REGISTRY)
@@ -338,6 +344,26 @@ func _show_window(window: AppWindow, maximized: bool) -> void:
 	_windows.open(window.app.id)
 	if window.maximized != maximized:
 		window.toggle_maximized()
+
+
+## The '98 minimize/restore animation: a title bar flying between the window and its button.
+func _zoom(from: Rect2, to: Rect2) -> void:
+	if not from.has_area() or not to.has_area():
+		return
+	var bar := PanelContainer.new()
+	bar.theme_type_variation = &"TitleBarActive"
+	bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_taskbar.get_parent().add_child(bar)
+	bar.position = from.position
+	bar.size = from.size
+	var tween := bar.create_tween().set_parallel().set_trans(Tween.TRANS_SINE)
+	tween.tween_property(bar, "position", to.position, ZOOM_SECONDS)
+	tween.tween_property(bar, "size", to.size, ZOOM_SECONDS)
+	tween.chain().tween_callback(bar.queue_free)
+
+
+static func _caption_rect(window: AppWindow) -> Rect2:
+	return Rect2(window.global_position, Vector2(window.size.x, CAPTION_HEIGHT))
 
 
 func _on_sound_changed() -> void:

@@ -8,6 +8,9 @@ signal windows_changed
 signal notification_requested(title: String, text: String, action: Dictionary)
 signal command_requested(command: StringName)
 signal present_requested(item: Dictionary)
+## A window goes to the taskbar, or comes back from it (for the zoom animation).
+signal window_minimized(window: AppWindow)
+signal window_restored(window: AppWindow)
 
 const WINDOW_SCENE := preload("res://windows/app_window.tscn")
 
@@ -55,6 +58,8 @@ func open(id: StringName, args: Dictionary = {}) -> void:
 	var window := _get_or_create(id)
 	if window == null:
 		return
+	if _open.has(id) and not window.visible:
+		window_restored.emit(window)
 	_open[id] = true
 	window.show()
 	window.content.on_opened(args)
@@ -77,6 +82,7 @@ func focus(window: AppWindow) -> void:
 
 
 func minimize(window: AppWindow) -> void:
+	window_minimized.emit(window)
 	window.hide()
 	_refresh_active()
 	_store()

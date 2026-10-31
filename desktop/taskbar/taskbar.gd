@@ -78,6 +78,7 @@ func show_tasks(entries: Array[Dictionary]) -> void:
 		button.clip_text = true
 		button.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 		var id: StringName = entry.id
+		button.set_meta(&"id", id)
 		button.pressed.connect(func() -> void: task_pressed.emit(id))
 		button.gui_input.connect(func(event: InputEvent) -> void:
 			if _is_right_click(event):
@@ -96,6 +97,14 @@ func _gui_input(event: InputEvent) -> void:
 static func _is_right_click(event: InputEvent) -> bool:
 	var click := event as InputEventMouseButton
 	return click != null and click.pressed and click.button_index == MOUSE_BUTTON_RIGHT
+
+
+## Where a window's button is, in canvas coordinates; an empty Rect2 if it has none.
+func task_rect(id: StringName) -> Rect2:
+	for button: Button in _tasks.get_children():
+		if not button.is_queued_for_deletion() and button.get_meta(&"id", &"") == id:
+			return button.get_global_rect()
+	return Rect2()
 
 
 func set_sound_enabled(enabled: bool) -> void:
