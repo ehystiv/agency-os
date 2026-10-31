@@ -3450,3 +3450,19 @@ msgstr "C%d · D%d"
 
 msgid "Personale · scheda dell'Agente"
 msgstr "Personnel · Agent sheet"
+
+#: desktop/players
+msgid "CAOS"
+msgstr "CHAOS"
+
+msgid "Nascondi il Caos ai giocatori"
+msgstr "Hide Chaos from the players"
+
+msgid "Mostra il Caos ai giocatori"
+msgstr "Show Chaos to the players"
+
+msgid "Niente glitch sullo schermo giocatori"
+msgstr "No glitches on the players' screen"
+
+msgid "Glitch anche sullo schermo giocatori"
+msgstr "Glitches on the players' screen too"

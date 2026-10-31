@@ -540,6 +540,9 @@ func _on_start_command(command: StringName) -> void:
 			_players.blank()
 		&"players_image":
 			_choose_player_image()
+		&"players_chaos", &"players_glitches":
+			var pref := PlayerScreen.CHAOS_PREF if command == &"players_chaos" else PlayersGlitch.PREF
+			Save.set_ui(pref, not bool(Save.get_ui(pref, false)))
 		&"jackpot":
 			# The burst comes out of the calculator, if it's on screen.
 			var calc := _windows.rect_of(&"calc")

@@ -234,7 +234,7 @@
 				"image",
 				"blank"
 			],
-			"body": "The players' screen is a second window, for a TV or a second monitor. From the Start menu you can open it, show an image on it or blank it. Many apps can send what they show to it (Cmd+Shift+P)."
+			"body": "The players' screen is a second window, for a TV or a second monitor. From the Start menu you can open it, show an image on it or blank it. Many apps can send what they show to it (Cmd+Shift+P). While it is open, the Start menu can also keep the Chaos pool in a corner and let the Entity's glitches reach it."
 		},
 		{
 			"id": "ctrl",

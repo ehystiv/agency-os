@@ -5,7 +5,7 @@ extends PanelContainer
 
 signal app_chosen(id: StringName)
 ## One of &"sounds", &"fullscreen", &"align_icons" (in Impostazioni), &"shortcuts", &"players_toggle",
-## &"players_image", &"players_blank", &"run", &"reset_branch", &"shutdown" (the Shut Down dialog).
+## &"players_image", &"players_blank", &"players_chaos", &"players_glitches", &"run", &"reset_branch", &"shutdown" (the Shut Down dialog).
 signal command_chosen(command: StringName)
 
 const ICON_SOUND := preload("res://ui/icons/sound.svg")
@@ -15,6 +15,8 @@ const ICON_SHUTDOWN := preload("res://ui/icons/shutdown.svg")
 const ICON_RESET := preload("res://ui/icons/reset.svg")
 const ICON_KEYS := preload("res://ui/icons/keys.svg")
 const ICON_PLAYERS := preload("res://ui/icons/players.svg")
+const ICON_CHAOS := preload("res://ui/icons/calc.svg")
+const ICON_GLITCH := preload("res://ui/icons/cam.svg")
 const ICON_IMAGE := preload("res://ui/icons/image.svg")
 const ICON_BLANK := preload("res://ui/icons/blank.svg")
 const ICON_RUN := preload("res://ui/icons/run.svg")
@@ -69,6 +71,8 @@ func build(registry: AppRegistry, sound_enabled: bool, fullscreen: bool, players
 	_add_command(ICON_IMAGE, "Mostra un'immagine ai giocatori…", &"players_image")
 	if players_open:
 		_add_command(ICON_BLANK, "Oscura lo schermo giocatori", &"players_blank")
+		_add_command(ICON_CHAOS, "Nascondi il Caos ai giocatori" if Save.get_ui(PlayerScreen.CHAOS_PREF, false) else "Mostra il Caos ai giocatori", &"players_chaos")
+		_add_command(ICON_GLITCH, "Niente glitch sullo schermo giocatori" if Save.get_ui(PlayersGlitch.PREF, false) else "Glitch anche sullo schermo giocatori", &"players_glitches")
 	_items.add_child(HSeparator.new())
 	for app in registry.start_folder_apps(&""):
 		var entry := _app_entry(app)

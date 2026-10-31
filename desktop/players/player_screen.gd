@@ -3,6 +3,7 @@ extends Window
 ## "Schermo giocatori": a second macOS window to drag onto the TV or a second monitor.
 ## It shows only what the Manager sends (a memo, a file, a page, a roll, an image),
 ## big and in the '98 style, over the desktop wallpaper and the CRT; otherwise it waits.
+## Optionally it also shows the Chaos pool in a corner and the Entity's glitches.
 ## F11 or a double click toggle full screen, Esc leaves it. Position and size are remembered.
 
 const PREF := "players_screen"
@@ -17,6 +18,8 @@ const TITLE_FONT := preload("res://ui/fonts/VT323-Regular.ttf")
 const BODY_SIZE := 26
 const BODY_SIZE_LONG := 20
 const LONG_TEXT := 700
+## UI pref: the Chaos pool stays in the bottom right corner.
+const CHAOS_PREF := "players_chaos"
 
 var _stage: Control
 var _idle: Control
@@ -27,6 +30,8 @@ var _meta: Label
 var _body: Label
 var _image: TextureRect
 var _text_box: VBoxContainer
+var _chaos_box: PanelContainer
+var _chaos_value: Label
 
 
 func _init() -> void:
@@ -59,7 +64,17 @@ func _ready() -> void:
 	_frame = _make_frame()
 	_stage.add_child(_frame)
 	_frame.hide()
+	_chaos_box = _make_chaos_box()
+	_stage.add_child(_chaos_box)
+	var glitches := PlayersGlitch.new()
+	glitches.shake_target = _stage
+	add_child(glitches)
 	add_child(CRT.instantiate())
+	_refresh_chaos(false)
+	Campaign.chaos_changed.connect(func(_chaos: int) -> void: _refresh_chaos(true))
+	Save.ui_changed.connect(func(key: String) -> void:
+		if key == CHAOS_PREF:
+			_refresh_chaos(false))
 	close_requested.connect(func() -> void: set_open(false))
 	size_changed.connect(_store)
 	_restore_geometry()
@@ -230,6 +245,47 @@ func _make_frame() -> PanelContainer:
 	_image.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	content.add_child(_image)
 	return frame
+
+
+## ▲ CAOS 07 in a raised '98 box.
+func _make_chaos_box() -> PanelContainer:
+	var box := PanelContainer.new()
+	box.theme_type_variation = &"WindowFrame"
+	box.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	box.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT, Control.PRESET_MODE_MINSIZE, 24)
+	box.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+	box.grow_vertical = Control.GROW_DIRECTION_BEGIN
+	var margin := MarginContainer.new()
+	for side in ["left", "right"]:
+		margin.add_theme_constant_override("margin_" + side, 14)
+	box.add_child(margin)
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override(&"separation", 12)
+	margin.add_child(row)
+	var mark := Label.new()
+	mark.text = "▲ " + tr("CAOS")
+	mark.label_settings = _label_settings(40, Color("14161c"))
+	row.add_child(mark)
+	var panel := PanelContainer.new()
+	panel.theme_type_variation = &"LcdPanel"
+	row.add_child(panel)
+	_chaos_value = Label.new()
+	_chaos_value.label_settings = _label_settings(44, Color("1f2a14"))
+	panel.add_child(_chaos_value)
+	return box
+
+
+## pulse: one short flash, when the value changed (not when the box appears).
+func _refresh_chaos(pulse: bool) -> void:
+	_chaos_box.visible = bool(Save.get_ui(CHAOS_PREF, false))
+	var text := "%02d" % Campaign.chaos
+	if _chaos_value.text == text:
+		return
+	_chaos_value.text = text
+	if pulse and _chaos_box.visible and visible:
+		var tween := create_tween()
+		_chaos_box.modulate = Color(1.6, 0.6, 0.6)
+		tween.tween_property(_chaos_box, "modulate", Color.WHITE, 0.6)
 
 
 static func _label_settings(font_size: int, color: Color) -> LabelSettings:

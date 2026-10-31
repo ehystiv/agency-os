@@ -234,7 +234,7 @@
 				"immagine",
 				"oscura"
 			],
-			"body": "Lo schermo dei giocatori è una seconda finestra, da mettere su una TV o un secondo monitor. Dal menu Start puoi aprirlo, mostrarci un'immagine o oscurarlo. Molte app possono mandarci quello che mostrano (Cmd+Maiusc+P)."
+			"body": "Lo schermo dei giocatori è una seconda finestra, da mettere su una TV o un secondo monitor. Dal menu Start puoi aprirlo, mostrarci un'immagine o oscurarlo. Molte app possono mandarci quello che mostrano (Cmd+Maiusc+P). Quando è aperto, dal menu Start puoi anche tenere la riserva di Caos in un angolo e far arrivare lì i glitch dell'Entità."
 		},
 		{
 			"id": "ctrl",
