@@ -74,6 +74,11 @@ func find_mail(id: String) -> Dictionary:
 	return {}
 
 
+## Drops the queued requests (branch reset); the one running finds Campaign.generation changed.
+func cancel_pending() -> void:
+	_queue.clear()
+
+
 ## The memo delivered at the start of the given session, if any.
 func mail_for_session(number: int) -> Dictionary:
 	for memo in mail:
@@ -204,11 +209,7 @@ func on_session_opened(interview: Interview, level: int) -> void:
 	for memo in mail:
 		if not memo.get("delivered", true) and int(memo.session) <= interview.number:
 			memo.session = interview.number
-			memo.created = Time.get_datetime_string_from_system()
-			memo.delivered = true
-			Save.write_campaign(MAIL_FILE, mail)
-			mail_changed.emit()
-			delivered.emit("memo", memo)
+			_deliver_memo(memo)
 	for file in files:
 		if not file.get("delivered", true):
 			file.delivered = true
@@ -234,7 +235,14 @@ func on_session_closed(interview: Interview, level_before: int, level_after: int
 # --- Generation ------------------------------------------------------------
 
 func _make_memo(session: int, searches: int, deliver_now: bool) -> void:
-	if not mail_for_session(session).is_empty() or (not deliver_now and _has_pending_mail()):
+	# A memo for this session may already exist, still undelivered: the one written at the
+	# end of the previous session, if the Line was reopened before it was ready.
+	for memo in mail:
+		if int(memo.session) == session:
+			if deliver_now and not memo.get("delivered", true):
+				_deliver_memo(memo)
+			return
+	if not deliver_now and _has_pending_mail():
 		return
 	_set_receiving(true)
 	var sent: PackedStringArray = []
@@ -248,12 +256,15 @@ func _make_memo(session: int, searches: int, deliver_now: bool) -> void:
 		"sent": "MEMO GIÀ INVIATI (non ripeterne il tema):\n" + "\n".join(sent) if not sent.is_empty() else "",
 		"senders": ", ".join(SENDERS),
 	})
+	var started := Campaign.generation
 	var out := await LlmJson.ask(prompt, {
 		"sender": {"type": "string", "enum": SENDERS},
 		"subject": {"type": "string"},
 		"body": {"type": "string"},
 	})
 	_set_receiving(false)
+	if Campaign.generation != started:
+		return
 	if str(out.get("subject", "")).strip_edges() == "" or str(out.get("body", "")).strip_edges() == "":
 		return
 	var memo := {
@@ -271,6 +282,14 @@ func _make_memo(session: int, searches: int, deliver_now: bool) -> void:
 	if deliver_now:
 		mail_changed.emit()
 		delivered.emit("memo", memo)
+
+
+func _deliver_memo(memo: Dictionary) -> void:
+	memo.created = Time.get_datetime_string_from_system()
+	memo.delivered = true
+	Save.write_campaign(MAIL_FILE, mail)
+	mail_changed.emit()
+	delivered.emit("memo", memo)
 
 
 func _make_file(level: int, deliver_now: bool) -> void:
@@ -293,7 +312,10 @@ func _make_file(level: int, deliver_now: bool) -> void:
 		"command": secret,
 		"notes": "Ciò che sai del Manager e della Filiale:\n" + notes.left(1500) if notes != "" else "",
 	})
+	var started := Campaign.generation
 	var out := await LlmJson.ask(prompt, {"name": {"type": "string"}, "content": {"type": "string"}})
+	if Campaign.generation != started:
+		return
 	var file_name := _clean_file_name(str(out.get("name", "")), "crepa_0%d" % level, ["txt", "log"])
 	var content := str(out.get("content", "")).strip_edges()
 	if content == "":
@@ -322,7 +344,10 @@ func _make_draft(interview: Interview) -> void:
 		if item.id == id:
 			return
 	var prompt := _read(PROMPT_DRAFT).format({"memories": interview.summary if interview.summary != "" else "(confusi)"})
+	var started := Campaign.generation
 	var out := await LlmJson.ask(prompt, {"name": {"type": "string"}, "text": {"type": "string"}}, 0.9, 500)
+	if Campaign.generation != started:
+		return
 	var text := str(out.get("text", "")).strip_edges()
 	if text == "":
 		return

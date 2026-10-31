@@ -66,6 +66,9 @@ var obsidian_folder: String = ""
 
 ## Agency memos, the Entity's files and the drafts in the trash.
 var correspondence: Correspondence
+## Goes up at every reset: a model request started before it finds a different value
+## after its await and throws its result away, instead of writing into the new branch.
+var generation: int = 0
 
 var _current_number: int = 0
 var _retrying := false
@@ -145,8 +148,11 @@ func save_interview(interview: Interview) -> void:
 ## If the model doesn't answer the interview is closed anyway; the summary is retried later.
 func close_interview(interview: Interview) -> void:
 	var old_level := level()
+	var started := generation
 	add_message(interview, "system", "> SESSIONE TERMINATA DAL GENERAL MANAGER.")
 	interview.summary = await summarize(interview)
+	if generation != started:
+		return
 	interview.status = Interview.CLOSED
 	interview.closed_at = Time.get_datetime_string_from_system()
 	if _current_number == interview.number:
@@ -155,6 +161,8 @@ func close_interview(interview: Interview) -> void:
 	_save_state()
 	if interview.summary != "":
 		await _merge_memory(interview)
+		if generation != started:
+			return
 	interview_updated.emit(interview)
 	interviews_changed.emit()
 	if level() != old_level:
@@ -178,6 +186,8 @@ func add_chaos(amount: int) -> void:
 ## the level goes back to 1. Settings, vault folder and agenda stay;
 ## keep_notes also keeps the Manager's notes and the Notebook.
 func reset_branch(keep_notes: bool) -> void:
+	generation += 1
+	correspondence.cancel_pending()
 	for file_name in Save.list_campaign(INTERVIEWS_DIR):
 		Save.delete_campaign(INTERVIEWS_DIR + "/" + file_name)
 	for relative in [Correspondence.MAIL_FILE, Correspondence.FILES_FILE, TRASH_FILE]:
@@ -545,7 +555,10 @@ func _merge_memory(interview: Interview) -> void:
 		memory = interview.summary
 	else:
 		var prompt := _read_text(PROMPT_MEMORY).format({"memory": memory, "number": interview.number, "summary": interview.summary})
+		var started := generation
 		var merged := await _ask(prompt)
+		if generation != started:
+			return
 		# If merging fails, append instead, so the memory isn't lost.
 		memory = merged if merged != "" else memory + "\n" + interview.summary
 	_save_state()
@@ -556,15 +569,18 @@ func _retry_missing_summaries() -> void:
 	if _retrying:
 		return
 	_retrying = true
+	var started := generation
 	for interview in interviews.duplicate():
 		if interview.is_open() or interview.summary != "" or interview.spoken_count() == 0:
 			continue
 		var summary := await summarize(interview)
-		if summary == "":
+		if summary == "" or generation != started:
 			break
 		interview.summary = summary
 		save_interview(interview)
 		await _merge_memory(interview)
+		if generation != started:
+			break
 	_retrying = false
 
 
