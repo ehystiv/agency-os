@@ -33,6 +33,7 @@ size_flags_horizontal = 3
 theme_type_variation = &"PlayerScreen"
 text = "nessuna traccia"
 clip_text = true
+text_overrun_behavior = 3
 
 [node name="Time" type="Label" parent="Layout/Screen/Box/Row"]
 unique_name_in_owner = true
@@ -45,6 +46,27 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 36)
 layout_mode = 2
 script = ExtResource("3_visualizer")
+
+[node name="SeekRow" type="HBoxContainer" parent="Layout/Screen/Box"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Seek" type="HSlider" parent="Layout/Screen/Box/SeekRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+focus_mode = 0
+max_value = 1.0
+step = 0.0
+
+[node name="Length" type="Label" parent="Layout/Screen/Box/SeekRow"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"PlayerScreen"
+text = "00:00"
 
 [node name="Controls" type="HBoxContainer" parent="Layout"]
 layout_mode = 2
@@ -82,6 +104,15 @@ tooltip_text = "Traccia successiva"
 focus_mode = 0
 text = "▶|"
 
+[node name="Loop" type="Button" parent="Layout/Controls"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(38, 28)
+layout_mode = 2
+tooltip_text = "Ripeti il brano"
+focus_mode = 0
+toggle_mode = true
+text = "⟳"
+
 [node name="VolumeLabel" type="Label" parent="Layout/Controls"]
 layout_mode = 2
 text = "Vol"
@@ -94,13 +125,52 @@ size_flags_vertical = 4
 step = 1.0
 value = 70.0
 
-[node name="ListPanel" type="PanelContainer" parent="Layout"]
-layout_mode = 2
-theme_type_variation = &"SunkenPanel"
-
-[node name="Rows" type="VBoxContainer" parent="Layout/ListPanel"]
+[node name="Tabs" type="TabBar" parent="Layout"]
 unique_name_in_owner = true
 layout_mode = 2
+focus_mode = 0
+current_tab = 0
+tab_count = 3
+tab_0/title = "Aziendali"
+tab_1/title = "Cartella"
+tab_2/title = "Raccolta"
+
+[node name="FolderBar" type="HBoxContainer" parent="Layout"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Folder" type="Label" parent="Layout/FolderBar"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"HintLabel"
+text = "Nessuna cartella"
+clip_text = true
+text_overrun_behavior = 3
+
+[node name="OpenFolder" type="Button" parent="Layout/FolderBar"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+text = "Apri cartella…"
+
+[node name="ListPanel" type="PanelContainer" parent="Layout"]
+custom_minimum_size = Vector2(0, 140)
+layout_mode = 2
+size_flags_vertical = 3
+theme_type_variation = &"SunkenPanel"
+
+[node name="Scroll" type="ScrollContainer" parent="Layout/ListPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="Rows" type="VBoxContainer" parent="Layout/ListPanel/Scroll"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
 theme_override_constants/separation = 0
 
 [node name="Status" type="Label" parent="Layout"]
@@ -108,6 +178,8 @@ unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"StatusLabel"
 text = "Musiche d'attesa aziendali · sintetizzate dal vivo"
+clip_text = true
+text_overrun_behavior = 3
 
 [node name="Engine" type="Node" parent="."]
 unique_name_in_owner = true

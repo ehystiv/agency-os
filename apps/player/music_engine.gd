@@ -3,8 +3,12 @@ extends Node
 ## Company hold music, synthesized live as in the prototype.
 ## A sixteenth-note sequencer prepares the notes one second ahead
 ## (on worker threads) and plays them on a pool of voices of the "Music" bus.
+## It also plays audio files (a folder, the saved collection) on the same bus,
+## so the visualizer and the screensaver treat them the same way.
 
 signal state_changed
+## A file reached its end without loop (the Player moves to the next one).
+signal file_finished
 
 const BUS := "Music"
 ## The notes of these tracks have very low volumes (as in the prototype): the bus raises them.
@@ -39,6 +43,10 @@ var playing := false
 var paused := false
 ## Seconds of the track played so far (they stop while paused).
 var elapsed := 0.0
+## Name of the file playing or paused; empty while a synthesized track is in use.
+var file_name := ""
+## Files start again from the beginning when they end.
+var loop := false
 
 var _step := 0
 var _next_time := 0.0
@@ -46,6 +54,7 @@ var _next_time := 0.0
 var _events: Array[Dictionary] = []
 var _voices: Array[AudioStreamPlayer] = []
 var _analyzer: AudioEffectSpectrumAnalyzerInstance
+var _file_player: AudioStreamPlayer
 
 
 func _ready() -> void:
@@ -58,6 +67,12 @@ func _ready() -> void:
 		voice.bus = BUS
 		add_child(voice)
 		_voices.append(voice)
+	_file_player = AudioStreamPlayer.new()
+	_file_player.bus = BUS
+	# Files have normal levels: undo the boost the bus gives to the synthesized notes.
+	_file_player.volume_db = linear_to_db(1.0 / BUS_BOOST)
+	_file_player.finished.connect(_on_file_finished)
+	add_child(_file_player)
 	set_volume(float(Save.get_ui("player_volume", 70)) / 100.0)
 	set_process(false)
 
@@ -66,8 +81,12 @@ func is_locked(index: int) -> bool:
 	return int(TRACKS[index].level) > Campaign.level()
 
 
+func is_file() -> bool:
+	return file_name != ""
+
+
 func play(index: int) -> void:
-	if paused and index == track:
+	if paused and index == track and not is_file():
 		paused = false
 	else:
 		stop()
@@ -80,6 +99,32 @@ func play(index: int) -> void:
 	state_changed.emit()
 
 
+## Plays an audio file (already loaded) from the start.
+func play_file(stream: AudioStream, display_name: String) -> void:
+	stop()
+	file_name = display_name
+	_file_player.stream = stream
+	_file_player.stream_paused = false
+	_file_player.play()
+	playing = true
+	set_process(true)
+	state_changed.emit()
+
+
+## Goes on after pause(), for a file or a synthesized track.
+func resume() -> void:
+	if not paused:
+		return
+	if is_file():
+		paused = false
+		playing = true
+		_file_player.stream_paused = false
+		set_process(true)
+		state_changed.emit()
+	else:
+		play(track)
+
+
 func pause() -> void:
 	if not playing:
 		return
@@ -87,6 +132,7 @@ func pause() -> void:
 	paused = true
 	for voice in _voices:
 		voice.stop()
+	_file_player.stream_paused = true
 	set_process(false)
 	state_changed.emit()
 
@@ -95,11 +141,31 @@ func stop() -> void:
 	playing = false
 	paused = false
 	elapsed = 0.0
+	file_name = ""
 	for voice in _voices:
 		voice.stop()
+	_file_player.stop()
+	_file_player.stream_paused = false
 	_drop_events()
 	set_process(false)
 	state_changed.emit()
+
+
+## Seconds of the file playing; 0 for the synthesized tracks (they never end).
+func length() -> float:
+	return _file_player.stream.get_length() if is_file() and _file_player.stream != null else 0.0
+
+
+func seek(seconds: float) -> void:
+	if not is_file():
+		return
+	if paused:
+		_file_player.stream_paused = false
+		_file_player.seek(seconds)
+		_file_player.stream_paused = true
+	else:
+		_file_player.seek(seconds)
+	elapsed = seconds
 
 
 func set_volume(value: float) -> void:
@@ -108,7 +174,7 @@ func set_volume(value: float) -> void:
 
 ## The visualizer bar marking the current track (red), -1 for none.
 func marker_bar(bars: int) -> int:
-	return track * bars / TRACKS.size() if playing else -1
+	return track * bars / TRACKS.size() if playing and not is_file() else -1
 
 
 ## Levels for the visualizer: count bands between 60 Hz and 4 kHz, from 0 to 1.
@@ -126,6 +192,9 @@ func levels(count: int) -> PackedFloat32Array:
 
 
 func _process(delta: float) -> void:
+	if is_file():
+		elapsed = _file_player.get_playback_position()
+		return
 	elapsed += delta
 	var step_seconds := 60.0 / float(TRACKS[track].bpm) / 4.0
 	while _next_time < elapsed + LOOKAHEAD:
@@ -310,6 +379,16 @@ func _play(stream: AudioStreamWAV) -> void:
 		_voices.push_back(_voices.pop_front())
 	voice.stream = stream
 	voice.play()
+
+
+func _on_file_finished() -> void:
+	if not is_file() or not playing:
+		return
+	if loop:
+		_file_player.play()
+		return
+	stop()
+	file_finished.emit()
 
 
 func _drop_events() -> void:
