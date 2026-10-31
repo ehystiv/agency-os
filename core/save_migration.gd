@@ -11,6 +11,9 @@ const OLD_MODEL := "user://config/modello.cfg"
 const NEW_MODEL := "user://config/model.cfg"
 const OLD_CAMPAIGNS := "user://campagne"
 const NEW_CAMPAIGNS := "user://campaigns"
+## The campaigns are converted here and renamed to NEW_CAMPAIGNS only at the end:
+## a conversion cut halfway (a crash) is simply done again at the next start.
+const PARTIAL_CAMPAIGNS := "user://campaigns.migrating"
 
 const APP_IDS := {"linea": "line", "fascicolo": "dossier", "taccuino": "notebook", "canone": "canon", "cestino": "trash", "registro": "event_viewer", "note": "notepad", "impostazioni_linea": "line_settings"}
 const CAMPAIGN_IDS := {"filiale": "branch"}
@@ -48,33 +51,34 @@ static func run() -> void:
 # --- Interface settings ----------------------------------------------------
 
 static func _migrate_ui() -> void:
-	var old: Dictionary = _read(OLD_UI, {})
+	var old := _dict(_read(OLD_UI, {}))
 	var new := {}
 	for key: String in old:
 		var value: Variant = old[key]
 		match key:
 			"finestre":
 				var windows := {}
-				for id: String in value:
-					var state: Dictionary = value[id]
+				for id: String in _dict(value):
+					var state := _dict(value[id])
 					windows[_app(id)] = {"x": state.get("x", 0), "y": state.get("y", 0), "minimized": state.get("ridotta", false)}
 				value = windows
 			"ordine_finestre":
-				value = value.map(func(id: String) -> String: return _app(id))
+				value = _list(value).map(func(id: Variant) -> String: return _app(str(id)))
 			"icone":
 				var icons := {}
-				for icon_key: String in value:
+				for icon_key: String in _dict(value):
 					icons[icon_key if icon_key.begins_with("file:") else _app(icon_key)] = value[icon_key]
 				value = icons
 			"sfondo":
 				value = WALLPAPERS.get(value, "lattice")
 			"audio":
-				value = {"enabled": value.get("attivo", true), "volume": value.get("volume", 0.8)}
+				var audio := _dict(value)
+				value = {"enabled": audio.get("attivo", true), "volume": audio.get("volume", 0.8)}
 			"contenimento_livello":
 				value = LEVELS.get(value, "easy")
 			"contenimento_record":
 				var records := {}
-				for level: String in value:
+				for level: String in _dict(value):
 					records[LEVELS.get(level, level)] = value[level]
 				value = records
 		new[UI_KEYS.get(key, key)] = value
@@ -105,20 +109,25 @@ static func _migrate_model() -> void:
 # --- Campaigns -------------------------------------------------------------
 
 static func _migrate_campaigns() -> void:
-	DirAccess.make_dir_recursive_absolute(NEW_CAMPAIGNS)
-	var index: Dictionary = _read(OLD_CAMPAIGNS + "/indice.json", {})
+	_remove_tree(PARTIAL_CAMPAIGNS)
+	DirAccess.make_dir_recursive_absolute(PARTIAL_CAMPAIGNS)
+	var index := _dict(_read(OLD_CAMPAIGNS + "/indice.json", {}))
 	var campaigns: Array = []
-	for entry: Dictionary in index.get("campagne", []):
-		campaigns.append({"id": _campaign(str(entry.id)), "name": entry.get("nome", "Filiale"), "created": entry.get("creata", "")})
-	_write(NEW_CAMPAIGNS + "/index.json", {"version": 1, "active": _campaign(str(index.get("attiva", "filiale"))), "campaigns": campaigns})
+	for entry: Dictionary in _dicts(index.get("campagne", [])):
+		campaigns.append({"id": _campaign(str(entry.get("id", "filiale"))), "name": entry.get("nome", "Filiale"), "created": entry.get("creata", "")})
+	_write(PARTIAL_CAMPAIGNS + "/index.json", {"version": 1, "active": _campaign(str(index.get("attiva", "filiale"))), "campaigns": campaigns})
 	for folder in DirAccess.get_directories_at(OLD_CAMPAIGNS):
-		_migrate_campaign(OLD_CAMPAIGNS + "/" + folder, NEW_CAMPAIGNS + "/" + _campaign(folder))
+		_migrate_campaign(OLD_CAMPAIGNS + "/" + folder, PARTIAL_CAMPAIGNS + "/" + _campaign(folder))
+	var err := DirAccess.rename_absolute(PARTIAL_CAMPAIGNS, NEW_CAMPAIGNS)
+	if err != OK:
+		push_error("SaveMigration: can't move the converted campaigns into place (%s)." % error_string(err))
+		return
 	_backup(OLD_CAMPAIGNS, "campagne")
 
 
 static func _migrate_campaign(from: String, to: String) -> void:
 	DirAccess.make_dir_recursive_absolute(to + "/interviews")
-	var state: Dictionary = _read(from + "/stato.json", {})
+	var state := _dict(_read(from + "/stato.json", {}))
 	_write(to + "/state.json", {
 		"version": 1, "notes": state.get("note", ""), "current": state.get("corrente", 0),
 		"chaos": state.get("caos", 0), "memory": state.get("memoria", ""),
@@ -126,29 +135,29 @@ static func _migrate_campaign(from: String, to: String) -> void:
 	})
 	for file_name in DirAccess.get_files_at(from + "/colloqui"):
 		if file_name.ends_with(".json"):
-			_write(to + "/interviews/" + file_name, _interview(_read(from + "/colloqui/" + file_name, {})))
-	_write(to + "/notebook.json", _read(from + "/appunti.json", []).map(func(p: Dictionary) -> Dictionary: return _page(p)))
-	_write(to + "/trash.json", _read(from + "/cestino.json", []).map(func(t: Dictionary) -> Dictionary: return _trash_item(t)))
-	_write(to + "/mail.json", _read(from + "/posta.json", []).map(func(m: Dictionary) -> Dictionary: return {
+			_write(to + "/interviews/" + file_name, _interview(_dict(_read(from + "/colloqui/" + file_name, {}))))
+	_write(to + "/notebook.json", _dicts(_read(from + "/appunti.json", [])).map(func(p: Dictionary) -> Dictionary: return _page(p)))
+	_write(to + "/trash.json", _dicts(_read(from + "/cestino.json", [])).map(func(t: Dictionary) -> Dictionary: return _trash_item(t)))
+	_write(to + "/mail.json", _dicts(_read(from + "/posta.json", [])).map(func(m: Dictionary) -> Dictionary: return {
 		"id": m.get("id", ""), "session": m.get("sessione", 0), "created": m.get("creato", ""),
 		"sender": m.get("mittente", ""), "subject": m.get("oggetto", ""), "body": m.get("corpo", ""),
 		"read": m.get("letta", false), "delivered": m.get("consegnata", true),
 	}))
-	_write(to + "/files.json", _read(from + "/file.json", []).map(func(f: Dictionary) -> Dictionary: return {
+	_write(to + "/files.json", _dicts(_read(from + "/file.json", [])).map(func(f: Dictionary) -> Dictionary: return {
 		"id": f.get("id", ""), "level": f.get("livello", 1), "name": f.get("nome", ""),
 		"content": f.get("contenuto", ""), "original": f.get("originale", ""), "created": f.get("creato", ""),
 		"read": f.get("letto", false), "corrected": f.get("corretto", false),
 		"corrected_at": f.get("corretto_il", ""), "delivered": f.get("consegnato", true),
 	}))
-	_write(to + "/agenda.json", _read(from + "/agenda.json", []).map(func(s: Dictionary) -> Dictionary: return {
+	_write(to + "/agenda.json", _dicts(_read(from + "/agenda.json", [])).map(func(s: Dictionary) -> Dictionary: return {
 		"id": s.get("id", ""), "date": s.get("data", ""), "time": s.get("ora", ""), "title": s.get("titolo", ""),
-		"checklist": s.get("checklist", []).map(func(c: Dictionary) -> Dictionary: return {"text": c.get("t", ""), "done": c.get("ok", false)}),
+		"checklist": _dicts(s.get("checklist", [])).map(func(c: Dictionary) -> Dictionary: return {"text": c.get("t", ""), "done": c.get("ok", false)}),
 	}))
 
 
 static func _interview(old: Dictionary) -> Dictionary:
 	var messages: Array = []
-	for m: Dictionary in old.get("messaggi", []):
+	for m: Dictionary in _dicts(old.get("messaggi", [])):
 		var message := {"who": SPEAKERS.get(m.get("chi", ""), "system"), "text": m.get("testo", ""), "time": m.get("ora", "")}
 		if str(m.get("glitch", "")) != "":
 			message["glitch"] = GLITCHES.get(m.glitch, m.glitch)
@@ -168,7 +177,7 @@ static func _page(p: Dictionary) -> Dictionary:
 static func _trash_item(item: Dictionary) -> Dictionary:
 	var new := {"id": item.get("id", ""), "type": "draft" if item.get("tipo", "") == "bozza" else "page", "name": item.get("nome", ""), "deleted": item.get("eliminato", "")}
 	if item.has("dati"):
-		new["data"] = _page(item.dati)
+		new["data"] = _page(_dict(item.dati))
 	if item.has("testo"):
 		new["text"] = item.testo
 	if item.has("sessione"):
@@ -193,12 +202,38 @@ static func _read(path: String, default: Variant) -> Variant:
 	return data if data != null else default
 
 
+## Like Save.write_json: a temporary file, then a rename, so a cut write leaves no half file.
 static func _write(path: String, data: Variant) -> void:
-	var file := FileAccess.open(path, FileAccess.WRITE)
+	var file := FileAccess.open(path + ".tmp", FileAccess.WRITE)
 	if file == null:
 		push_error("SaveMigration: can't write %s." % path)
 		return
 	file.store_string(JSON.stringify(data, "\t"))
+	file.close()
+	DirAccess.rename_absolute(path + ".tmp", path)
+
+
+## The old files were written by hand-editable JSON: anything of the wrong type becomes empty.
+static func _dict(value: Variant) -> Dictionary:
+	return value if value is Dictionary else {}
+
+
+static func _list(value: Variant) -> Array:
+	return value if value is Array else []
+
+
+static func _dicts(value: Variant) -> Array:
+	return _list(value).filter(func(item: Variant) -> bool: return item is Dictionary)
+
+
+static func _remove_tree(path: String) -> void:
+	if not DirAccess.dir_exists_absolute(path):
+		return
+	for folder in DirAccess.get_directories_at(path):
+		_remove_tree(path + "/" + folder)
+	for file_name in DirAccess.get_files_at(path):
+		DirAccess.remove_absolute(path + "/" + file_name)
+	DirAccess.remove_absolute(path)
 
 
 ## Moves the old file or folder into LEGACY_DIR, keeping its relative path.
