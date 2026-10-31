@@ -8,6 +8,8 @@ const TRASH_FULL := preload("res://ui/icons/trash_full.svg")
 ## Arrow with an hourglass, as Windows 98 "working in background".
 const BUSY_CURSOR := preload("res://ui/icons/cursor_busy.svg")
 const ZOOM_SECONDS := 0.2
+## Exists while AgencyOS runs: found at start, the last session didn't end properly.
+const SESSION_LOCK := "user://config/session.lock"
 const CAPTION_HEIGHT := 24.0
 
 @onready var _wallpaper: Wallpaper = $Wallpaper
@@ -101,8 +103,9 @@ func _ready() -> void:
 
 	_on_windows_changed()
 	BootPatch.confirm()
-	if bool(Save.get_ui("show_boot", true)):
-		_boot.play()
+	var unclean := _previous_session_unclean()
+	if bool(Save.get_ui("show_boot", true)) or unclean:
+		_boot.play(unclean)
 		await _boot.finished
 	# The Welcome screen: the first time, then only if the Manager asked for it.
 	if bool(Save.get_ui("welcome_at_start", true)):
@@ -115,6 +118,23 @@ func _ready() -> void:
 		# After the other start-up balloons, so they don't cover each other.
 		await get_tree().create_timer(8.0).timeout
 		Updater.check_daily()
+
+
+## True if the last session didn't end through _exit_tree (a crash, a forced quit):
+## the boot then runs ScanDisk. In the editor only with "-- --scandisk", or stopping the
+## game there would bring it up every time.
+func _previous_session_unclean() -> bool:
+	var unclean := FileAccess.file_exists(SESSION_LOCK)
+	if OS.has_feature("editor"):
+		unclean = OS.get_cmdline_user_args().has("--scandisk")
+	var lock := FileAccess.open(SESSION_LOCK, FileAccess.WRITE)
+	if lock != null:
+		lock.store_string(Time.get_datetime_string_from_system())
+	return unclean
+
+
+func _exit_tree() -> void:
+	DirAccess.remove_absolute(SESSION_LOCK)
 
 
 ## Global shortcuts, before the focused field sees the keys (Cmd on a Mac, Ctrl elsewhere):

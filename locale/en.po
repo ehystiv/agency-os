@@ -3227,3 +3227,27 @@ msgstr "A fatal exception 0E has occurred at 0047:BB000047 in VXD ENTITY(01) +\n
 
 msgid "Premere un tasto per continuare"
 msgstr "Press any key to continue"
+
+msgid "Descrittore del supporto"
+msgstr "Media descriptor"
+
+msgid "Tabelle di allocazione dei file"
+msgstr "File allocation tables"
+
+msgid "Struttura delle cartelle"
+msgstr "Directory structure"
+
+msgid "File system"
+msgstr "File system"
+
+msgid "Spazio libero"
+msgstr "Free space"
+
+msgid "Analisi della superficie"
+msgstr "Surface scan"
+
+msgid "AgencyOS non è stato chiuso correttamente. ScanDisk controlla ora\nl'unità C: FILIALE per verificare la presenza di errori.\n\nPer non vedere più questo messaggio, chiudi AgencyOS con\nStart › Chiudi sessione…"
+msgstr "Because AgencyOS was not properly shut down, ScanDisk is now checking\ndrive C: BRANCH for errors.\n\nTo avoid seeing this message again, always shut down AgencyOS\nwith Start › Shut Down..."
+
+msgid "ScanDisk ha trovato 1 settore che non appartiene a nessun file: 0047BB.\nIl settore è stato lasciato com'è."
+msgstr "ScanDisk found 1 sector that belongs to no file: 0047BB.\nThe sector was left as it is."

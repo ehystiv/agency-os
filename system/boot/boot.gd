@@ -1,7 +1,8 @@
 class_name BootScreen
 extends CanvasLayer
 ## BIOS-style boot: diagnostic lines (with a real check of the model server),
-## the Agency's triangle and a fade. A click or a key skips it.
+## ScanDisk after an improper shutdown, the Agency's triangle and a fade.
+## A click or a key skips it.
 
 signal finished
 
@@ -12,6 +13,9 @@ const DIM_COLOR := "#9aa3a0"
 const LOGO_SECONDS := 1.1
 const FADE_SECONDS := 0.5
 const SERVER_TIMEOUT := 4.0
+const SCANDISK_BLUE := Color("0000aa")
+const SCANDISK_STEPS: PackedStringArray = ["Descrittore del supporto", "Tabelle di allocazione dei file", "Struttura delle cartelle", "File system", "Spazio libero", "Analisi della superficie"]
+const SCANDISK_STEP_SECONDS := 0.35
 
 var _skipped := false
 var _running := false
@@ -33,7 +37,8 @@ func is_running() -> bool:
 	return _running
 
 
-func play() -> void:
+## scandisk: the last session didn't end properly, so the disk is checked first.
+func play(scandisk: bool = false) -> void:
 	_running = true
 	_skipped = false
 	_screen.show()
@@ -56,6 +61,8 @@ func play() -> void:
 	await _check_server()
 	await _line(tr("Linea riservata ............ %s") % ("[color=%s]%s[/color]" % [FAIL_COLOR, tr("NON REGISTRATA")]))
 	await _line("")
+	if scandisk:
+		await _scandisk()
 	await _line(tr("Avvio di AgencyOS in Modalità Sicura…"))
 	await _wait(0.5)
 	if not _skipped:
@@ -98,6 +105,36 @@ func _check_server() -> void:
 		request.cancel()
 		state = "[color=%s]%s[/color]" % [DIM_COLOR, tr("non controllato") if _skipped else tr("NON RISPONDE")]
 	_replace_last(tr("Server del modello (%s) ... ") % where + state)
+
+
+## Windows 98's ScanDisk in text mode, on a blue screen: the steps get a check mark,
+## the surface scan a progress bar. Then back to the black boot screen.
+func _scandisk() -> void:
+	var black := _screen.color
+	_screen.color = SCANDISK_BLUE
+	var saved := _lines.duplicate()
+	_lines.clear()
+	await _line("[bgcolor=#aaaaaa][color=#0000aa]  ScanDisk di AgencyOS  [/color][/bgcolor]")
+	await _line("")
+	await _line(tr("AgencyOS non è stato chiuso correttamente. ScanDisk controlla ora\nl'unità C: FILIALE per verificare la presenza di errori.\n\nPer non vedere più questo messaggio, chiudi AgencyOS con\nStart › Chiudi sessione…"))
+	await _line("")
+	for step in SCANDISK_STEPS:
+		await _line("  »  " + tr(step))
+		if step == SCANDISK_STEPS[-1]:
+			for percent in range(0, 101, 5):
+				if _skipped:
+					break
+				_replace_last("  »  %s   [%s%s] %d%%" % [tr(step), "█".repeat(percent / 5), "░".repeat(20 - percent / 5), percent])
+				await _wait(0.05)
+		else:
+			await _wait(SCANDISK_STEP_SECONDS)
+		_replace_last("  √  " + tr(step))
+	await _line("")
+	await _line(tr("ScanDisk ha trovato 1 settore che non appartiene a nessun file: 0047BB.\nIl settore è stato lasciato com'è."))
+	await _wait(1.6)
+	_screen.color = black
+	_lines = saved
+	_text.text = "\n".join(_lines)
 
 
 func _ok() -> String:
