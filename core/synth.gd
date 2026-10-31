@@ -89,6 +89,54 @@ static func noise(duration: float, volume: float, center: float, shaped: bool = 
 	return _store(key, _stream(data))
 
 
+## A die hitting the tray: a sharp click (resin ringing at a few high frequencies, gone in
+## a few milliseconds) over a short low thud from the table. Each variant has slightly
+## different resonances, like different dice landing on different edges. Peak about 0.25.
+static func knock(variant: int) -> AudioStreamWAV:
+	var key := "k%d" % variant
+	var cached := _cached(key)
+	if cached != null:
+		return cached
+	const RATE := 44100
+	const SECONDS := 0.12
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 4047 + variant * 7919
+	# [frequency, amplitude, decay time]: the die's own ringing, then the table.
+	var modes: Array[Vector3] = []
+	for mode: Vector3 in [Vector3(2300, 0.5, 0.030), Vector3(3800, 0.36, 0.022), Vector3(5600, 0.24, 0.016), Vector3(7900, 0.14, 0.010)]:
+		modes.append(Vector3(mode.x * rng.randf_range(0.88, 1.12), mode.y * rng.randf_range(0.7, 1.0), mode.z))
+	modes.append(Vector3(rng.randf_range(170.0, 260.0), rng.randf_range(0.25, 0.4), 0.028))
+	var phases: Array[float] = []
+	for mode in modes:
+		phases.append(rng.randf() * TAU)
+	var frames := int(SECONDS * RATE)
+	var samples := PackedFloat32Array()
+	samples.resize(frames)
+	var peak := 0.0
+	var previous_noise := 0.0
+	for i in frames:
+		var t := float(i) / RATE
+		var value := 0.0
+		for m in modes.size():
+			var mode := modes[m]
+			value += sin(TAU * mode.x * t + phases[m]) * mode.y * exp(-t / mode.z)
+		# The contact itself: 2 ms of bright noise (differenced = high-passed).
+		var noise_value := rng.randf_range(-1.0, 1.0)
+		value += (noise_value - previous_noise) * 0.35 * exp(-t / 0.0015)
+		previous_noise = noise_value
+		# 0.3 ms attack, so the start doesn't pop.
+		value *= minf(1.0, t / 0.0003)
+		samples[i] = value
+		peak = maxf(peak, absf(value))
+	var data := PackedByteArray()
+	data.resize(frames * 2)
+	for i in frames:
+		data.encode_s16(i * 2, int(clampf(samples[i] / peak * 0.25, -1.0, 1.0) * 32767.0))
+	var stream := _stream(data)
+	stream.mix_rate = RATE
+	return _store(key, stream)
+
+
 ## Sums several sounds into one sample: parts = [[delay in seconds, AudioStreamWAV], …].
 static func mix(parts: Array) -> AudioStreamWAV:
 	var length := 0

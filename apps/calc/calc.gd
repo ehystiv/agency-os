@@ -30,6 +30,7 @@ func _ready() -> void:
 	_refresh_chaos()
 	# Continuous redraw only while rolling; when still one frame is enough.
 	_tray.rolling_changed.connect(_set_live)
+	_tray.impact.connect(Sfx.dice_hit)
 	_set_live(true)
 	await get_tree().create_timer(0.6).timeout
 	_set_live(false)

@@ -13,6 +13,9 @@ const TRIANGLE := Synth.Wave.TRIANGLE
 ## Attack of the system sounds (sharper than the music's).
 const ATTACK := 0.01
 const HUM_FADE_SECONDS := 0.6
+## Dice hits: variants of Synth.knock(), and voices of their own (six dice can hit together).
+const DICE_VARIANTS := 8
+const DICE_VOICES := 8
 
 var enabled: bool = true:
 	set(value):
@@ -36,6 +39,7 @@ var _sounds_lock := Mutex.new()
 var _build_task := -1
 var _voices: Array[AudioStreamPlayer] = []
 var _hum: AudioStreamPlayer
+var _dice_voices: Array[AudioStreamPlayer] = []
 
 
 func _ready() -> void:
@@ -52,6 +56,11 @@ func _ready() -> void:
 	_hum = AudioStreamPlayer.new()
 	_hum.bus = BUS
 	add_child(_hum)
+	for i in DICE_VOICES:
+		var voice := AudioStreamPlayer.new()
+		voice.bus = BUS
+		add_child(voice)
+		_dice_voices.append(voice)
 	_build_task = WorkerThreadPool.add_task(_build_all)
 
 
@@ -64,7 +73,7 @@ func toggle() -> void:
 	enabled = not enabled
 
 
-## Plays a system sound: modem, ding, mail, pop, chime, key, heartbeat.
+## Plays a system sound: modem, ding, mail, pop, chime, key, heartbeat (dice: dice_hit()).
 func play(sound: StringName) -> void:
 	if not enabled:
 		return
@@ -82,6 +91,20 @@ func play(sound: StringName) -> void:
 		voice = _voices[0]
 	voice.stream = stream
 	voice.play()
+
+
+## A die hitting the tray or another die; strength 0..1 from the speed of the hit.
+## When all voices are busy the hit is dropped: a softer one is lost in the rattle anyway.
+func dice_hit(strength: float) -> void:
+	if not enabled or strength <= 0.0:
+		return
+	for voice in _dice_voices:
+		if not voice.playing:
+			voice.stream = Synth.knock(randi() % DICE_VARIANTS)
+			voice.volume_db = linear_to_db(clampf(strength, 0.03, 1.0))
+			voice.pitch_scale = randf_range(0.92, 1.1)
+			voice.play()
+			return
 
 
 ## Continuous hum during AgencyOS searches.
@@ -106,6 +129,8 @@ func stop_hum() -> void:
 func _build_all() -> void:
 	for sound: StringName in [&"ding", &"mail", &"pop", &"chime", &"key", &"heartbeat", &"modem"]:
 		_build(sound)
+	for variant in DICE_VARIANTS:
+		Synth.knock(variant)
 
 
 func _build(sound: StringName) -> AudioStreamWAV:

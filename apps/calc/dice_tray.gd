@@ -4,6 +4,8 @@ extends Node3D
 ## roll() throws them and returns the values read from the simulation once they are still.
 
 signal rolling_changed(rolling: bool)
+## A die hit the floor, a wall or another die; strength 0..1 (for the sound).
+signal impact(strength: float)
 
 const DICE := 6
 const FLOOR_COLOR := Color("0e1a26")
@@ -21,9 +23,22 @@ const REST_SPIN := 0.15
 const REST_SECONDS := 0.3
 const MAX_ROLL_SECONDS := 4.0
 const MAX_NUDGES := 3
+## A sudden change of a die's speed is a hit: below this (m/s) it's just rolling or falling
+## (gravity alone adds about 0.16 m/s per physics frame).
+const HIT_MIN := 0.35
+## Change of speed that sounds at full volume.
+const HIT_FULL := 4.0
+## A die makes at most one sound in this time: one landing is often several contacts.
+const HIT_GAP_MS := 35
+## Just after the throw the physics pushes apart dice that appeared overlapping: not a sound.
+const HIT_QUIET_MS := 60
 
 var rolling := false
 var _dice: Array[D4] = []
+## Speed of each die at the last physics frame, and when it last sounded.
+var _last_velocity: Array[Vector3] = []
+var _last_hit_ms: Array[int] = []
+var _quiet_until_ms := 0
 
 
 func _ready() -> void:
@@ -71,6 +86,12 @@ func roll() -> Array[int]:
 		die.linear_velocity = Vector3(-die.position.x * 0.8 + randf_range(-0.8, 0.8), randf_range(-2.0, -0.5), randf_range(-0.9, 0.5))
 		var spin := randf_range(3.0, 6.0) if bool(Save.get_ui("reduced_motion", false)) else randf_range(8.0, 15.0)
 		die.angular_velocity = Vector3(randf_range(-1, 1), randf_range(-1, 1), randf_range(-1, 1)).normalized() * spin
+	_quiet_until_ms = Time.get_ticks_msec() + HIT_QUIET_MS
+	_last_velocity.clear()
+	_last_hit_ms.clear()
+	for die in _dice:
+		_last_velocity.append(die.linear_velocity)
+		_last_hit_ms.append(0)
 	await _wait_until_rest()
 	var nudges := 0
 	while nudges < MAX_NUDGES and _dice.any(func(d: D4) -> bool: return not d.is_flat()):
@@ -101,12 +122,26 @@ func _wait_until_rest() -> void:
 	var elapsed := 0.0
 	while elapsed < MAX_ROLL_SECONDS:
 		await get_tree().physics_frame
+		_listen_for_hits()
 		var delta := get_physics_process_delta_time()
 		elapsed += delta
 		var moving := _dice.any(func(d: D4) -> bool: return d.linear_velocity.length() > REST_SPEED or d.angular_velocity.length() > REST_SPIN)
 		still = 0.0 if moving else still + delta
 		if still >= REST_SECONDS:
 			return
+
+
+## Hits are sudden changes of speed: the floor, a wall or another die stopped or deflected
+## the die. Read from the simulation, so the sound follows exactly what is seen.
+func _listen_for_hits() -> void:
+	var now := Time.get_ticks_msec()
+	for i in _dice.size():
+		var velocity := _dice[i].linear_velocity
+		var change := (velocity - _last_velocity[i]).length()
+		_last_velocity[i] = velocity
+		if change >= HIT_MIN and now >= _quiet_until_ms and now - _last_hit_ms[i] >= HIT_GAP_MS:
+			_last_hit_ms[i] = now
+			impact.emit(clampf((change - HIT_MIN) / (HIT_FULL - HIT_MIN), 0.0, 1.0) * 0.9 + 0.1)
 
 
 ## Before the first roll the dice are in a row, resting on a face.
