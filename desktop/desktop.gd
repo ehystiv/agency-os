@@ -256,7 +256,7 @@ func _set_start_open(open: bool) -> void:
 	if open:
 		_icons.deselect_all()
 		_start_menu.build(REGISTRY, Sfx.enabled, _is_fullscreen(), _players.visible)
-		_start_menu.open_at(Vector2(4.0, _taskbar.position.y + 2.0))
+		_start_menu.open_at(Vector2(4.0, _taskbar.position.y))
 	else:
 		_start_menu.hide()
 	_catcher.visible = open

@@ -18,6 +18,10 @@ const ICON_IMAGE := preload("res://ui/icons/image.svg")
 const ICON_BLANK := preload("res://ui/icons/blank.svg")
 const ICON_RUN := preload("res://ui/icons/run.svg")
 
+const SLIDE_SECONDS := 0.14
+
+var _slide: Tween
+
 @onready var _scroll: ScrollContainer = %Scroll
 @onready var _items: VBoxContainer = %Items
 
@@ -56,7 +60,13 @@ func open_at(bottom_left: Vector2) -> void:
 	_scroll.custom_minimum_size.y = minf(needed, available)
 	_scroll.custom_minimum_size.x = _items.get_combined_minimum_size().x + (_scroll.get_v_scroll_bar().get_combined_minimum_size().x if needed > available else 0.0)
 	reset_size()
-	position = bottom_left - Vector2(0.0, size.y)
+	# It slides up from behind the taskbar (drawn after it), as in Windows 98.
+	var final := bottom_left - Vector2(0.0, size.y)
+	position = final + Vector2(0.0, size.y)
+	if _slide != null:
+		_slide.kill()
+	_slide = create_tween().set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	_slide.tween_property(self, "position", final, SLIDE_SECONDS)
 
 
 func _add_command(icon: Texture2D, label: String, command: StringName) -> void:

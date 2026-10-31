@@ -58,10 +58,10 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Taskbar" parent="Ui" instance=ExtResource("5_taskbar")]
+[node name="StartMenu" parent="Ui" instance=ExtResource("6_start")]
 unique_name_in_owner = true
 
-[node name="StartMenu" parent="Ui" instance=ExtResource("6_start")]
+[node name="Taskbar" parent="Ui" instance=ExtResource("5_taskbar")]
 unique_name_in_owner = true
 
 [node name="Balloon" parent="Ui" instance=ExtResource("7_balloon")]
