@@ -101,6 +101,10 @@ func _ready() -> void:
 	if bool(Save.get_ui("show_boot", true)):
 		_boot.play()
 		await _boot.finished
+	# The Welcome screen: the first time, then only if the Manager asked for it.
+	if bool(Save.get_ui("welcome_at_start", true)):
+		Save.set_ui("welcome_at_start", Save.get_ui("welcome_at_start", false))
+		_windows.open(&"welcome")
 	_show_balloon("AgencyOS 98", tr("Benvenuto, Manager. La Filiale è operativa."))
 	_remind_session_today()
 	_announce_patch()

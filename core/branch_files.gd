@@ -10,7 +10,7 @@ const SYSTEM_FILES: Array[Array] = [
 	["PANNELLO.CPL", &"ctrl", "9.216"], ["CANONE.HLP", &"canon", "32.768"], ["REGISTRO.EVT", &"event_viewer", "16.384"],
 ]
 ## Other names that open a program, only by their exact name (DIR doesn't list them).
-const ALIASES := {"COMMAND": &"term", "COMMAND.COM": &"term", "CMD": &"term", "PROMPT": &"term", "NOTEPAD": &"notepad", "BLOCCONOTE": &"notepad"}
+const ALIASES := {"COMMAND": &"term", "COMMAND.COM": &"term", "CMD": &"term", "PROMPT": &"term", "NOTEPAD": &"notepad", "BLOCCONOTE": &"notepad", "BENVENUTI": &"welcome", "WELCOME": &"welcome"}
 
 
 ## What a typed name stands for:

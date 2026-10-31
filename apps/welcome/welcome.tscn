@@ -1,0 +1,112 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://apps/welcome/welcome.gd" id="1_script"]
+[ext_resource type="FontFile" path="res://ui/fonts/VT323-Regular.ttf" id="2_vt323"]
+
+[sub_resource type="StyleBoxFlat" id="banner"]
+content_margin_left = 18.0
+content_margin_top = 10.0
+content_margin_right = 18.0
+content_margin_bottom = 10.0
+bg_color = Color(0.0784, 0.1412, 0.3686, 1)
+
+[sub_resource type="StyleBoxFlat" id="links"]
+content_margin_left = 6.0
+content_margin_top = 10.0
+content_margin_right = 6.0
+content_margin_bottom = 10.0
+bg_color = Color(0.1373, 0.251, 0.7098, 1)
+
+[node name="Welcome" type="MarginContainer"]
+custom_minimum_size = Vector2(560, 0)
+script = ExtResource("1_script")
+
+[node name="Layout" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="Banner" type="PanelContainer" parent="Layout"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("banner")
+
+[node name="Titles" type="HBoxContainer" parent="Layout/Banner"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Welcome" type="Label" parent="Layout/Banner/Titles"]
+layout_mode = 2
+size_flags_vertical = 8
+theme_override_colors/font_color = Color(0.7882, 0.8275, 1, 1)
+theme_override_fonts/font = ExtResource("2_vt323")
+theme_override_font_sizes/font_size = 22
+text = "Benvenuti in"
+
+[node name="Brand" type="Label" parent="Layout/Banner/Titles"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("2_vt323")
+theme_override_font_sizes/font_size = 40
+text = "AgencyOS 98"
+
+[node name="Body" type="HBoxContainer" parent="Layout"]
+custom_minimum_size = Vector2(0, 230)
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="LinksPanel" type="PanelContainer" parent="Layout/Body"]
+custom_minimum_size = Vector2(220, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("links")
+
+[node name="Links" type="VBoxContainer" parent="Layout/Body/LinksPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Detail" type="MarginContainer" parent="Layout/Body"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/margin_left = 18
+theme_override_constants/margin_top = 14
+theme_override_constants/margin_right = 18
+theme_override_constants/margin_bottom = 14
+
+[node name="Texts" type="VBoxContainer" parent="Layout/Body/Detail"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Heading" type="Label" parent="Layout/Body/Detail/Texts"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_vt323")
+theme_override_font_sizes/font_size = 24
+theme_override_colors/font_color = Color(0.1373, 0.251, 0.7098, 1)
+
+[node name="Text" type="Label" parent="Layout/Body/Detail/Texts"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(280, 0)
+layout_mode = 2
+theme_type_variation = &"InfoText"
+autowrap_mode = 3
+
+[node name="Bottom" type="MarginContainer" parent="Layout"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 8
+
+[node name="Row" type="HBoxContainer" parent="Layout/Bottom"]
+layout_mode = 2
+
+[node name="AtStart" type="CheckBox" parent="Layout/Bottom/Row"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Mostra questa schermata a ogni avvio"
+
+[node name="Close" type="Button" parent="Layout/Bottom/Row"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+text = "Chiudi"

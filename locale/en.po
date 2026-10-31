@@ -3182,3 +3182,42 @@ msgstr "Mute"
 
 msgid "Volume: suoni disattivati"
 msgstr "Volume: muted"
+
+msgid "Benvenuti"
+msgstr "Welcome"
+
+msgid "Benvenuti in"
+msgstr "Welcome to"
+
+msgid "Mostra questa schermata a ogni avvio"
+msgstr "Show this screen each time AgencyOS starts"
+
+msgid "Benvenuto, Manager"
+msgstr "Welcome, Manager"
+
+msgid "AgencyOS 98 è il terminale della tua Filiale. Da qui parli con l'Entità sulla linea riservata, tieni il Fascicolo e prepari le sessioni.\n\nPassa con il mouse su una voce a sinistra per saperne di più."
+msgstr "AgencyOS 98 is your Branch's terminal. From here you talk to the Entity on the reserved line, keep the Dossier and prepare your sessions.\n\nMove the mouse over an item on the left to learn more."
+
+msgid "Apri la linea riservata"
+msgstr "Open the reserved line"
+
+msgid "La linea con l'Entità U0047BB. Apri un colloquio e scrivile: risponderà. Ogni parola resta agli atti."
+msgstr "The line to the Entity U0047BB. Open an interview and write to it: it will answer. Every word goes on record."
+
+msgid "Configura la linea"
+msgstr "Set up the line"
+
+msgid "Scegli il modello che darà voce all'Entità: locale (LM Studio, Ollama, llama.cpp), Hugging Face o Claude. «Prova connessione» controlla che tutto risponda."
+msgstr "Choose the model that will give the Entity its voice: local (LM Studio, Ollama, llama.cpp), Hugging Face or Claude. \"Test connection\" checks that everything answers."
+
+msgid "Prepara la campagna"
+msgstr "Prepare the campaign"
+
+msgid "Nel Fascicolo scrivi chi è il Manager, chi sono gli Agenti e cosa è successo. L'Entità e l'Agenzia leggono queste note."
+msgstr "In the Dossier, write who the Manager is, who the Agents are and what has happened. The Entity and the Agency read these notes."
+
+msgid "Scopri AgencyOS"
+msgstr "Discover AgencyOS"
+
+msgid "Le scorciatoie da tastiera e i trucchi del sistema: il tasto destro sulle icone, la barra Avvio veloce, Start › Esegui… e lo schermo per i giocatori."
+msgstr "Keyboard shortcuts and the system's tricks: right-clicking icons, the Quick Launch bar, Start › Run... and the players' screen."
