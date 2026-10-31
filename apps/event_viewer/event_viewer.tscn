@@ -12,7 +12,7 @@ theme_override_constants/separation = 3
 
 [node name="Events" type="Tree" parent="Layout"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 360)
+custom_minimum_size = Vector2(0, 120)
 layout_mode = 2
 size_flags_vertical = 3
 columns = 3

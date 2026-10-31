@@ -16,8 +16,9 @@ size_flags_vertical = 3
 theme_type_variation = &"CanonPane"
 
 [node name="Scroll" type="ScrollContainer" parent="Layout/Pane"]
-custom_minimum_size = Vector2(0, 460)
+custom_minimum_size = Vector2(0, 160)
 layout_mode = 2
+size_flags_vertical = 3
 horizontal_scroll_mode = 0
 
 [node name="Content" type="MarginContainer" parent="Layout/Pane/Scroll"]

@@ -120,7 +120,12 @@ func _get_or_create(id: StringName) -> AppWindow:
 	var window: AppWindow = WINDOW_SCENE.instantiate()
 	add_child(window)
 	window.setup(info, info.scene.instantiate() as AppContent)
+	var state: Dictionary = Save.get_ui("windows", {}).get(String(info.id), {})
+	if state.has("w") and state.has("h"):
+		window.set_wanted_size(Vector2(float(state.w), float(state.h)))
 	window.position = window.clamp_position(_saved_position(info, window))
+	if bool(state.get("maximized", false)):
+		window.set_maximized(true)
 	window.focus_requested.connect(focus)
 	window.minimize_requested.connect(minimize)
 	window.close_requested.connect(close)
@@ -149,9 +154,10 @@ func _default_position(info: AppInfo, window: AppWindow) -> Vector2:
 	return pos
 
 
-## Brings every window back to its default position.
+## Brings every window back to its default size and position.
 func reset_positions() -> void:
 	for window: AppWindow in _windows.values():
+		window.reset_size_to_default()
 		window.position = window.clamp_position(_default_position(window.app, window))
 	_store()
 
@@ -161,9 +167,10 @@ func _on_reset_requested(window: AppWindow) -> void:
 	_store()
 
 
+## The desktop changed size (screen area, fullscreen, the macOS window).
 func _on_resized() -> void:
 	for window: AppWindow in _windows.values():
-		window.position = window.clamp_position(window.position)
+		window.fit_to_desktop()
 
 
 func _refresh_active() -> void:
@@ -188,6 +195,12 @@ func _store() -> void:
 		var id := String(window.app.id)
 		if _open.has(window.app.id):
 			order.append(id)
-		states[id] = {"x": int(window.position.x), "y": int(window.position.y), "minimized": not window.visible}
+		# A maximized window saves where it goes back when restored.
+		var where := window.restored_position()
+		var state := {"x": int(where.x), "y": int(where.y), "minimized": not window.visible}
+		if window.app.resizable:
+			var wanted := window.wanted_size()
+			state.merge({"w": int(wanted.x), "h": int(wanted.y), "maximized": window.maximized})
+		states[id] = state
 	Save.set_ui("windows", states)
 	Save.set_ui("window_order", order)

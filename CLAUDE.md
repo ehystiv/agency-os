@@ -54,7 +54,7 @@ Other things to know:
 
 **Adding an app:**
 1. Create the scene under `apps/<name>/` with a root that extends `AppContent`.
-2. Create an `AppInfo` resource in `data/apps/<name>.tres` (id, label, icon, scene, default size, desktop/Start-menu flags, `menu_strip`).
+2. Create an `AppInfo` resource in `data/apps/<name>.tres` (id, label, icon, scene, default size, desktop/Start-menu flags, `menu_strip`). With `resizable = true` the window gets draggable edges/corners and a maximize button, and `default_size` becomes its first size: the scene must then grow (scroll areas with `size_flags_vertical = 3`) and shrink to `min_size` (keep its own `custom_minimum_size` small). Fixed windows follow their content.
 3. Add it to `data/apps/registry.tres`. The order there is the icon/Start-menu order.
 
 **Data-driven content:**
@@ -66,6 +66,7 @@ Other things to know:
 
 **Look:**
 - The global theme is `ui/theme/agency98.tres`, a large `Theme` that uses the custom `StyleBoxBevel` (`ui/theme/stylebox_bevel.gd`) for '98 bevels. Widgets pick their style by `theme_type_variation` (e.g. `ListRow`, `MsgEntity`, `PrimaryButton`). Check the theme before adding new variations.
+- The desktop's logical resolution is the "Area dello schermo" (`core/screen_area.gd`, UI pref `screen_area`, Control panel › Schermo): it sets `content_scale_size` at runtime, so `project.godot`'s 1280×720 is only the default.
 - 3D views (dice tray, webcam cage) render in a SubViewport at low resolution that is redrawn on demand.
 
 ## Updates (.pck patches)

@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" path="res://windows/app_window.gd" id="1_script"]
 [ext_resource type="Texture2D" path="res://ui/icons/tri.svg" id="2_tri"]
+[ext_resource type="Texture2D" path="res://ui/icons/win_max.svg" id="3_max"]
 
 [node name="AppWindow" type="PanelContainer"]
 offset_right = 480.0
@@ -55,6 +56,19 @@ focus_mode = 0
 mouse_default_cursor_shape = 0
 theme_type_variation = &"TitleButton"
 text = "_"
+
+[node name="MaxButton" type="Button" parent="Layout/TitleBar/Row/Buttons"]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(18, 16)
+layout_mode = 2
+size_flags_vertical = 4
+tooltip_text = "Ingrandisci"
+focus_mode = 0
+mouse_default_cursor_shape = 0
+theme_type_variation = &"TitleButton"
+icon = ExtResource("3_max")
+icon_alignment = 1
 
 [node name="CloseButton" type="Button" parent="Layout/TitleBar/Row/Buttons"]
 unique_name_in_owner = true

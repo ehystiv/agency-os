@@ -8,8 +8,9 @@ script = ExtResource("1_script")
 
 [node name="Screen" type="PanelContainer" parent="."]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 360)
+custom_minimum_size = Vector2(0, 140)
 layout_mode = 2
+size_flags_vertical = 3
 mouse_default_cursor_shape = 1
 theme_type_variation = &"TermPane"
 

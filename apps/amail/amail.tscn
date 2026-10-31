@@ -11,7 +11,7 @@ layout_mode = 2
 theme_override_constants/separation = 3
 
 [node name="Main" type="HBoxContainer" parent="Layout"]
-custom_minimum_size = Vector2(0, 380)
+custom_minimum_size = Vector2(0, 180)
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/separation = 3

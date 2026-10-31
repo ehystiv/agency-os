@@ -59,7 +59,7 @@ focus_mode = 0
 text = "Torna al colloquio in corso"
 
 [node name="Pane" type="PanelContainer" parent="Layout"]
-custom_minimum_size = Vector2(0, 380)
+custom_minimum_size = Vector2(0, 180)
 layout_mode = 2
 size_flags_vertical = 3
 theme_type_variation = &"ChatPane"
