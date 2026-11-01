@@ -11,7 +11,6 @@ const REEL_STEP := 0.05
 const REEL_FIRST_STOP := 0.35
 const REEL_GAP := 0.14
 
-var _reset_armed := false
 ## The last roll, to show to the players: {values, outcome word, line}.
 var _last_roll: Dictionary = {}
 
@@ -51,8 +50,6 @@ func _unhandled_key_input(event: InputEvent) -> void:
 func _on_roll_pressed() -> void:
 	if _tray.rolling:
 		return
-	_reset_armed = false
-	_refresh_chaos()
 	_roll.disabled = true
 	_lcd.text = "· · · · · ·"
 	_result.text = tr("Lancio in corso…")
@@ -104,22 +101,18 @@ func _spin_reels(values: Array[int]) -> void:
 
 
 func _change_chaos(amount: int) -> void:
-	_reset_armed = false
 	Campaign.add_chaos(amount)
 
 
 func _on_reset_pressed() -> void:
-	if not _reset_armed:
-		_reset_armed = true
-		_refresh_chaos()
+	if Campaign.chaos == 0:
 		return
-	_reset_armed = false
-	Campaign.set_chaos(0)
+	if await ConfirmBox.ask(self, "Azzera la riserva di Caos", tr("Azzerare la riserva di Caos (%d)?") % Campaign.chaos):
+		Campaign.set_chaos(0)
 
 
 func _refresh_chaos() -> void:
 	_chaos.text = "%02d" % Campaign.chaos
-	_reset.text = tr("Conferma") if _reset_armed else tr("Azzera")
 
 
 func _set_live(live: bool) -> void:
@@ -151,5 +144,4 @@ func on_menu_action(action: StringName) -> void:
 			if not _last_roll.is_empty():
 				present_requested.emit({"kind": "text", "caption": tr("Calcolatrice · 6d4"), "heading": _last_roll.digits, "body": str(_last_roll.line).replace(tr(". Scegli un effetto della Triscendenza."), "")})
 		&"chaos_reset":
-			_reset_armed = false
-			Campaign.set_chaos(0)
+			_on_reset_pressed()

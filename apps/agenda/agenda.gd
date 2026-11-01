@@ -9,7 +9,6 @@ const TIME_REGEX := "^([01]?\\d|2[0-3]):[0-5]\\d$"
 var _selected_day := ""
 var _year := 0
 var _month := 0
-var _cancel_armed := false
 ## True while the day panel is rebuilt: fields losing focus don't save.
 var _rebuilding := false
 ## Saving a new checklist item rebuilds the panel: the new field gets the focus back,
@@ -43,7 +42,6 @@ func _select(day: String) -> void:
 	_selected_day = day
 	_year = int(day.left(4))
 	_month = int(day.substr(5, 2))
-	_cancel_armed = false
 	_refresh()
 
 
@@ -209,16 +207,13 @@ func _build_side() -> void:
 		new_item.grab_focus.call_deferred()
 	var cancel := LinkButton.new()
 	cancel.theme_type_variation = &"LinkDanger"
-	cancel.text = tr("Conferma: annulla la sessione") if _cancel_armed else tr("Annulla la sessione")
+	cancel.text = tr("Annulla la sessione")
 	cancel.focus_mode = Control.FOCUS_NONE
 	cancel.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	cancel.pressed.connect(func() -> void:
-		if not _cancel_armed:
-			_cancel_armed = true
-			_build_side()
-			return
-		_cancel_armed = false
-		Campaign.cancel_session(session))
+		var when := ItalianDate.numeric(str(session.date))
+		if await ConfirmBox.ask(self, "Annulla la sessione", tr("Annullare la sessione del %s? La lista di preparazione andrà persa.") % when):
+			Campaign.cancel_session(session))
 	_side.add_child(cancel)
 
 

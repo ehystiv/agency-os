@@ -11,7 +11,6 @@ var _selected_id := ""
 ## The agent the form shows: when it changes, every field is rewritten, even the focused one.
 var _shown_id := ""
 var _dirty := false
-var _delete_armed := false
 var _loading := false
 var _counter_labels: Dictionary[String, Label] = {}
 
@@ -126,7 +125,6 @@ func _refresh_form() -> void:
 	_form.visible = has_agent
 	_empty.visible = not has_agent
 	_delete.visible = has_agent
-	_delete.text = tr("Conferma: elimina l'Agente") if _delete_armed else tr("Elimina l'Agente")
 	if not has_agent:
 		_status.text = ""
 		_shown_id = ""
@@ -190,13 +188,11 @@ func _step_button(text: String, key: String, step: int) -> Button:
 func _select(id: String) -> void:
 	_flush()
 	_selected_id = id
-	_delete_armed = false
 	_refresh()
 
 
 func _new_agent() -> void:
 	_flush()
-	_delete_armed = false
 	_selected_id = str(Campaign.new_agent().id)
 	_refresh()
 	_name.grab_focus.call_deferred()
@@ -231,11 +227,11 @@ func _on_delete_pressed() -> void:
 	var agent := _agent()
 	if agent.is_empty():
 		return
-	if not _delete_armed:
-		_delete_armed = true
-		_refresh_form()
+	var name := str(agent.name) if str(agent.name) != "" else tr("Agente senza nome")
+	if not await ConfirmBox.ask(self, "Elimina l'Agente", tr("Eliminare la scheda di «%s»? Non si può annullare.") % name):
 		return
-	_delete_armed = false
+	if not is_same(agent, _agent()):
+		return
 	_save_timer.stop()
 	_dirty = false
 	_selected_id = ""
@@ -283,9 +279,7 @@ func on_menu_action(action: StringName) -> void:
 	match action:
 		&"new": _new_agent()
 		&"present": _present()
-		&"delete":
-			_delete_armed = true
-			_on_delete_pressed()
+		&"delete": _on_delete_pressed()
 
 
 ## Cmd+N: new Agent.

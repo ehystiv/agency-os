@@ -7,7 +7,6 @@ const SELECTED_TEXT := Color.WHITE
 
 var _selected_id := ""
 var _dirty := false
-var _delete_armed := false
 var _loading := false
 var _exporter: ObsidianExporter
 var _writing_recap := false
@@ -145,7 +144,6 @@ func _refresh_editor() -> void:
 	_empty.visible = not has_page
 	_export.visible = has_page
 	_delete.visible = has_page
-	_delete.text = tr("Conferma: sposta nel cestino") if _delete_armed else tr("Sposta nel cestino")
 	if not has_page:
 		_status.text = ""
 		return
@@ -174,14 +172,12 @@ func _refresh_vault() -> void:
 func _select(id: String) -> void:
 	_flush()
 	_selected_id = id
-	_delete_armed = false
 	_refresh()
 
 
 func _new_page() -> void:
 	_flush()
 	_selected_id = str(Campaign.new_page().id)
-	_delete_armed = false
 	_refresh()
 	_text.grab_focus.call_deferred()
 
@@ -236,11 +232,11 @@ func _on_delete_pressed() -> void:
 	var page := _page()
 	if page.is_empty():
 		return
-	if not _delete_armed:
-		_delete_armed = true
-		_refresh_editor()
+	var name := str(page.title) if str(page.title) != "" else tr("Senza titolo")
+	if not await ConfirmBox.ask(self, "Conferma eliminazione file", tr("Spostare «%s» nel Cestino?") % name):
 		return
-	_delete_armed = false
+	if not is_same(page, _page()):
+		return
 	_save_timer.stop()
 	_dirty = false
 	_selected_id = ""
@@ -344,7 +340,6 @@ func on_menu_action(action: StringName) -> void:
 				present_requested.emit({"kind": "text", "caption": tr("Taccuino"), "heading": str(page.title), "body": str(page.text)})
 		&"delete":
 			# From the menu the choice is already deliberate; the page can come back from the Cestino.
-			_delete_armed = true
 			_on_delete_pressed()
 
 

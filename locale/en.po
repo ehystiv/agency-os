@@ -1674,10 +1674,6 @@ msgid "Aggiungi una voce"
 msgstr "Add an item"
 
 #: apps/agenda.gd
-msgid "Conferma: annulla la sessione"
-msgstr "Confirm: cancel the session"
-
-#: apps/agenda.gd
 msgid "Annulla la sessione"
 msgstr "Cancel the session"
 
@@ -1878,10 +1874,6 @@ msgstr "Playing"
 #: apps/player.gd
 msgid "In pausa"
 msgstr "Paused"
-
-#: apps/player.gd
-msgid "Conferma"
-msgstr "Confirm"
 
 #: apps/player.gd apps/player.tscn
 msgid "Elimina"
@@ -2121,10 +2113,6 @@ msgid "Nessuna sessione"
 msgstr "No session"
 
 #: apps/notebook.gd
-msgid "Conferma: sposta nel cestino"
-msgstr "Confirm: move to the Recycle Bin"
-
-#: apps/notebook.gd
 msgid "Sposta nel cestino"
 msgstr "Move to the Recycle Bin"
 
@@ -2310,10 +2298,6 @@ msgid "%d elementi"
 msgstr "%d items"
 
 #: apps/trash.gd
-msgid "Conferma: svuota il cestino"
-msgstr "Confirm: empty the Recycle Bin"
-
-#: apps/trash.gd
 msgid "Svuota il cestino"
 msgstr "Empty the Recycle Bin"
 
@@ -2324,10 +2308,6 @@ msgstr "Unregistered file · unknown origin"
 #: apps/trash.gd
 msgid "Pagina del Taccuino"
 msgstr "Notebook page"
-
-#: apps/trash.gd
-msgid "Conferma eliminazione"
-msgstr "Confirm deletion"
 
 #: apps/trash.gd
 msgid "Elimina definitivamente"
@@ -3439,9 +3419,6 @@ msgstr "No Agents on staff. The team's sheets stay even if you reset the Branch.
 msgid "Elimina l'Agente"
 msgstr "Delete the Agent"
 
-msgid "Conferma: elimina l'Agente"
-msgstr "Confirm: delete the Agent"
-
 msgid "Agente senza nome"
 msgstr "Unnamed Agent"
 
@@ -3494,3 +3471,34 @@ msgstr "Recap for the Agents · %s"
 
 msgid "(non indicati)"
 msgstr "(not given)"
+
+#: apps/shared/confirm_box.gd
+msgid "Conferma eliminazione file"
+msgstr "Confirm File Delete"
+
+msgid "Conferma eliminazione di più file"
+msgstr "Confirm Multiple File Delete"
+
+msgid "Eliminare definitivamente «%s»?"
+msgstr "Are you sure you want to permanently delete \"%s\"?"
+
+msgid "Eliminare definitivamente l'elemento nel cestino?"
+msgstr "Are you sure you want to permanently delete the item in the Recycle Bin?"
+
+msgid "Eliminare definitivamente i %d elementi nel cestino?"
+msgstr "Are you sure you want to permanently delete these %d items in the Recycle Bin?"
+
+msgid "Azzerare la riserva di Caos (%d)?"
+msgstr "Are you sure you want to reset the Chaos pool (%d)?"
+
+msgid "Spostare «%s» nel Cestino?"
+msgstr "Are you sure you want to send \"%s\" to the Recycle Bin?"
+
+msgid "Eliminare la scheda di «%s»? Non si può annullare."
+msgstr "Are you sure you want to delete the sheet of \"%s\"? This cannot be undone."
+
+msgid "Annullare la sessione del %s? La lista di preparazione andrà persa."
+msgstr "Are you sure you want to cancel the session of %s? Its preparation list will be lost."
+
+msgid "Eliminare «%s» dalla Raccolta?"
+msgstr "Are you sure you want to delete \"%s\" from the collection?"

@@ -24,8 +24,6 @@ var _loading := false
 var _previous_area := Vector2i.ZERO
 var _confirm_left := 0
 var _confirm_timer: Timer
-## The backup chosen for a restore, waiting for the confirmation.
-var _restore_path := ""
 
 @onready var _tabs: TabContainer = %Tabs
 @onready var _wallpapers: Array[CheckBox] = [%Lattice, %Vault, %Solid]
@@ -51,7 +49,6 @@ var _restore_path := ""
 @onready var _confirm_text: Label = %ConfirmText
 @onready var _language: OptionButton = %Language
 @onready var _backup_status: Label = %BackupStatus
-@onready var _restore_confirm: PanelContainer = %RestoreConfirm
 
 
 func _ready() -> void:
@@ -106,8 +103,6 @@ func _ready() -> void:
 	%RestartLanguage.pressed.connect(func() -> void: Updater.restart())
 	%ExportBackup.pressed.connect(_choose_backup_file.bind(true))
 	%RestoreBackup.pressed.connect(_choose_backup_file.bind(false))
-	%RestoreGo.pressed.connect(_restore)
-	%RestoreCancel.pressed.connect(_cancel_restore)
 	Save.ui_changed.connect(func(_key: String) -> void: _load_if_visible())
 	Sfx.settings_changed.connect(_load_if_visible)
 	_load()
@@ -280,7 +275,6 @@ func _refresh_backup() -> void:
 
 
 func _choose_backup_file(save: bool) -> void:
-	_cancel_restore()
 	var dialog := FileDialog.new()
 	dialog.file_mode = FileDialog.FILE_MODE_SAVE_FILE if save else FileDialog.FILE_MODE_OPEN_FILE
 	dialog.access = FileDialog.ACCESS_FILESYSTEM
@@ -324,14 +318,9 @@ func _ask_restore(path: String) -> void:
 		_show_backup_message(str(info.error))
 		Sfx.play(&"error")
 		return
-	_restore_path = path
-	%RestoreText.text = tr("Ripristinare il backup del %s (%d colloqui)? I dati attuali della Filiale saranno sostituiti e AgencyOS si riavvierà.") % [_when(str(info.created)), int(info.interviews)]
-	_restore_confirm.show()
-
-
-func _restore() -> void:
-	var path := _restore_path
-	_cancel_restore()
+	var question := tr("Ripristinare il backup del %s (%d colloqui)? I dati attuali della Filiale saranno sostituiti e AgencyOS si riavvierà.") % [_when(str(info.created)), int(info.interviews)]
+	if not await ConfirmBox.ask(self, "Ripristina da un backup", question, "Ripristina", "Annulla"):
+		return
 	Campaign.generation += 1
 	Campaign.correspondence.cancel_pending()
 	var error := BranchBackup.restore_from(path)
@@ -340,11 +329,6 @@ func _restore() -> void:
 		Sfx.play(&"error")
 		return
 	Updater.restart()
-
-
-func _cancel_restore() -> void:
-	_restore_path = ""
-	_restore_confirm.hide()
 
 
 func _show_backup_message(text: String) -> void:

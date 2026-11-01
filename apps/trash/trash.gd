@@ -5,8 +5,6 @@ extends AppContent
 const SELECTED_TEXT := Color.WHITE
 
 var _selected_id := ""
-## Pending confirmation: "" or "delete" / "empty".
-var _armed := ""
 
 @onready var _rows: VBoxContainer = %Rows
 @onready var _empty: Label = %Empty
@@ -30,7 +28,6 @@ func _ready() -> void:
 
 
 func on_opened(_args: Dictionary = {}) -> void:
-	_armed = ""
 	_refresh()
 
 
@@ -59,7 +56,6 @@ func _refresh() -> void:
 		_rows.add_child(_make_row(item))
 	_count.text = (tr("%d elemento") if list.size() == 1 else tr("%d elementi")) % list.size()
 	_empty_all.visible = not list.is_empty()
-	_empty_all.text = tr("Conferma: svuota il cestino") if _armed == "empty" else tr("Svuota il cestino")
 	_show(_selected())
 
 
@@ -74,7 +70,6 @@ func _make_row(item: Dictionary) -> Button:
 	row.custom_minimum_size = Vector2(0, 42)
 	row.pressed.connect(func() -> void:
 		_selected_id = str(item.id)
-		_armed = ""
 		_refresh())
 	var box := VBoxContainer.new()
 	box.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT, Control.PRESET_MODE_MINSIZE, 6)
@@ -117,7 +112,6 @@ func _show(item: Dictionary) -> void:
 		node.visible = has_item
 	_restore.visible = has_item and not draft
 	_delete.visible = has_item
-	_delete.text = tr("Conferma eliminazione") if _armed == "delete" else tr("Elimina definitivamente")
 	_page_text.visible = has_item and not draft
 	_ink_text.visible = draft
 	if not has_item:
@@ -139,7 +133,6 @@ func _show(item: Dictionary) -> void:
 func _on_restore_pressed() -> void:
 	var item := _selected()
 	if not item.is_empty():
-		_armed = ""
 		Campaign.restore_from_trash(item)
 
 
@@ -147,18 +140,12 @@ func _on_delete_pressed() -> void:
 	var item := _selected()
 	if item.is_empty():
 		return
-	if _armed != "delete":
-		_armed = "delete"
-		_refresh()
-		return
-	_armed = ""
-	Campaign.delete_from_trash(item)
+	if await ConfirmBox.ask(self, "Conferma eliminazione file", tr("Eliminare definitivamente «%s»?") % str(item.name)):
+		Campaign.delete_from_trash(item)
 
 
 func _on_empty_pressed() -> void:
-	if _armed != "empty":
-		_armed = "empty"
-		_refresh()
-		return
-	_armed = ""
-	Campaign.empty_trash()
+	var count := Campaign.trash.size()
+	var question := tr("Eliminare definitivamente l'elemento nel cestino?") if count == 1 else tr("Eliminare definitivamente i %d elementi nel cestino?") % count
+	if await ConfirmBox.ask(self, "Conferma eliminazione di più file", question):
+		Campaign.empty_trash()

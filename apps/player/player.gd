@@ -22,7 +22,6 @@ var _playing_index := -1
 var _seeking := false
 ## The collection row last clicked: Rinomina and Elimina act on it.
 var _selected_id := ""
-var _delete_armed := false
 ## The link being downloaded.
 var _downloading_url := ""
 
@@ -222,7 +221,6 @@ func _on_file_finished() -> void:
 
 func _on_tab_changed(tab: int) -> void:
 	_tab = tab as Source
-	_delete_armed = false
 	Save.set_ui("player_tab", tab)
 	_refresh()
 
@@ -285,7 +283,6 @@ func _refresh() -> void:
 	var has_selection := not _library.find(_selected_id).is_empty()
 	_rename.disabled = not has_selection
 	_delete.disabled = not has_selection
-	_delete.text = tr("Conferma") if _delete_armed and has_selection else tr("Elimina")
 	for child in _rows.get_children():
 		_rows.remove_child(child)
 		child.queue_free()
@@ -320,7 +317,6 @@ func _make_row(index: int, entry: Dictionary, current: bool) -> Button:
 			row.button_pressed = true
 		row.pressed.connect(func() -> void:
 			_selected_id = id
-			_delete_armed = false
 			_rename_row.hide()
 			_play_entry(source, index)
 			_refresh())
@@ -439,16 +435,14 @@ func _apply_rename() -> void:
 	_refresh()
 
 
-## Two clicks, like Azzera in the calculator: the first arms, the second deletes.
 func _on_delete_pressed() -> void:
 	var item := _library.find(_selected_id)
 	if item.is_empty():
 		return
-	if not _delete_armed:
-		_delete_armed = true
-		_refresh()
+	if not await ConfirmBox.ask(self, "Conferma eliminazione file", tr("Eliminare «%s» dalla Raccolta?") % str(item.get("name", ""))):
 		return
-	_delete_armed = false
+	if not _library.items.has(item):
+		return
 	if _playing_source == Source.COLLECTION and _playing_index >= 0:
 		if _library.items.find(item) == _playing_index:
 			_engine.stop()
