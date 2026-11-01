@@ -3,6 +3,7 @@
 [ext_resource type="Script" path="res://system/shutdown/shutdown.gd" id="1_script"]
 [ext_resource type="Texture2D" path="res://ui/icons/shutdown.svg" id="2_icon"]
 [ext_resource type="FontFile" path="res://ui/fonts/VT323-Regular.ttf" id="3_vt323"]
+[ext_resource type="Texture2D" path="res://ui/icons/win_close.svg" id="9_close"]
 
 [sub_resource type="ButtonGroup" id="choice"]
 
@@ -59,7 +60,8 @@ size_flags_vertical = 4
 tooltip_text = "Chiudi"
 focus_mode = 0
 theme_type_variation = &"TitleButton"
-text = "×"
+icon = ExtResource("9_close")
+icon_alignment = 1
 
 [node name="Body" type="MarginContainer" parent="Center/Dialog/Layout"]
 layout_mode = 2

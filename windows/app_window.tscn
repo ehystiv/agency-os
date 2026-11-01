@@ -4,6 +4,7 @@
 [ext_resource type="Texture2D" path="res://ui/icons/tri.svg" id="2_tri"]
 [ext_resource type="Texture2D" path="res://ui/icons/win_max.svg" id="3_max"]
 [ext_resource type="Texture2D" path="res://ui/icons/win_min.svg" id="4_min"]
+[ext_resource type="Texture2D" path="res://ui/icons/win_close.svg" id="5_close"]
 
 [node name="AppWindow" type="PanelContainer"]
 offset_right = 480.0
@@ -81,7 +82,8 @@ tooltip_text = "Chiudi"
 focus_mode = 0
 mouse_default_cursor_shape = 0
 theme_type_variation = &"TitleButton"
-text = "×"
+icon = ExtResource("5_close")
+icon_alignment = 1
 
 [node name="MenuStrip" type="MarginContainer" parent="Layout"]
 unique_name_in_owner = true
